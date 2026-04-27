@@ -1,0 +1,2163 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>E-Book Interaktif Kearifan Lokal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Bubblegum+Sans&display=swap" rel="stylesheet" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Bubblegum+Sans&display=swap");
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --batik1: #c0392b;
+        --batik2: #e67e22;
+        --batik3: #27ae60;
+        --batik4: #2980b9;
+        --batik5: #8e44ad;
+        --gold: #f39c12;
+        --cream: #fdf6e3;
+        --dark: #2c1810;
+      }
+
+      /* ===== BATIK BACKGROUND ===== */
+      body {
+        font-family: "Nunito", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0;
+        position: relative;
+        overflow-x: hidden;
+        background-color: #1a0a05;
+      }
+
+      /* Animated batik background layer */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-image: radial-gradient(circle at 20% 30%, #8b000033 0%, transparent 50%), radial-gradient(circle at 80% 70%, #4a280033 0%, transparent 50%), radial-gradient(circle at 50% 50%, #2c181033 0%, transparent 70%);
+        animation: bgPulse 8s ease-in-out infinite alternate;
+      }
+
+      /* Batik SVG pattern overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.07;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23F39C12' stroke-width='1'%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3Cpath d='M10 40 Q25 10 40 40 Q55 70 70 40'/%3E%3Cpath d='M40 10 Q70 25 40 40 Q10 55 40 70'/%3E%3Cpath d='M20 20 L60 60M60 20 L20 60'/%3E%3Ccircle cx='40' cy='40' r='5'/%3E%3Ccircle cx='10' cy='10' r='3'/%3E%3Ccircle cx='70' cy='10' r='3'/%3E%3Ccircle cx='10' cy='70' r='3'/%3E%3Ccircle cx='70' cy='70' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 80px 80px;
+        pointer-events: none;
+      }
+
+      @keyframes bgPulse {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 100% 100%;
+        }
+      }
+
+      /* Floating batik particles */
+      .batik-particle {
+        position: fixed;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.15;
+        font-size: 24px;
+        animation: floatParticle linear infinite;
+      }
+      @keyframes floatParticle {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.15;
+        }
+        90% {
+          opacity: 0.15;
+        }
+        100% {
+          transform: translateY(-100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* ===== MUSIC CONTROL ===== */
+      #musicControl {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px #f39c1266;
+        transition: all 0.3s;
+        animation: musicPulse 2s ease-in-out infinite;
+      }
+      #musicControl:hover {
+        transform: scale(1.1);
+      }
+      @keyframes musicPulse {
+        0%,
+        100% {
+          box-shadow: 0 4px 16px #f39c1266;
+        }
+        50% {
+          box-shadow:
+            0 4px 28px #f39c12aa,
+            0 0 0 8px #f39c1222;
+        }
+      }
+
+      /* ===== INTRO SPLASH ===== */
+      #introSplash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: radial-gradient(ellipse at center, #3d1505 0%, #1a0a00 60%, #000 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        transition:
+          opacity 0.8s ease,
+          visibility 0.8s ease;
+      }
+      #introSplash.hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .intro-pattern {
+        font-size: 48px;
+        letter-spacing: 6px;
+        animation: introBounce 1s ease-in-out infinite alternate;
+        filter: drop-shadow(0 0 12px #f39c12aa);
+      }
+      @keyframes introBounce {
+        from {
+          transform: translateY(0) scale(1);
+        }
+        to {
+          transform: translateY(-8px) scale(1.05);
+        }
+      }
+      .intro-title {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: clamp(20px, 5vw, 32px);
+        color: #f39c12;
+        text-align: center;
+        text-shadow: 0 2px 20px #f39c12aa;
+        padding: 0 20px;
+        line-height: 1.3;
+      }
+      .intro-sub {
+        font-size: 14px;
+        color: #ffffffaa;
+        text-align: center;
+      }
+      .intro-loader {
+        width: 120px;
+        height: 4px;
+        background: #ffffff22;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .intro-loader-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #f39c12, #e67e22, #c0392b);
+        border-radius: 4px;
+        animation: loadBar 2.5s ease-in-out forwards;
+      }
+      @keyframes loadBar {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+      .btn-enter {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: #1a0a05;
+        padding: 12px 36px;
+        font-size: 16px;
+        font-family: "Bubblegum Sans", cursive;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        box-shadow: 0 4px 20px #f39c1266;
+        transition: all 0.2s;
+        display: none;
+        letter-spacing: 1px;
+      }
+      .btn-enter:hover {
+        transform: scale(1.05);
+      }
+      .btn-enter.show {
+        display: block;
+      }
+
+      /* ===== MAIN WRAPPER ===== */
+      .flipbook-wrapper {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 8px 4px 20px;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ===== TITLE & COUNTER ===== */
+      .title-bar {
+        text-align: center;
+        padding: 10px 44px 6px 10px;
+        color: #f39c12;
+        font-family: "Bubblegum Sans", cursive;
+        font-size: clamp(15px, 4vw, 22px);
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px #000;
+        position: relative;
+        z-index: 10;
+      }
+      .page-counter {
+        text-align: center;
+        font-size: 13px;
+        color: #ccc;
+        margin-bottom: 6px;
+      }
+      .page-dots {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        margin: 6px 0;
+        flex-wrap: wrap;
+        padding: 0 8px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ffffff33;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .dot.active {
+        background: #f39c12;
+        transform: scale(1.3);
+      }
+
+      /* ===== BOOK CONTAINER ===== */
+      .book-container {
+        position: relative;
+        width: 100%;
+        background: linear-gradient(135deg, #5c1a0a 0%, #2c1810 50%, #5c1a0a 100%);
+        border-radius: 16px;
+        border: 3px solid #8b4513;
+        box-shadow:
+          0 8px 40px #000a,
+          0 0 0 1px #f39c1233;
+        overflow: hidden;
+        min-height: 520px;
+      }
+
+      /* ===== PAGES ===== */
+      .page {
+        display: none;
+        flex-direction: column;
+        min-height: 520px;
+        padding: 0;
+        animation: fadeIn 0.4s ease;
+      }
+      .page.active {
+        display: flex;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .page-header {
+        padding: 16px 20px 12px;
+        text-align: center;
+      }
+      .page-title {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: clamp(17px, 4.5vw, 22px);
+        color: white;
+        text-shadow: 1px 2px 4px #0008;
+      }
+      .page-body {
+        flex: 1;
+        padding: 14px 20px 12px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* ===== NAV BAR ===== */
+      .nav-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: #00000044;
+        border-top: 1px solid #ffffff22;
+        gap: 6px;
+      }
+      .btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 30px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 700;
+        transition: all 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-nav {
+        background: linear-gradient(135deg, #e67e22, #c0392b);
+        color: white;
+        padding: 9px 18px;
+        font-size: clamp(12px, 3.5vw, 14px);
+        min-width: 80px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-nav::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: white;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .btn-nav:active::after {
+        opacity: 0.15;
+      }
+      .btn-nav:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 16px #c0392b88;
+      }
+      .btn-nav:disabled {
+        background: #555;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* ===== TOC ===== */
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 8px;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+      }
+      .toc-item:hover {
+        transform: translateX(6px);
+        border-color: #f39c12;
+      }
+      .toc-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .toc-text {
+        font-size: clamp(12px, 3.5vw, 14px);
+        font-weight: 600;
+        color: white;
+      }
+
+      /* ===== CARDS ===== */
+      .card {
+        background: #ffffff18;
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 10px;
+        border: 1px solid #ffffff22;
+      }
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .icon-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .icon-box {
+        font-size: 22px;
+        flex-shrink: 0;
+        width: 36px;
+        text-align: center;
+      }
+      .icon-desc {
+        font-size: clamp(12px, 3.2vw, 13px);
+        color: #ffffffcc;
+        line-height: 1.5;
+      }
+
+      /* ===== YOUTUBE - DISABLED ===== */
+      .yt-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        margin: 10px 0;
+        border: 2px solid #f39c12;
+      }
+      .yt-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      .yt-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a0a05, #3d1a08);
+        gap: 8px;
+        cursor: not-allowed;
+      }
+      .yt-play-btn {
+        width: 56px;
+        height: 56px;
+        background: #666;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        opacity: 0.5;
+      }
+      .yt-label {
+        color: #ffffffaa;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        padding: 0 16px;
+      }
+      .yt-unavail {
+        font-size: 11px;
+        color: #ff6b6b88;
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      /* ===== QUIZ ===== */
+      .quiz-opt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        border: 2px solid #ffffff33;
+        transition: all 0.2s;
+        color: white;
+        font-size: clamp(12px, 3.2vw, 14px);
+        background: #ffffff11;
+      }
+      .quiz-opt:hover {
+        border-color: #f39c12;
+        background: #f39c1222;
+      }
+      .quiz-opt.correct {
+        border-color: #27ae60;
+        background: #27ae6033;
+        pointer-events: none;
+      }
+      .quiz-opt.wrong {
+        border-color: #c0392b;
+        background: #c0392b33;
+        pointer-events: none;
+      }
+      .quiz-opt.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .feedback-box {
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-top: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        text-align: center;
+      }
+      .feedback-box.correct {
+        background: #27ae6044;
+        color: #2ecc71;
+        border: 1px solid #27ae60;
+      }
+      .feedback-box.wrong {
+        background: #c0392b44;
+        color: #ff6b6b;
+        border: 1px solid #c0392b;
+      }
+
+      /* ===== GAME ===== */
+      .game-item {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .game-img {
+        width: 80px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #ffffff33;
+        background: #ffffff22;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+      }
+      .game-select {
+        flex: 1;
+        background: #ffffff11;
+        border: 1.5px solid #ffffff33;
+        color: white;
+        border-radius: 8px;
+        padding: 8px;
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        min-width: 120px;
+      }
+      .game-select option {
+        background: #2c1810;
+        color: white;
+      }
+      .score-display {
+        text-align: center;
+        padding: 16px;
+        background: #ffffff11;
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+      .score-num {
+        font-size: 48px;
+        font-weight: 800;
+        font-family: "Bubblegum Sans", cursive;
+      }
+
+      /* ===== MISC COMPONENTS ===== */
+      .chip {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 2px;
+      }
+      .section-badge {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .divider {
+        height: 1px;
+        background: #ffffff22;
+        margin: 12px 0;
+      }
+      .highlight-box {
+        border-left: 4px solid #f39c12;
+        padding: 10px 14px;
+        background: #f39c1211;
+        border-radius: 0 10px 10px 0;
+        margin: 10px 0;
+        font-size: clamp(12px, 3.2vw, 13px);
+        color: #ffffffee;
+        line-height: 1.6;
+      }
+      .mini-list li {
+        color: #ffffffcc;
+        font-size: clamp(12px, 3.2vw, 13px);
+        margin-bottom: 6px;
+        list-style: none;
+        padding-left: 0;
+      }
+      .mini-list li::before {
+        content: "✦ ";
+        color: #f39c12;
+      }
+
+      /* ===== REFLEKSI ===== */
+      .refleksi-q {
+        background: #ffffff11;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        border: 1px solid #ffffff22;
+      }
+      .refleksi-q label {
+        font-size: 13px;
+        color: #ffffffcc;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .refleksi-q textarea {
+        width: 100%;
+        background: #00000033;
+        border: 1px solid #ffffff33;
+        border-radius: 8px;
+        color: white;
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        padding: 8px;
+        resize: none;
+        height: 60px;
+      }
+
+      /* ===== GLOSARIUM ===== */
+      .glosarium-row {
+        display: flex;
+        gap: 8px;
+        padding: 10px 0;
+        border-bottom: 1px solid #ffffff22;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .glos-term {
+        font-weight: 700;
+        color: #f39c12;
+        min-width: 130px;
+        font-size: 14px;
+      }
+      .glos-def {
+        color: #ffffffcc;
+        font-size: 13px;
+        line-height: 1.5;
+        flex: 1;
+        min-width: 160px;
+      }
+
+      /* ===== COVER ===== */
+      .cover-batik {
+        text-align: center;
+        padding: 20px 16px 10px;
+        position: relative;
+      }
+      .batik-pattern {
+        font-size: clamp(28px, 8vw, 42px);
+        margin-bottom: 8px;
+        letter-spacing: 4px;
+      }
+      .cover-title-main {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: clamp(14px, 4vw, 18px);
+        color: #f39c12;
+        text-shadow: 0 2px 8px #000;
+        line-height: 1.3;
+        margin-bottom: 4px;
+      }
+      .cover-title-sub {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: clamp(16px, 5vw, 22px);
+        color: white;
+        text-shadow: 0 2px 8px #000;
+        margin-bottom: 12px;
+      }
+      .cover-info {
+        background: #00000055;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin: 8px 0;
+        border: 1px solid #f39c1244;
+      }
+      .cover-info p {
+        color: #ffffffee;
+        font-size: clamp(12px, 3.2vw, 14px);
+        margin-bottom: 4px;
+      }
+      .cover-info p strong {
+        color: #f39c12;
+      }
+      .btn-mulai {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: #1a0a05;
+        padding: 12px 32px;
+        font-size: clamp(14px, 4vw, 16px);
+        font-family: "Bubblegum Sans", cursive;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 10px;
+        box-shadow: 0 4px 20px #f39c1266;
+        transition: all 0.2s;
+        letter-spacing: 1px;
+      }
+      .btn-mulai:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 28px #f39c1299;
+      }
+
+      /* ===== COMP CARDS ===== */
+      .comp-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .comp-card {
+        flex: 1;
+        min-width: 140px;
+        background: #ffffff11;
+        border-radius: 10px;
+        padding: 10px 12px;
+        border: 1px solid #ffffff22;
+      }
+      .comp-card .comp-label {
+        font-size: 11px;
+        color: #f39c12;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .comp-card p {
+        font-size: clamp(11px, 3vw, 13px);
+        color: #ffffffcc;
+        line-height: 1.5;
+      }
+
+      /* ===== LKPD ===== */
+      .lkpd-task {
+        background: #27ae6022;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        border: 1px solid #27ae6044;
+      }
+      .lkpd-num {
+        font-size: 20px;
+        font-weight: 800;
+        color: #2ecc71;
+        margin-bottom: 4px;
+        font-family: "Bubblegum Sans", cursive;
+      }
+      .lkpd-input {
+        width: 100%;
+        background: #00000033;
+        border: 1px solid #27ae6055;
+        border-radius: 8px;
+        color: white;
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        padding: 8px;
+        resize: none;
+        height: 50px;
+        margin-top: 6px;
+      }
+
+      /* ===== EVAL ===== */
+      .eval-form-item {
+        margin-bottom: 14px;
+      }
+      .eval-q {
+        font-size: clamp(12px, 3.2vw, 13px);
+        font-weight: 600;
+        color: white;
+        margin-bottom: 8px;
+      }
+      .eval-opt {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        border: 1.5px solid #ffffff22;
+        color: #ffffffcc;
+        font-size: clamp(12px, 3.2vw, 13px);
+        transition: all 0.2s;
+      }
+      .eval-opt:hover {
+        border-color: #f39c12;
+        background: #f39c1211;
+      }
+      .eval-opt.selected {
+        border-color: #2980b9;
+        background: #2980b933;
+        color: white;
+      }
+      .btn-eval {
+        background: linear-gradient(135deg, #2980b9, #8e44ad);
+        color: white;
+        padding: 10px 28px;
+        font-size: 14px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 8px;
+      }
+      .eval-result {
+        text-align: center;
+        padding: 16px;
+        background: #ffffff11;
+        border-radius: 12px;
+        margin-top: 12px;
+        display: none;
+      }
+      .pustaka-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #ffffff22;
+        font-size: clamp(11px, 3vw, 13px);
+        color: #ffffffcc;
+        line-height: 1.5;
+      }
+      .pustaka-item strong {
+        color: #f39c12;
+      }
+
+      /* ===== MOBILE RESPONSIVE ===== */
+      @media (max-width: 480px) {
+        .flipbook-wrapper {
+          padding: 6px 2px 16px;
+        }
+        .book-container {
+          border-radius: 12px;
+          border-width: 2px;
+          min-height: auto;
+        }
+        .page {
+          min-height: auto;
+        }
+        .page-body {
+          padding: 10px 14px 10px;
+        }
+        .page-header {
+          padding: 12px 14px 8px;
+        }
+        .nav-bar {
+          padding: 8px 10px;
+          gap: 4px;
+        }
+        .btn-nav {
+          padding: 8px 12px;
+          min-width: 70px;
+          font-size: 12px;
+        }
+        .card {
+          padding: 10px;
+          margin-bottom: 8px;
+        }
+        .game-img {
+          width: 60px;
+          height: 50px;
+          font-size: 22px;
+        }
+        .toc-item {
+          padding: 8px 10px;
+          margin-bottom: 6px;
+        }
+        .comp-row {
+          gap: 6px;
+        }
+        .comp-card {
+          min-width: 120px;
+          padding: 8px 10px;
+        }
+        .lkpd-task {
+          padding: 10px 12px;
+        }
+        .refleksi-q textarea {
+          height: 50px;
+        }
+        .cover-info {
+          padding: 10px 12px;
+        }
+        #musicControl {
+          width: 38px;
+          height: 38px;
+          font-size: 17px;
+          top: 8px;
+          right: 8px;
+        }
+      }
+
+      /* ===== RIPPLE EFFECT on buttons ===== */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        animation: rippleAnim 0.5s linear;
+        pointer-events: none;
+      }
+      @keyframes rippleAnim {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      /* ===== NOTE VISUALIZER ===== */
+      .music-note {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+        font-size: 20px;
+        animation: noteFloat 1.5s ease-out forwards;
+      }
+      @keyframes noteFloat {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-80px) scale(0.5);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== INTRO SPLASH ===== -->
+    <div id="introSplash">
+      <div class="intro-pattern">🏺🌺🏺🌺🏺</div>
+      <div class="intro-title">📚 E-Book Interaktif<br />Kearifan Lokal</div>
+      <div class="intro-sub">Memuat pengalaman belajar...</div>
+      <div class="intro-loader"><div class="intro-loader-bar"></div></div>
+      <button class="btn-enter" id="btnEnter" onclick="enterApp()">✨ Masuk ke E-Book</button>
+    </div>
+
+    <!-- ===== MUSIC CONTROL ===== -->
+    <button id="musicControl" onclick="toggleMusic()" title="Musik Latar">🎵</button>
+
+    <!-- ===== AUDIO ENGINE ===== -->
+    <audio id="bgMusic" loop>
+      <!-- Web Audio API akan digunakan sebagai fallback -->
+    </audio>
+
+    <!-- ===== FLOATING PARTICLES ===== -->
+    <div id="particles"></div>
+
+    <!-- ===== MAIN FLIPBOOK ===== -->
+    <div class="flipbook-wrapper">
+      <div class="title-bar">📚 E-Book Interaktif Kearifan Lokal</div>
+      <div class="page-dots" id="dots"></div>
+      <div class="page-counter" id="pageCounter">Halaman 1 dari 16</div>
+
+      <div class="book-container" id="bookContainer">
+        <!-- PAGE 1: COVER -->
+        <div class="page active" data-page="1" style="background: linear-gradient(160deg, #8b0000 0%, #2c1810 40%, #4a2800 80%, #1a0a00 100%)">
+          <div class="cover-batik" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px">
+            <div class="batik-pattern">🏺🌺🏺🌺🏺</div>
+            <div style="background: #f39c1222; border-radius: 16px; padding: 8px 20px; border: 2px solid #f39c1266; margin-bottom: 12px">
+              <div class="cover-title-main">📚 E-BOOK INTERAKTIF BERBASIS KEARIFAN LOKAL</div>
+            </div>
+            <div class="cover-title-sub">"Indahnya Budaya Daerahku"</div>
+            <div class="cover-info" style="width: 100%; max-width: 360px">
+              <p>👩‍🎓 <strong>Nama:</strong> Siti Nurhalimah</p>
+              <p>🏫 <strong>Sekolah:</strong> UPT SD Negeri Sidorejo 1</p>
+              <p>📖 <strong>Kelas:</strong> IV (Empat)</p>
+              <p>🗓️ <strong>Tahun:</strong> 2025</p>
+            </div>
+            <div style="display: flex; gap: 8px; margin: 10px 0; font-size: 28px">🎭🪕🎪🥁🪗</div>
+            <button class="btn-mulai" onclick="goToPage(2)">▶ Mulai Belajar</button>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" disabled>◀ Kembali</button>
+            <span style="color: #f39c12; font-weight: 700; font-family: &quot;Bubblegum Sans&quot;, cursive">COVER</span>
+            <button class="btn btn-nav" onclick="goToPage(2)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 2: PETUNJUK -->
+        <div class="page" data-page="2" style="background: linear-gradient(135deg, #1a3a5c 0%, #0d2035 100%)">
+          <div class="page-header" style="background: #2980b944">
+            <div class="page-title">📋 Cara Menggunakan E-Book</div>
+          </div>
+          <div class="page-body">
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">▶</div>
+                <div class="icon-desc"><strong style="color: white">Tombol Navigasi</strong><br />Klik "Lanjut ▶" untuk ke halaman berikutnya, "◀ Kembali" untuk halaman sebelumnya</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">🔊</div>
+                <div class="icon-desc"><strong style="color: white">Audio Penjelasan</strong><br />Klik ikon 🔊 untuk mendengarkan penjelasan materi secara lisan</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">🎥</div>
+                <div class="icon-desc"><strong style="color: white">Tonton Video</strong><br />Klik tombol ▶ pada video YouTube untuk menonton materi berbasis video</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">🧠</div>
+                <div class="icon-desc"><strong style="color: white">Kuis Interaktif</strong><br />Pilih jawaban pada soal kuis — kamu langsung tahu benar atau salah!</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">🎮</div>
+                <div class="icon-desc"><strong style="color: white">Permainan Edukatif</strong><br />Cocokkan gambar budaya dengan nama yang tepat di halaman permainan</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-row">
+                <div class="icon-box">📑</div>
+                <div class="icon-desc"><strong style="color: white">Daftar Isi</strong><br />Klik menu daftar isi untuk lompat langsung ke halaman yang kamu inginkan</div>
+              </div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(1)">◀ Kembali</button>
+            <span style="color: #74b9ff; font-weight: 700">Hal. 2</span>
+            <button class="btn btn-nav" onclick="goToPage(3)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 3: DAFTAR ISI -->
+        <div class="page" data-page="3" style="background: linear-gradient(135deg, #1a2a1a 0%, #0d1f0d 100%)">
+          <div class="page-header" style="background: #27ae6044">
+            <div class="page-title">📑 Daftar Isi</div>
+          </div>
+          <div class="page-body">
+            <div class="toc-item" onclick="goToPage(4)" style="background: #27ae6022; border-color: #27ae6055">
+              <div class="toc-num" style="background: #27ae60; color: white">1</div>
+              <div class="toc-text">📌 Kompetensi & Tujuan Pembelajaran</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(5)" style="background: #f39c1222; border-color: #f39c1255">
+              <div class="toc-num" style="background: #f39c12; color: #1a0a05">2</div>
+              <div class="toc-text">🔭 Apersepsi — Ayo Mengamati!</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(6)" style="background: #2980b922; border-color: #2980b955">
+              <div class="toc-num" style="background: #2980b9; color: white">3</div>
+              <div class="toc-text">📖 Materi 1 — Pengertian Kearifan Lokal</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(7)" style="background: #8e44ad22; border-color: #8e44ad55">
+              <div class="toc-num" style="background: #8e44ad; color: white">4</div>
+              <div class="toc-text">🎪 Materi 2 — Contoh Kearifan Lokal</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(8)" style="background: #c0392b22; border-color: #c0392b55">
+              <div class="toc-num" style="background: #c0392b; color: white">5</div>
+              <div class="toc-text">💡 Materi 3 — Manfaat Kearifan Lokal</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(9)" style="background: #16a08522; border-color: #16a08555">
+              <div class="toc-num" style="background: #16a085; color: white">6</div>
+              <div class="toc-text">🎮 Fitur Interaktif — Yuk Bermain!</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(10)" style="background: #d3540022; border-color: #d3540055">
+              <div class="toc-num" style="background: #d35400; color: white">7</div>
+              <div class="toc-text">✏️ Latihan Soal</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(11)" style="background: #27ae6022; border-color: #27ae6055">
+              <div class="toc-num" style="background: #27ae60; color: white">8</div>
+              <div class="toc-text">📝 LKPD — Tugas Kelompok</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(12)" style="background: #2980b922; border-color: #2980b955">
+              <div class="toc-num" style="background: #2980b9; color: white">9</div>
+              <div class="toc-text">🏆 Evaluasi Akhir</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(13)" style="background: #f39c1222; border-color: #f39c1255">
+              <div class="toc-num" style="background: #f39c12; color: #1a0a05">10</div>
+              <div class="toc-text">📋 Rangkuman & Kesimpulan</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(14)" style="background: #8e44ad22; border-color: #8e44ad55">
+              <div class="toc-num" style="background: #8e44ad; color: white">11</div>
+              <div class="toc-text">🌟 Refleksi Diri</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(15)" style="background: #16a08522; border-color: #16a08555">
+              <div class="toc-num" style="background: #16a085; color: white">12</div>
+              <div class="toc-text">📖 Glosarium</div>
+            </div>
+            <div class="toc-item" onclick="goToPage(16)" style="background: #c0392b22; border-color: #c0392b55">
+              <div class="toc-num" style="background: #c0392b; color: white">13</div>
+              <div class="toc-text">📚 Daftar Pustaka</div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(2)">◀ Kembali</button>
+            <span style="color: #55efc4; font-weight: 700">Hal. 3</span>
+            <button class="btn btn-nav" onclick="goToPage(4)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 4: KOMPETENSI -->
+        <div class="page" data-page="4" style="background: linear-gradient(135deg, #1a3a1a 0%, #0d2010 100%)">
+          <div class="page-header" style="background: #27ae6044">
+            <div class="page-title">🎯 Kompetensi & Tujuan</div>
+          </div>
+          <div class="page-body">
+            <div class="comp-row">
+              <div class="comp-card">
+                <div class="comp-label">KOMPETENSI INTI (KI)</div>
+                <p>Memahami pengetahuan faktual dengan cara mengamati dan menanya berdasarkan rasa ingin tahu tentang lingkungan sosial.</p>
+              </div>
+              <div class="comp-card">
+                <div class="comp-label">KOMPETENSI DASAR (KD)</div>
+                <p>Mengidentifikasi kearifan lokal di lingkungan sekitar sebagai bagian dari keragaman budaya bangsa.</p>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="margin-bottom: 8px; font-size: 14px; font-weight: 700; color: #2ecc71">🎯 Tujuan Pembelajaran</div>
+            <ul class="mini-list" style="list-style: none; padding: 0">
+              <li>Siswa dapat menjelaskan pengertian kearifan lokal dengan benar</li>
+              <li>Siswa dapat menyebutkan minimal 3 contoh kearifan lokal di daerahnya</li>
+              <li>Siswa dapat menjelaskan manfaat kearifan lokal bagi kehidupan</li>
+              <li>Siswa dapat menghargai budaya daerah sebagai identitas bangsa</li>
+              <li>Siswa dapat melestarikan nilai-nilai kearifan lokal dalam kehidupan sehari-hari</li>
+            </ul>
+            <div class="divider"></div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap">
+              <span class="chip" style="background: #27ae6033; color: #2ecc71; border: 1px solid #27ae60">📚 IPS</span>
+              <span class="chip" style="background: #2980b933; color: #74b9ff; border: 1px solid #2980b9">🎨 SBdP</span>
+              <span class="chip" style="background: #8e44ad33; color: #d7b2ff; border: 1px solid #8e44ad">🗣️ Bahasa Indonesia</span>
+              <span class="chip" style="background: #f39c1233; color: #f39c12; border: 1px solid #f39c12">Kelas IV</span>
+              <span class="chip" style="background: #c0392b33; color: #ff6b6b; border: 1px solid #c0392b">Tematik</span>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(3)">◀ Kembali</button>
+            <span style="color: #2ecc71; font-weight: 700">Hal. 4</span>
+            <button class="btn btn-nav" onclick="goToPage(5)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 5: APERSEPSI + VIDEO -->
+        <div class="page" data-page="5" style="background: linear-gradient(135deg, #3a1a00 0%, #1a0a00 100%)">
+          <div class="page-header" style="background: #e67e2244">
+            <div class="page-title">🔭 Ayo Mengamati!</div>
+          </div>
+          <div class="page-body">
+            <div class="highlight-box">
+              💭 <strong>Pernahkah kamu melihat upacara adat di daerahmu?</strong><br />
+              Seperti: kenduri, selamatan, grebeg, atau karnaval budaya lokal?
+            </div>
+            <div class="highlight-box" style="border-color: #27ae60; background: #27ae6011">
+              🍲 <strong>Apa makanan khas daerahmu?</strong><br />
+              Seperti: gudeg, rendang, pempek, soto, atau jajanan pasar tradisional?
+            </div>
+            <div style="margin: 10px 0; font-size: 13px; font-weight: 700; color: #f39c12">🎥 Tonton Video: Keberagaman Budaya Indonesia</div>
+            <div class="yt-container" id="yt1">
+              <iframe
+                src="https://www.youtube.com/embed/BDy2ChJusqU?si=CLdQ4Xk9-qEOLW_L"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div style="font-size: 13px; color: #ffffffaa; margin-top: 8px; line-height: 1.6">Setelah menonton, diskusikan dengan teman sebangkumu: <em style="color: #f39c12">budaya apa yang paling menarik menurutmu?</em></div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(4)">◀ Kembali</button>
+            <span style="color: #f39c12; font-weight: 700">Hal. 5</span>
+            <button class="btn btn-nav" onclick="goToPage(6)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 6: MATERI 1 -->
+        <div class="page" data-page="6" style="background: linear-gradient(135deg, #001a3a 0%, #000d20 100%)">
+          <div class="page-header" style="background: #2980b944">
+            <div class="page-title">📖 Materi 1: Pengertian Kearifan Lokal</div>
+          </div>
+          <div class="page-body">
+            <div class="highlight-box" style="border-color: #2980b9; background: #2980b911; font-size: 14px">
+              🔑 <strong>Kearifan lokal</strong> adalah nilai-nilai, norma, dan pengetahuan budaya yang berkembang di masyarakat setempat dan diwariskan secara turun-temurun dari generasi ke generasi.
+            </div>
+            <div style="margin: 10px 0 6px; font-size: 13px; font-weight: 700; color: #74b9ff">🌟 Ciri-ciri Kearifan Lokal:</div>
+            <ul class="mini-list">
+              <li>Bersumber dari pengalaman hidup masyarakat setempat</li>
+              <li>Diwariskan dari orang tua kepada anak-cucu secara turun-temurun</li>
+              <li>Bersifat dinamis dan dapat berkembang seiring zaman</li>
+              <li>Berkaitan dengan alam dan lingkungan sekitar masyarakat</li>
+              <li>Menjadi pedoman dalam kehidupan bermasyarakat</li>
+            </ul>
+            <div style="margin: 10px 0 6px; font-size: 13px; font-weight: 700; color: #74b9ff">🗺️ Bentuk Kearifan Lokal:</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap">
+              <div class="card" style="flex: 1; min-width: 130px; text-align: center; padding: 10px 8px">
+                <div style="font-size: 26px; margin-bottom: 4px">🗣️</div>
+                <div style="font-size: 12px; font-weight: 700; color: white">Lisan</div>
+                <div style="font-size: 11px; color: #ffffffaa">Dongeng, pantun, pepatah</div>
+              </div>
+              <div class="card" style="flex: 1; min-width: 130px; text-align: center; padding: 10px 8px">
+                <div style="font-size: 26px; margin-bottom: 4px">🎭</div>
+                <div style="font-size: 12px; font-weight: 700; color: white">Ritual</div>
+                <div style="font-size: 11px; color: #ffffffaa">Upacara adat, selamatan</div>
+              </div>
+              <div class="card" style="flex: 1; min-width: 130px; text-align: center; padding: 10px 8px">
+                <div style="font-size: 26px; margin-bottom: 4px">🏺</div>
+                <div style="font-size: 12px; font-weight: 700; color: white">Material</div>
+                <div style="font-size: 11px; color: #ffffffaa">Batik, kerajinan tangan</div>
+              </div>
+            </div>
+            <div style="margin: 10px 0; font-size: 13px; font-weight: 700; color: #74b9ff">🎥 Video Materi Kearifan Lokal:</div>
+            <div class="yt-container" id="yt2">
+              <iframe
+                src="https://www.youtube.com/embed/t1sgDqOZr9c"
+                title="YouTube video player"
+                frameborder="0"
+                sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(5)">◀ Kembali</button>
+            <span style="color: #74b9ff; font-weight: 700">Hal. 6</span>
+            <button class="btn btn-nav" onclick="goToPage(7)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 7: MATERI 2 -->
+        <div class="page" data-page="7" style="background: linear-gradient(135deg, #1a001a 0%, #0d000d 100%)">
+          <div class="page-header" style="background: #8e44ad44">
+            <div class="page-title">🎪 Materi 2: Contoh Kearifan Lokal</div>
+          </div>
+          <div class="page-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px">
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🤝</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Gotong Royong</div>
+                <div style="font-size: 11px; color: #ffffffaa">Kerja bersama untuk kebaikan bersama, tanpa pamrih</div>
+              </div>
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🎭</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Upacara Adat</div>
+                <div style="font-size: 11px; color: #ffffffaa">Grebeg, ngaben, tabot, balimau, dll.</div>
+              </div>
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🍛</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Makanan Tradisional</div>
+                <div style="font-size: 11px; color: #ffffffaa">Rendang, gudeg, pempek, papeda</div>
+              </div>
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🎵</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Seni Tradisional</div>
+                <div style="font-size: 11px; color: #ffffffaa">Gamelan, tari saman, wayang kulit</div>
+              </div>
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🏺</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Kerajinan Batik</div>
+                <div style="font-size: 11px; color: #ffffffaa">Warisan budaya dunia dari Indonesia</div>
+              </div>
+              <div class="card" style="text-align: center">
+                <div style="font-size: 28px">🏠</div>
+                <div style="font-size: 13px; font-weight: 700; color: #d7b2ff">Rumah Adat</div>
+                <div style="font-size: 11px; color: #ffffffaa">Joglo, gadang, honai, tongkonan</div>
+              </div>
+            </div>
+            <div style="margin: 6px 0; font-size: 13px; font-weight: 700; color: #d7b2ff">🎥 Video: Contoh Budaya Daerah Indonesia</div>
+            <div class="yt-container" id="yt3">
+              <iframe
+                src="https://www.youtube.com/embed/Gb0n0R_zWAQ"
+                title="YouTube video player"
+                frameborder="0"
+                sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(6)">◀ Kembali</button>
+            <span style="color: #d7b2ff; font-weight: 700">Hal. 7</span>
+            <button class="btn btn-nav" onclick="goToPage(8)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 8: MATERI 3 -->
+        <div class="page" data-page="8" style="background: linear-gradient(135deg, #1a0000 0%, #0d0000 100%)">
+          <div class="page-header" style="background: #c0392b44">
+            <div class="page-title">💡 Materi 3: Manfaat Kearifan Lokal</div>
+          </div>
+          <div class="page-body">
+            <div style="margin-bottom: 10px">
+              <div class="card" style="border-left: 4px solid #c0392b">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="font-size: 26px">🛡️</div>
+                  <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #ff6b6b">Menjaga dan Melestarikan Budaya</div>
+                    <div style="font-size: 12px; color: #ffffffaa; margin-top: 3px">Kearifan lokal membantu menjaga tradisi dan budaya agar tidak punah ditelan zaman modern</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="border-left: 4px solid #27ae60; margin-top: 8px">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="font-size: 26px">🤝</div>
+                  <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #2ecc71">Mempererat Persatuan dan Kerukunan</div>
+                    <div style="font-size: 12px; color: #ffffffaa; margin-top: 3px">Melalui gotong royong dan upacara adat, warga masyarakat saling mengenal dan mempererat tali persaudaraan</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="border-left: 4px solid #f39c12; margin-top: 8px">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="font-size: 26px">🗺️</div>
+                  <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #f39c12">Menjadi Identitas Daerah</div>
+                    <div style="font-size: 12px; color: #ffffffaa; margin-top: 3px">Setiap daerah memiliki kekhasan budaya yang menjadi ciri khasnya dan membedakannya dari daerah lain</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="border-left: 4px solid #2980b9; margin-top: 8px">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="font-size: 26px">💰</div>
+                  <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #74b9ff">Sumber Ekonomi Kreatif</div>
+                    <div style="font-size: 12px; color: #ffffffaa; margin-top: 3px">Kerajinan batik, tenun, dan makanan tradisional menjadi sumber penghasilan masyarakat dan daya tarik wisata</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="border-left: 4px solid #8e44ad; margin-top: 8px">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="font-size: 26px">🌱</div>
+                  <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #d7b2ff">Menjaga Keseimbangan Alam</div>
+                    <div style="font-size: 12px; color: #ffffffaa; margin-top: 3px">Banyak kearifan lokal yang mengajarkan cara hidup selaras dengan alam, seperti larangan menebang pohon sembarangan</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(7)">◀ Kembali</button>
+            <span style="color: #ff6b6b; font-weight: 700">Hal. 8</span>
+            <button class="btn btn-nav" onclick="goToPage(9)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 9: GAME -->
+        <div class="page" data-page="9" style="background: linear-gradient(135deg, #001a1a 0%, #000d0d 100%)">
+          <div class="page-header" style="background: #16a08544">
+            <div class="page-title">🎮 Yuk Bermain! Cocokkan Budaya</div>
+          </div>
+          <div class="page-body">
+            <div style="font-size: 13px; color: #ffffffaa; margin-bottom: 10px">Cocokkan gambar budaya dengan nama yang tepat! Pilih jawaban dari dropdown, lalu cek nilaimu.</div>
+            <div id="gameArea">
+              <div class="game-item">
+                <div class="game-img">🏺</div>
+                <div style="flex: 1">
+                  <div style="font-size: 12px; color: #ffffffaa; margin-bottom: 4px">Kerajinan kain bermotif khas Jawa</div>
+                  <select class="game-select" id="g1">
+                    <option value="">-- Pilih Jawaban --</option>
+                    <option value="Batik">Batik</option>
+                    <option value="Tenun">Tenun Ikat</option>
+                    <option value="Ulos">Ulos</option>
+                    <option value="Songket">Songket</option>
+                  </select>
+                </div>
+              </div>
+              <div class="game-item">
+                <div class="game-img">🤝</div>
+                <div style="flex: 1">
+                  <div style="font-size: 12px; color: #ffffffaa; margin-bottom: 4px">Kegiatan kerja bersama tanpa upah</div>
+                  <select class="game-select" id="g2">
+                    <option value="">-- Pilih Jawaban --</option>
+                    <option value="Gotong Royong">Gotong Royong</option>
+                    <option value="Musyawarah">Musyawarah</option>
+                    <option value="Arisan">Arisan</option>
+                    <option value="Kenduri">Kenduri</option>
+                  </select>
+                </div>
+              </div>
+              <div class="game-item">
+                <div class="game-img">🎭</div>
+                <div style="flex: 1">
+                  <div style="font-size: 12px; color: #ffffffaa; margin-bottom: 4px">Tarian adat dari Aceh (berkelompok)</div>
+                  <select class="game-select" id="g3">
+                    <option value="">-- Pilih Jawaban --</option>
+                    <option value="Tari Saman">Tari Saman</option>
+                    <option value="Tari Kecak">Tari Kecak</option>
+                    <option value="Tari Pendet">Tari Pendet</option>
+                    <option value="Tari Jaipong">Tari Jaipong</option>
+                  </select>
+                </div>
+              </div>
+              <div class="game-item">
+                <div class="game-img">🏠</div>
+                <div style="flex: 1">
+                  <div style="font-size: 12px; color: #ffffffaa; margin-bottom: 4px">Rumah adat Jawa (berbentuk limas)</div>
+                  <select class="game-select" id="g4">
+                    <option value="">-- Pilih Jawaban --</option>
+                    <option value="Joglo">Joglo</option>
+                    <option value="Gadang">Gadang</option>
+                    <option value="Honai">Honai</option>
+                    <option value="Tongkonan">Tongkonan</option>
+                  </select>
+                </div>
+              </div>
+              <div class="game-item">
+                <div class="game-img">🍛</div>
+                <div style="flex: 1">
+                  <div style="font-size: 12px; color: #ffffffaa; margin-bottom: 4px">Makanan khas Minangkabau (daging bumbu)</div>
+                  <select class="game-select" id="g5">
+                    <option value="">-- Pilih Jawaban --</option>
+                    <option value="Rendang">Rendang</option>
+                    <option value="Gudeg">Gudeg</option>
+                    <option value="Pempek">Pempek</option>
+                    <option value="Soto">Soto</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <button class="btn" onclick="checkGame()" style="background: linear-gradient(135deg, #16a085, #27ae60); color: white; padding: 10px 28px; border-radius: 30px; font-size: 14px; margin-top: 10px; font-weight: 700">
+              🎯 Cek Jawaban!
+            </button>
+            <div id="gameResult" style="display: none; margin-top: 10px"></div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(8)">◀ Kembali</button>
+            <span style="color: #55efc4; font-weight: 700">Hal. 9</span>
+            <button class="btn btn-nav" onclick="goToPage(10)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 10: LATIHAN SOAL -->
+        <div class="page" data-page="10" style="background: linear-gradient(135deg, #1a1a00 0%, #0d0d00 100%)">
+          <div class="page-header" style="background: #d3540044">
+            <div class="page-title">✏️ Latihan Soal</div>
+          </div>
+          <div class="page-body">
+            <div id="quiz-area"></div>
+            <div id="quiz-score" style="display: none; text-align: center; padding: 12px; background: #ffffff11; border-radius: 10px; margin-top: 10px">
+              <div style="font-size: 14px; color: #ffffffcc">Skor Kamu:</div>
+              <div style="font-size: 32px; font-weight: 800; font-family: &quot;Bubblegum Sans&quot;, cursive" id="score-val">0/4</div>
+              <button class="btn" onclick="resetQuiz()" style="background: #d35400; color: white; padding: 8px 20px; border-radius: 20px; margin-top: 8px; font-size: 13px">🔄 Ulangi Latihan</button>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(9)">◀ Kembali</button>
+            <span style="color: #fdcb6e; font-weight: 700">Hal. 10</span>
+            <button class="btn btn-nav" onclick="goToPage(11)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 11: LKPD -->
+        <div class="page" data-page="11" style="background: linear-gradient(135deg, #001a0a 0%, #000d05 100%)">
+          <div class="page-header" style="background: #27ae6044">
+            <div class="page-title">📝 LKPD — Tugas Kelompok</div>
+          </div>
+          <div class="page-body">
+            <div class="section-badge" style="background: #27ae6044; color: #2ecc71; border: 1px solid #27ae60">Lembar Kerja Peserta Didik</div>
+            <div class="lkpd-task">
+              <div class="lkpd-num">Tugas 1</div>
+              <div style="font-size: 13px; color: white; font-weight: 600">Pengamatan Lingkungan</div>
+              <div style="font-size: 12px; color: #ffffffaa; margin: 4px 0 6px">Amatilah lingkungan sekitar rumahmu! Tuliskan 2 contoh kearifan lokal yang kamu temukan!</div>
+              <div style="font-size: 12px; color: #2ecc71; font-weight: 600">Contoh 1:</div>
+              <textarea class="lkpd-input" placeholder="Tuliskan contoh pertama kearifan lokal di sekitarmu..."></textarea>
+              <div style="font-size: 12px; color: #2ecc71; font-weight: 600; margin-top: 6px">Contoh 2:</div>
+              <textarea class="lkpd-input" placeholder="Tuliskan contoh kedua kearifan lokal di sekitarmu..."></textarea>
+            </div>
+            <div class="lkpd-task">
+              <div class="lkpd-num">Tugas 2</div>
+              <div style="font-size: 13px; color: white; font-weight: 600">Wawancara Sederhana</div>
+              <div style="font-size: 12px; color: #ffffffaa; margin: 4px 0 6px">Tanyakan kepada orang tua atau kakek-nenekmu tentang satu tradisi unik di keluargamu!</div>
+              <textarea class="lkpd-input" placeholder="Tuliskan tradisi unik yang kamu temukan dari wawancara..." style="height: 64px"></textarea>
+            </div>
+            <div class="lkpd-task">
+              <div class="lkpd-num">Tugas 3</div>
+              <div style="font-size: 13px; color: white; font-weight: 600">Diskusi Kelompok</div>
+              <div style="font-size: 12px; color: #ffffffaa; margin: 4px 0 6px">Diskusikan dengan kelompokmu: Mengapa kearifan lokal perlu dilestarikan?</div>
+              <textarea class="lkpd-input" placeholder="Tuliskan hasil diskusi kelompokmu..." style="height: 64px"></textarea>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(10)">◀ Kembali</button>
+            <span style="color: #2ecc71; font-weight: 700">Hal. 11</span>
+            <button class="btn btn-nav" onclick="goToPage(12)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 12: EVALUASI -->
+        <div class="page" data-page="12" style="background: linear-gradient(135deg, #001530 0%, #000a1a 100%)">
+          <div class="page-header" style="background: #2980b944">
+            <div class="page-title">🏆 Evaluasi Akhir</div>
+          </div>
+          <div class="page-body">
+            <div style="font-size: 13px; color: #ffffffaa; margin-bottom: 10px">Jawab semua soal di bawah ini, lalu klik "Lihat Nilai" untuk melihat hasilmu!</div>
+            <div id="evalArea"></div>
+            <button class="btn btn-eval" onclick="submitEval()" id="evalBtn">🏆 Lihat Nilai</button>
+            <div class="eval-result" id="evalResult">
+              <div style="font-size: 14px; color: #ffffffcc">Nilai Evaluasimu:</div>
+              <div class="score-num" id="evalScore" style="color: #f39c12">0</div>
+              <div style="font-size: 13px; color: #ffffffcc" id="evalMsg"></div>
+              <button class="btn" onclick="resetEval()" style="background: #2980b9; color: white; padding: 8px 20px; border-radius: 20px; margin-top: 8px; font-size: 13px">🔄 Coba Lagi</button>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(11)">◀ Kembali</button>
+            <span style="color: #74b9ff; font-weight: 700">Hal. 12</span>
+            <button class="btn btn-nav" onclick="goToPage(13)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 13: RANGKUMAN -->
+        <div class="page" data-page="13" style="background: linear-gradient(135deg, #1a1500 0%, #0d0a00 100%)">
+          <div class="page-header" style="background: #f39c1244">
+            <div class="page-title">📋 Rangkuman & Kesimpulan</div>
+          </div>
+          <div class="page-body">
+            <div class="card" style="border-left: 4px solid #f39c12; margin-bottom: 10px">
+              <div style="font-size: 14px; font-weight: 700; color: #f39c12; margin-bottom: 6px">1️⃣ Pengertian Kearifan Lokal</div>
+              <div style="font-size: 13px; color: #ffffffcc">Kearifan lokal adalah nilai-nilai dan norma budaya yang berkembang di masyarakat setempat dan diwariskan secara turun-temurun.</div>
+            </div>
+            <div class="card" style="border-left: 4px solid #8e44ad; margin-bottom: 10px">
+              <div style="font-size: 14px; font-weight: 700; color: #d7b2ff; margin-bottom: 6px">2️⃣ Contoh Kearifan Lokal</div>
+              <div style="font-size: 13px; color: #ffffffcc">Gotong royong, upacara adat, makanan tradisional, seni budaya (batik, gamelan, tari daerah), rumah adat, dan bahasa daerah.</div>
+            </div>
+            <div class="card" style="border-left: 4px solid #27ae60; margin-bottom: 10px">
+              <div style="font-size: 14px; font-weight: 700; color: #2ecc71; margin-bottom: 6px">3️⃣ Manfaat Kearifan Lokal</div>
+              <ul class="mini-list" style="margin-top: 4px">
+                <li>Menjaga dan melestarikan budaya bangsa</li>
+                <li>Mempererat persatuan dan kerukunan masyarakat</li>
+                <li>Menjadi identitas dan kebanggaan daerah</li>
+                <li>Sumber ekonomi kreatif (wisata budaya)</li>
+              </ul>
+            </div>
+            <div class="card" style="border-left: 4px solid #2980b9">
+              <div style="font-size: 14px; font-weight: 700; color: #74b9ff; margin-bottom: 6px">4️⃣ Pesan Moral</div>
+              <div style="font-size: 13px; color: #ffffffcc">
+                Sebagai generasi penerus bangsa, kita <strong style="color: #f39c12">wajib mencintai, menghargai, dan melestarikan</strong> kearifan lokal daerah kita agar tidak hilang ditelan arus modernisasi.
+              </div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(12)">◀ Kembali</button>
+            <span style="color: #f39c12; font-weight: 700">Hal. 13</span>
+            <button class="btn btn-nav" onclick="goToPage(14)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 14: REFLEKSI -->
+        <div class="page" data-page="14" style="background: linear-gradient(135deg, #0f001a 0%, #08000d 100%)">
+          <div class="page-header" style="background: #8e44ad44">
+            <div class="page-title">🌟 Refleksi Diri</div>
+          </div>
+          <div class="page-body">
+            <div style="font-size: 13px; color: #ffffffaa; margin-bottom: 12px">Luangkan waktu sejenak untuk merefleksikan apa yang telah kamu pelajari hari ini.</div>
+            <div class="refleksi-q">
+              <label>💭 Apa yang kamu pelajari hari ini dari materi kearifan lokal?</label>
+              <textarea placeholder="Tuliskan pelajaran yang kamu dapatkan..."></textarea>
+            </div>
+            <div class="refleksi-q">
+              <label>🌍 Apa manfaat mempelajari kearifan lokal bagi kehidupanmu sehari-hari?</label>
+              <textarea placeholder="Tuliskan manfaat yang kamu rasakan..."></textarea>
+            </div>
+            <div class="refleksi-q">
+              <label>❤️ Kearifan lokal apa yang ingin kamu lestarikan? Mengapa?</label>
+              <textarea placeholder="Tuliskan kearifan lokal pilihanmu dan alasannya..."></textarea>
+            </div>
+            <div class="refleksi-q">
+              <label>🌟 Apa yang akan kamu lakukan untuk melestarikan budaya daerahmu?</label>
+              <textarea placeholder="Tuliskan rencanamu..."></textarea>
+            </div>
+            <div style="background: #8e44ad22; border-radius: 10px; padding: 12px; border: 1px solid #8e44ad44; margin-top: 8px; text-align: center">
+              <div style="font-size: 22px; margin-bottom: 4px">🌺</div>
+              <div style="font-size: 13px; color: #d7b2ff; font-style: italic">"Bangsa yang besar adalah bangsa yang menghormati jasa pahlawannya dan menghargai budayanya."</div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(13)">◀ Kembali</button>
+            <span style="color: #d7b2ff; font-weight: 700">Hal. 14</span>
+            <button class="btn btn-nav" onclick="goToPage(15)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 15: GLOSARIUM -->
+        <div class="page" data-page="15" style="background: linear-gradient(135deg, #001a10 0%, #000d08 100%)">
+          <div class="page-header" style="background: #16a08544">
+            <div class="page-title">📖 Glosarium</div>
+          </div>
+          <div class="page-body">
+            <div class="glosarium-row">
+              <div class="glos-term">Kearifan Lokal</div>
+              <div class="glos-def">Nilai, norma, dan pengetahuan budaya yang berkembang di masyarakat setempat dan diwariskan turun-temurun</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Tradisi</div>
+              <div class="glos-def">Kebiasaan yang diwariskan secara turun-temurun dari nenek moyang kepada generasi berikutnya</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Gotong Royong</div>
+              <div class="glos-def">Kegiatan kerja sama antar warga masyarakat untuk menyelesaikan pekerjaan secara bersama-sama tanpa pamrih</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Upacara Adat</div>
+              <div class="glos-def">Serangkaian kegiatan ritual yang dilakukan masyarakat sesuai dengan tata cara adat yang berlaku di daerahnya</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Batik</div>
+              <div class="glos-def">Kain bermotif khas yang dibuat dengan teknik pewarnaan khusus; warisan budaya dunia dari Indonesia (UNESCO)</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Identitas Budaya</div>
+              <div class="glos-def">Ciri khas dan keunikan yang membedakan suatu kelompok masyarakat dari kelompok lainnya</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Pelestarian</div>
+              <div class="glos-def">Upaya untuk menjaga, memelihara, dan mengembangkan budaya agar tetap hidup dan tidak punah</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Warisan Budaya</div>
+              <div class="glos-def">Peninggalan budaya dari generasi sebelumnya yang memiliki nilai sejarah dan perlu dijaga kelestariannya</div>
+            </div>
+            <div class="glosarium-row">
+              <div class="glos-term">Gamelan</div>
+              <div class="glos-def">Seperangkat alat musik tradisional Jawa/Bali yang dimainkan bersama-sama dalam satu kesatuan orkestra</div>
+            </div>
+            <div class="glosarium-row" style="border: none">
+              <div class="glos-term">Musyawarah</div>
+              <div class="glos-def">Cara pengambilan keputusan bersama melalui diskusi untuk mencapai mufakat (kesepakatan bersama)</div>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(14)">◀ Kembali</button>
+            <span style="color: #55efc4; font-weight: 700">Hal. 15</span>
+            <button class="btn btn-nav" onclick="goToPage(16)">Lanjut ▶</button>
+          </div>
+        </div>
+
+        <!-- PAGE 16: DAFTAR PUSTAKA -->
+        <div class="page" data-page="16" style="background: linear-gradient(135deg, #1a0000 0%, #0d0000 100%)">
+          <div class="page-header" style="background: #c0392b44">
+            <div class="page-title">📚 Daftar Pustaka</div>
+          </div>
+          <div class="page-body">
+            <div class="section-badge" style="background: #c0392b33; color: #ff6b6b; border: 1px solid #c0392b">Buku Teks</div>
+            <div class="pustaka-item"><strong>Kemendikbud.</strong> (2018). <em>Buku Tematik Terpadu Kurikulum 2013 Kelas IV: Indahnya Kebersamaan.</em> Jakarta: Pusat Kurikulum dan Perbukuan.</div>
+            <div class="pustaka-item"><strong>Kemendikbud.</strong> (2018). <em>Buku Tematik Terpadu Kurikulum 2013 Kelas IV: Selalu Berhemat Energi.</em> Jakarta: Pusat Kurikulum dan Perbukuan.</div>
+            <div class="pustaka-item"><strong>Suparlan, P.</strong> (2004). <em>Hubungan Antar Suku Bangsa.</em> Jakarta: KIK Press.</div>
+            <div style="margin-top: 12px"><span class="section-badge" style="background: #2980b933; color: #74b9ff; border: 1px solid #2980b9">Jurnal & Artikel</span></div>
+            <div class="pustaka-item"><strong>Sibarani, R.</strong> (2012). Kearifan Lokal: Hakikat, Peran, dan Metode Tradisi Lisan. <em>Jurnal Masyarakat dan Budaya</em>, 14(2), 1–20.</div>
+            <div class="pustaka-item"><strong>Wagiran.</strong> (2012). Pengembangan Karakter Berbasis Kearifan Lokal. <em>Jurnal Pendidikan Karakter</em>, 2(3), 329–339.</div>
+            <div style="margin-top: 12px"><span class="section-badge" style="background: #27ae6033; color: #2ecc71; border: 1px solid #27ae60">Sumber Internet</span></div>
+            <div class="pustaka-item"><strong>Kemdikbud.</strong> (2023). Portal Budaya Indonesia. Diakses dari: <span style="color: #74b9ff">kebudayaan.kemdikbud.go.id</span></div>
+            <div class="pustaka-item"><strong>Wikipedia Indonesia.</strong> (2024). Kearifan Lokal. Diakses dari: <span style="color: #74b9ff">id.wikipedia.org/wiki/Kearifan_lokal</span></div>
+            <div style="margin-top: 14px; text-align: center; padding: 12px; background: #ffffff11; border-radius: 10px">
+              <div style="font-size: 22px; margin-bottom: 6px">🎉</div>
+              <div style="font-size: 15px; font-weight: 700; color: #f39c12; font-family: &quot;Bubblegum Sans&quot;, cursive">Selamat! Kamu telah menyelesaikan E-Book ini!</div>
+              <div style="font-size: 13px; color: #ffffffaa; margin-top: 4px">Terus cintai dan lestarikan budaya daerahmu! 🌺</div>
+              <button class="btn" onclick="goToPage(1)" style="background: linear-gradient(135deg, #f39c12, #c0392b); color: white; padding: 10px 24px; border-radius: 20px; margin-top: 10px; font-size: 14px; font-weight: 700">
+                🔄 Mulai dari Awal
+              </button>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <button class="btn btn-nav" onclick="goToPage(15)">◀ Kembali</button>
+            <span style="color: #ff6b6b; font-weight: 700">Hal. 16</span>
+            <button class="btn btn-nav" disabled>Selesai ✓</button>
+          </div>
+        </div>
+      </div>
+      <!-- /book-container -->
+    </div>
+    <!-- /flipbook-wrapper -->
+
+    <script>
+      // ============================================================
+      // WEB AUDIO API — Gamelan-inspired ambient music generator
+      // ============================================================
+      let audioCtx = null;
+      let musicPlaying = false;
+      let musicNodes = [];
+      let musicInterval = null;
+
+      function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      // Generate a gamelan-inspired ambient tone
+      function playTone(freq, duration, type = "sine", vol = 0.08, delay = 0) {
+        if (!audioCtx || !musicPlaying) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        filter.type = "lowpass";
+        filter.frequency.value = 1200;
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + delay + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration + 0.1);
+        musicNodes.push(osc);
+      }
+
+      // Gamelan scale (pelog-inspired): C, D, E♭, G, A♭
+      const GAMELAN_NOTES = [261.6, 293.6, 311.1, 392.0, 415.3, 523.2, 587.3, 622.2, 784.0, 830.6];
+
+      function playGamelanChord() {
+        if (!musicPlaying) return;
+        const root = GAMELAN_NOTES[Math.floor(Math.random() * 5)];
+        const fifth = root * 1.5;
+        const sub = root * 0.5;
+        // Sub bass
+        playTone(sub, 3.0, "sine", 0.06, 0);
+        // Main tone
+        playTone(root, 2.5, "triangle", 0.07, 0.1);
+        // Harmony
+        playTone(fifth, 2.0, "sine", 0.04, 0.2);
+        // High sparkle
+        const sparkle = GAMELAN_NOTES[5 + Math.floor(Math.random() * 5)];
+        playTone(sparkle, 1.2, "sine", 0.03, Math.random() * 0.5);
+      }
+
+      function startMusic() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        musicPlaying = true;
+        playGamelanChord();
+        musicInterval = setInterval(() => {
+          if (musicPlaying) playGamelanChord();
+        }, 2500);
+        document.getElementById("musicControl").textContent = "🔊";
+        document.getElementById("musicControl").style.animation = "musicPulse 2s ease-in-out infinite";
+      }
+
+      function stopMusic() {
+        musicPlaying = false;
+        if (musicInterval) clearInterval(musicInterval);
+        musicNodes.forEach((n) => {
+          try {
+            n.stop();
+          } catch (e) {}
+        });
+        musicNodes = [];
+        document.getElementById("musicControl").textContent = "🔇";
+        document.getElementById("musicControl").style.animation = "none";
+      }
+
+      function toggleMusic() {
+        if (musicPlaying) stopMusic();
+        else startMusic();
+        playClickSound(880, 0.1);
+      }
+
+      // ============================================================
+      // BUTTON CLICK SOUND EFFECTS
+      // ============================================================
+      function playClickSound(freq = 600, vol = 0.12) {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+      }
+
+      function playSuccessSound() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        [523, 659, 784, 1047].forEach((f, i) => {
+          const o = audioCtx.createOscillator(),
+            g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = "sine";
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.2);
+          o.start(audioCtx.currentTime + i * 0.1);
+          o.stop(audioCtx.currentTime + i * 0.1 + 0.25);
+        });
+      }
+
+      function playErrorSound() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        [400, 300].forEach((f, i) => {
+          const o = audioCtx.createOscillator(),
+            g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = "sawtooth";
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.15);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.2);
+          o.start(audioCtx.currentTime + i * 0.15);
+          o.stop(audioCtx.currentTime + i * 0.15 + 0.22);
+        });
+      }
+
+      // ============================================================
+      // RIPPLE EFFECT
+      // ============================================================
+      function addRipple(e) {
+        const btn = e.currentTarget;
+        if (!btn || btn.disabled) return;
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = (e.clientX || e.touches?.[0]?.clientX || rect.left + rect.width / 2) - rect.left - size / 2;
+        const y = (e.clientY || e.touches?.[0]?.clientY || rect.top + rect.height / 2) - rect.top - size / 2;
+        ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+        btn.style.position = "relative";
+        btn.style.overflow = "hidden";
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      }
+
+      // ============================================================
+      // FLOATING MUSIC NOTES
+      // ============================================================
+      function spawnMusicNote() {
+        const notes = ["🎵", "🎶", "🎼", "🎺", "🥁", "🪕", "🎻"];
+        const el = document.createElement("div");
+        el.className = "music-note";
+        el.textContent = notes[Math.floor(Math.random() * notes.length)];
+        el.style.left = 10 + Math.random() * 80 + "vw";
+        el.style.bottom = "60px";
+        el.style.opacity = "0";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1600);
+      }
+
+      // ============================================================
+      // BATIK FLOATING PARTICLES
+      // ============================================================
+      function createParticles() {
+        const container = document.getElementById("particles");
+        const symbols = ["🌺", "🏺", "🌸", "✦", "❋", "🌼", "⬡"];
+        for (let i = 0; i < 12; i++) {
+          const el = document.createElement("div");
+          el.className = "batik-particle";
+          el.textContent = symbols[i % symbols.length];
+          el.style.left = Math.random() * 100 + "vw";
+          el.style.animationDuration = 15 + Math.random() * 20 + "s";
+          el.style.animationDelay = Math.random() * 15 + "s";
+          el.style.fontSize = 16 + Math.random() * 14 + "px";
+          container.appendChild(el);
+        }
+      }
+
+      // ============================================================
+      // INTRO SPLASH
+      // ============================================================
+      function enterApp() {
+        startMusic();
+        const splash = document.getElementById("introSplash");
+        splash.classList.add("hide");
+        setTimeout(() => {
+          splash.style.display = "none";
+        }, 900);
+        spawnMusicNote();
+        spawnMusicNote();
+      }
+
+      // Show enter button after loader
+      setTimeout(() => {
+        const btn = document.getElementById("btnEnter");
+        if (btn) btn.classList.add("show");
+      }, 2600);
+
+      // ============================================================
+      // FLIPBOOK NAVIGATION
+      // ============================================================
+      const TOTAL = 16;
+      let currentPage = 1;
+
+      const quizData = [
+        { q: "Kearifan lokal adalah…", opts: ["Budaya luar negeri", "Budaya daerah sendiri", "Teknologi modern", "Ilmu pengetahuan asing"], ans: 1 },
+        { q: "Contoh kearifan lokal berikut ini adalah…", opts: ["Bermain video game", "Gotong royong", "Menonton TV", "Berbelanja online"], ans: 1 },
+        { q: "Manfaat kearifan lokal antara lain…", opts: ["Membuat budaya asing masuk", "Mempererat persatuan", "Menghapus tradisi", "Merusak lingkungan"], ans: 1 },
+        { q: "Batik adalah salah satu kearifan lokal yang berasal dari…", opts: ["Malaysia", "Thailand", "Indonesia", "Filipina"], ans: 2 },
+      ];
+
+      const evalData = [
+        { q: "1. Siapa yang mewariskan kearifan lokal kepada generasi muda?", opts: ["Pemerintah saja", "Orang tua dan nenek moyang", "Sekolah saja", "Media sosial"], ans: 1 },
+        { q: "2. Apa yang dimaksud dengan gotong royong?", opts: ["Kerja sendiri-sendiri", "Kerja bersama tanpa pamrih", "Kerja dengan upah", "Kerja untuk diri sendiri"], ans: 1 },
+        { q: "3. Rumah adat Jawa yang terkenal disebut…", opts: ["Gadang", "Tongkonan", "Joglo", "Honai"], ans: 2 },
+        { q: "4. Tari Saman berasal dari daerah…", opts: ["Jawa Tengah", "Bali", "Aceh", "Sulawesi"], ans: 2 },
+        { q: "5. Mengapa kearifan lokal perlu dilestarikan?", opts: ["Agar bisa dijual", "Agar budaya tidak punah", "Agar bisa ditiru asing", "Tidak perlu dilestarikan"], ans: 1 },
+      ];
+
+      let quizAnswered = [];
+      let evalAnswered = [];
+
+      function buildDots() {
+        const d = document.getElementById("dots");
+        d.innerHTML = "";
+        for (let i = 1; i <= TOTAL; i++) {
+          const dot = document.createElement("div");
+          dot.className = "dot" + (i === currentPage ? " active" : "");
+          dot.onclick = () => {
+            playClickSound(700, 0.07);
+            goToPage(i);
+          };
+          d.appendChild(dot);
+        }
+      }
+
+      function goToPage(n) {
+        playClickSound(660, 0.1);
+        if (musicPlaying) {
+          spawnMusicNote();
+        }
+        document.querySelector(".page.active").classList.remove("active");
+        document.querySelector('[data-page="' + n + '"]').classList.add("active");
+        currentPage = n;
+        document.getElementById("pageCounter").textContent = "Halaman " + n + " dari " + TOTAL;
+        buildDots();
+        document.getElementById("bookContainer").scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function buildQuiz() {
+        const area = document.getElementById("quiz-area");
+        area.innerHTML = "";
+        quizAnswered = new Array(quizData.length).fill(null);
+        quizData.forEach((q, qi) => {
+          const qDiv = document.createElement("div");
+          qDiv.style = "margin-bottom:14px";
+          let html = '<div style="font-size:13px;font-weight:600;color:white;margin-bottom:8px">' + (qi + 1) + ". " + q.q + "</div>";
+          q.opts.forEach((opt, oi) => {
+            html += '<div class="quiz-opt" id="qo_' + qi + "_" + oi + '" onclick="answerQuiz(' + qi + "," + oi + ')">' + String.fromCharCode(65 + oi) + ". " + opt + "</div>";
+          });
+          html += '<div class="feedback-box" id="qf_' + qi + '" style="display:none"></div>';
+          qDiv.innerHTML = html;
+          area.appendChild(qDiv);
+        });
+      }
+
+      function answerQuiz(qi, oi) {
+        if (quizAnswered[qi] !== null) return;
+        quizAnswered[qi] = oi;
+        const correct = quizData[qi].ans;
+        for (let i = 0; i < quizData[qi].opts.length; i++) {
+          const el = document.getElementById("qo_" + qi + "_" + i);
+          el.classList.add(i === correct ? "correct" : "disabled");
+          if (i === oi && i !== correct) el.classList.add("wrong");
+        }
+        const fb = document.getElementById("qf_" + qi);
+        fb.style.display = "block";
+        if (oi === correct) {
+          fb.className = "feedback-box correct";
+          fb.textContent = "✅ Jawaban Benar! Hebat!";
+          playSuccessSound();
+        } else {
+          fb.className = "feedback-box wrong";
+          fb.textContent = "❌ Coba lagi ya! Jawaban yang benar: " + String.fromCharCode(65 + correct) + ". " + quizData[qi].opts[correct];
+          playErrorSound();
+        }
+        if (quizAnswered.every((a) => a !== null)) {
+          const score = quizAnswered.filter((a, i) => a === quizData[i].ans).length;
+          const s = document.getElementById("quiz-score");
+          s.style.display = "block";
+          document.getElementById("score-val").textContent = score + "/" + quizData.length;
+          document.getElementById("score-val").style.color = score >= 3 ? "#2ECC71" : "#E74C3C";
+          if (score >= 3) playSuccessSound();
+        }
+      }
+
+      function resetQuiz() {
+        playClickSound(500, 0.1);
+        document.getElementById("quiz-score").style.display = "none";
+        buildQuiz();
+      }
+
+      function buildEval() {
+        const area = document.getElementById("evalArea");
+        area.innerHTML = "";
+        evalAnswered = new Array(evalData.length).fill(null);
+        evalData.forEach((q, qi) => {
+          const qDiv = document.createElement("div");
+          qDiv.className = "eval-form-item";
+          let html = '<div class="eval-q">' + q.q + "</div>";
+          q.opts.forEach((opt, oi) => {
+            html += '<div class="eval-opt" id="eo_' + qi + "_" + oi + '" onclick="selectEval(' + qi + "," + oi + ')">' + String.fromCharCode(65 + oi) + ". " + opt + "</div>";
+          });
+          qDiv.innerHTML = html;
+          area.appendChild(qDiv);
+        });
+      }
+
+      function selectEval(qi, oi) {
+        playClickSound(550, 0.08);
+        for (let i = 0; i < evalData[qi].opts.length; i++) {
+          document.getElementById("eo_" + qi + "_" + i).classList.remove("selected");
+        }
+        document.getElementById("eo_" + qi + "_" + oi).classList.add("selected");
+        evalAnswered[qi] = oi;
+      }
+
+      function submitEval() {
+        playClickSound(700, 0.12);
+        const score = evalAnswered.filter((a, i) => a === evalData[i].ans).length;
+        const total = evalData.length;
+        const pct = Math.round((score / total) * 100);
+        document.getElementById("evalScore").textContent = pct;
+        let msg = "";
+        if (pct >= 80) {
+          msg = "🌟 Luar biasa! Kamu sangat hebat!";
+          playSuccessSound();
+        } else if (pct >= 60) {
+          msg = "👍 Bagus! Terus semangat belajar!";
+          playClickSound(600, 0.1);
+        } else {
+          msg = "💪 Jangan menyerah! Pelajari lagi materinya ya!";
+          playErrorSound();
+        }
+        document.getElementById("evalMsg").textContent = msg + " (" + score + "/" + total + " soal benar)";
+        const r = document.getElementById("evalResult");
+        r.style.display = "block";
+        evalData.forEach((q, qi) => {
+          const correct = q.ans;
+          for (let oi = 0; oi < q.opts.length; oi++) {
+            const el = document.getElementById("eo_" + qi + "_" + oi);
+            if (el) {
+              el.style.pointerEvents = "none";
+              if (oi === correct) {
+                el.style.borderColor = "#27AE60";
+                el.style.background = "#27AE6033";
+              } else if (evalAnswered[qi] === oi) {
+                el.style.borderColor = "#C0392B";
+                el.style.background = "#C0392B33";
+              }
+            }
+          }
+        });
+        document.getElementById("evalBtn").style.display = "none";
+      }
+
+      function resetEval() {
+        playClickSound(500, 0.1);
+        document.getElementById("evalResult").style.display = "none";
+        document.getElementById("evalBtn").style.display = "inline-block";
+        buildEval();
+      }
+
+      function checkGame() {
+        playClickSound(660, 0.12);
+        const answers = { g1: "Batik", g2: "Gotong Royong", g3: "Tari Saman", g4: "Joglo", g5: "Rendang" };
+        let correct = 0;
+        for (const [id, ans] of Object.entries(answers)) {
+          if (document.getElementById(id).value === ans) correct++;
+        }
+        const r = document.getElementById("gameResult");
+        r.style.display = "block";
+        const pct = correct * 20;
+        let color = correct >= 4 ? "#27AE60" : correct >= 2 ? "#F39C12" : "#C0392B";
+        r.innerHTML =
+          '<div class="score-display"><div style="font-size:13px;color:#ffffffcc">Skor Permainan:</div><div class="score-num" style="color:' +
+          color +
+          '">' +
+          pct +
+          '</div><div style="font-size:13px;color:#ffffffcc">' +
+          correct +
+          '/5 jawaban benar</div><div style="font-size:13px;margin-top:4px;color:' +
+          color +
+          '">' +
+          (correct === 5 ? "🎉 Sempurna! Kamu hebat!" : correct >= 3 ? "👍 Bagus! Hampir sempurna!" : "💪 Coba lagi ya, kamu pasti bisa!") +
+          "</div></div>";
+        if (correct >= 4) playSuccessSound();
+        else if (correct >= 2) playClickSound(600, 0.1);
+        else playErrorSound();
+      }
+
+      // ============================================================
+      // ADD CLICK SOUNDS + RIPPLE TO ALL BUTTONS
+      // ============================================================
+      document.addEventListener("DOMContentLoaded", () => {
+        createParticles();
+        buildDots();
+        buildQuiz();
+        buildEval();
+
+        // Add click sounds to all interactive buttons
+        document.querySelectorAll(".btn-nav, .btn-mulai, .btn-eval, .toc-item").forEach((el) => {
+          el.addEventListener("click", (e) => {
+            if (!el.disabled) {
+              playClickSound(600, 0.1);
+              addRipple(e);
+            }
+          });
+        });
+      });
+
+      // Spawn occasional music notes when playing
+      setInterval(() => {
+        if (musicPlaying && Math.random() > 0.6) spawnMusicNote();
+      }, 3000);
+    </script>
+  </body>
+</html>
