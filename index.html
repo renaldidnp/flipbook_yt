@@ -1278,7 +1278,6 @@
 </div>`;
 
           // ---- KATA PENGANTAR ----
-          // ---- KATA PENGANTAR ----
           case 2:
             return `
 <div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE082 45%,#FFD54F 100%)">
@@ -2727,37 +2726,8 @@
   </div>
 
 </div>`;
-          // ---- MATERI 2 ----
-          case 7:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#F3E5F5,#E1BEE7)">
-  <div class="inner-topbar" style="background:#7B1FA2">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">🎪 Materi 2: Contoh KL</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
-  </div>
-  <div class="inner-body">
-    <div class="mini-grid">
-      ${[
-        ["🤝", "Gotong Royong", "Kerja bersama tanpa pamrih"],
-        ["🎭", "Upacara Adat", "Grebeg, ngaben, tabot"],
-        ["🍛", "Makanan Tradisional", "Rendang, gudeg, pempek"],
-        ["🎵", "Seni Tradisional", "Gamelan, tari saman"],
-        ["🏺", "Batik", "Warisan UNESCO dari Indonesia"],
-        ["🏠", "Rumah Adat", "Joglo, gadang, honai"],
-      ]
-        .map(([ic, t, d]) => `<div class="mini-card"><div class="micon">${ic}</div><div class="mlabel" style="color:#7B1FA2">${t}</div><div class="mdesc">${d}</div></div>`)
-        .join("")}
-    </div>
-    <div class="yt-lbl" style="color:#7B1FA2">🎥 Video: Budaya Daerah Indonesia</div>
-    <div class="yt-wrap" style="border-color:#AB47BC">
-      <iframe src="https://www.youtube.com/embed/Gb0n0R_zWAQ" frameborder="0" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 7 dari 16</div>
-</div>`;
-
           // ---- MATERI 3 ----
-          case 8:
+          case 7:
             return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
   <div class="inner-topbar" style="background:#D84315">
     <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
@@ -2934,14 +2904,14 @@
   <div class="pg-footer">Halaman 8 dari 16</div>
 </div>`;
           // ---- QUIZ 1-2 ----
-          case 9:
+          case 8:
             return buildQuizPage(0, 2, 10);
           // ---- QUIZ 3-4 ----
-          case 10:
+          case 9:
             return buildQuizPage(2, 4, 11);
 
           // ---- LKPD ----
-          case 11:
+          case 10:
             return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
   <div class="inner-topbar" style="background:#2E7D32">
     <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
@@ -2975,7 +2945,7 @@
 </div>`;
 
           // ---- RANGKUMAN ----
-          case 12:
+          case 11:
             return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1,#FFE082)">
   <div class="inner-topbar" style="background:#F57F17">
     <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
@@ -3044,7 +3014,7 @@
 </div>`;
 
           // ---- GLOSARIUM ----
-          case 13:
+          case 12:
             return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
   <div class="inner-topbar" style="background:#006064">
     <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
@@ -3070,7 +3040,7 @@
 </div>`;
 
           // ---- PUSTAKA ----
-          case 14:
+          case 13:
             return `<div class="inner-page" style="background:linear-gradient(160deg,#FCE4EC,#F8BBD0)">
   <div class="inner-topbar" style="background:#C2185B">
     <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
