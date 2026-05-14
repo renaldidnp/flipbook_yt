@@ -1,1013 +1,3310 @@
 <!doctype html>
 <html lang="id">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"/>
-<title>E-Book Interaktif Kearifan Lokal Semanding</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Menggali Kearifan Lokal Semanding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-/* ── CSS VARIABLES ── */
-:root{
-  /* Safe area from notch/home bar */
-  --sat: env(safe-area-inset-top, 0px);
-  --sab: env(safe-area-inset-bottom, 0px);
-  --sal: env(safe-area-inset-left, 0px);
-  --sar: env(safe-area-inset-right, 0px);
+      /* ===== ROOT & BODY ===== */
+      :root {
+        --page-w: 440px;
+        --page-h: 580px;
+        --bg: #e8e8e8;
+        --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      body {
+        font-family: "Nunito", sans-serif;
+        width: 100vw;
+        height: 100vh;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
 
-  /* Toolbar height + slider height + gaps */
-  --chrome: 80px;
+      /* ===== TOOLBAR TOP RIGHT (like HeyZine) ===== */
+      .toolbar {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 10px;
+        padding: 7px 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.13);
+      }
+      .tb-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px;
+        transition: background 0.15s;
+        color: #444;
+      }
+      .tb-btn:hover {
+        background: rgba(0, 0, 0, 0.07);
+      }
+      .tb-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+      .tb-divider {
+        width: 1px;
+        height: 24px;
+        background: #ddd;
+        margin: 0 2px;
+      }
 
-  /* Use dvh (dynamic viewport) so mobile browser chrome is excluded */
-  --vh100: 100dvh;
+      /* ===== STACKED CARD SCENE ===== */
+      .book-scene {
+        position: relative;
+        width: var(--page-w);
+        height: var(--page-h);
+        /* shift slightly left to give room for arrow */
+      }
 
-  --pw: min(430px, 96vw);
-  --ph: min(640px, calc(var(--vh100) - var(--chrome) - var(--sat) - var(--sab)));
-  --card-shadow:0 8px 32px rgba(0,0,0,0.16),0 2px 8px rgba(0,0,0,0.10);
-  --fs: clamp(8.5px, 2vw, 11px);
-}
+      /* Stacked pages behind (like heyzine card effect) */
+      .stack-card {
+        position: absolute;
+        width: var(--page-w);
+        height: var(--page-h);
+        border-radius: 10px;
+        background: #e9ddd0;
+        box-shadow: var(--card-shadow);
+        top: 0;
+        left: 0;
+      }
+      .stack-card.c1 {
+        transform: rotate(3.5deg) translate(8px, 6px);
+        background: #e2d5c5;
+        z-index: 1;
+      }
+      .stack-card.c2 {
+        transform: rotate(7deg) translate(16px, 12px);
+        background: #d8c9b4;
+        z-index: 0;
+      }
 
-/* Fallback for browsers without dvh */
-@supports not (height: 100dvh){
-  :root{ --vh100: 100vh; }
-}
+      /* ===== MAIN PAGE ===== */
+      .main-page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--page-w);
+        height: var(--page-h);
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: var(--card-shadow);
+        z-index: 10;
+        overflow: hidden;
+        transition: transform 0.05s;
+        cursor: default;
+      }
 
-/* ── BODY & LAYOUT ── */
-html{height:100%;height:-webkit-fill-available;}
-body{
-  font-family:'Nunito',sans-serif;
-  width:100%;
-  min-height:100vh;
-  min-height:-webkit-fill-available;
-  min-height:100dvh;
-  background:radial-gradient(ellipse at 50% 30%,#c8c0b4,#b0a898);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;
-  touch-action:none;
-  user-select:none;
-  overflow:hidden;
-  padding-top:max(var(--sat), 0px);
-  padding-bottom:max(var(--sab), 0px);
-  padding-left:var(--sal);
-  padding-right:var(--sar);
-}
+      /* Flip animation */
+      .main-page.flip-left {
+        animation: flipPageLeft 0.45s ease-in-out forwards;
+      }
+      .main-page.flip-right {
+        animation: flipPageRight 0.45s ease-in-out forwards;
+      }
+      @keyframes flipPageLeft {
+        0% {
+          transform: rotateY(0) scale(1);
+        }
+        40% {
+          transform: rotateY(-90deg) scale(0.95);
+        }
+        41% {
+          opacity: 0;
+        }
+        42% {
+          opacity: 1;
+          transform: rotateY(90deg) scale(0.95);
+        }
+        100% {
+          transform: rotateY(0) scale(1);
+        }
+      }
+      @keyframes flipPageRight {
+        0% {
+          transform: rotateY(0) scale(1);
+        }
+        40% {
+          transform: rotateY(90deg) scale(0.95);
+        }
+        41% {
+          opacity: 0;
+        }
+        42% {
+          opacity: 1;
+          transform: rotateY(-90deg) scale(0.95);
+        }
+        100% {
+          transform: rotateY(0) scale(1);
+        }
+      }
 
-/* ── TOOLBAR ── */
-.toolbar{
-  position:fixed;top:10px;right:10px;z-index:9999;
-  display:flex;gap:3px;align-items:center;
-  background:rgba(255,255,255,0.93);border-radius:10px;
-  padding:4px 7px;box-shadow:0 2px 12px rgba(0,0,0,0.15);
-}
-.tb-btn{width:30px;height:30px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .15s;color:#444;}
-.tb-btn:hover{background:rgba(0,0,0,0.07);}
-.tb-btn svg{width:17px;height:17px;}
-.tb-divider{width:1px;height:18px;background:#ddd;margin:0 1px;}
+      /* ===== ARROW BUTTONS (floating outside card) ===== */
+      .arrow-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        z-index: 20;
+        background: rgba(255, 255, 255, 0.88);
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+        transition: all 0.2s;
+      }
+      .arrow-btn:hover:not(:disabled) {
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .arrow-btn:disabled {
+        opacity: 0.25;
+        cursor: not-allowed;
+      }
+      .arrow-btn svg {
+        width: 20px;
+        height: 20px;
+        color: #555;
+      }
+      .arrow-left {
+        left: -52px;
+      }
+      .arrow-right {
+        right: -52px;
+      }
 
-/* ── SLIDER ── */
-.slider-bar{
-  position:fixed;
-  bottom:max(8px, calc(var(--sab) + 4px));
-  left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,.93);border-radius:30px;
-  padding:5px 13px;box-shadow:0 2px 12px rgba(0,0,0,.14);
-  z-index:9998;max-width:calc(100vw - 16px);
-}
-.slider-bar input[type=range]{width:clamp(90px,38vw,170px);accent-color:#2E7D32;}
-.slider-page-num{font-size:10px;font-weight:700;color:#444;min-width:36px;white-space:nowrap;}
+      /* ===== SLIDER BAR (bottom, like HeyZine) ===== */
+      .slider-bar {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        width: min(480px, 80vw);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .slider-bar input[type="range"] {
+        flex: 1;
+        height: 4px;
+        cursor: pointer;
+        accent-color: #555;
+      }
+      .slider-page-num {
+        font-size: 12px;
+        color: #888;
+        font-weight: 700;
+        white-space: nowrap;
+        min-width: 50px;
+        text-align: center;
+      }
 
-/* ── ARROWS ── */
-.arrow-btn{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,.9);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.18);transition:all .15s;z-index:20;
-}
-.arrow-btn:hover{background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25);}
-.arrow-btn:disabled{opacity:.28;cursor:not-allowed;}
-.arrow-btn svg{width:18px;height:18px;stroke:#444;}
-.arrow-left{left:-44px;}
-.arrow-right{right:-44px;}
+      /* ===== PAGE CONTENT ===== */
+      .page-inner {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #ccc transparent;
+      }
+      .page-inner::-webkit-scrollbar {
+        width: 4px;
+      }
+      .page-inner::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
 
-/* ── BOOK SCENE ── */
-.book-scene{
-  position:relative;
-  width:var(--pw);height:var(--ph);
-  margin:0 auto;
-  perspective:1400px;
-}
-.stack-card{
-  position:absolute;width:var(--pw);height:var(--ph);
-  border-radius:10px;background:#e9ddd0;
-  box-shadow:var(--card-shadow);top:0;left:0;
-}
-.stack-card.c1{transform:rotate(2.5deg) translate(6px,5px);background:#e2d4c3;z-index:1;}
-.stack-card.c2{transform:rotate(5deg) translate(12px,10px);background:#d6c8b2;z-index:0;}
+      /* ---- PAGE STYLES ---- */
 
-/* ── MAIN PAGE + FLIP ANIMATION ── */
-.main-page{
-  position:absolute;top:0;left:0;
-  width:var(--pw);height:var(--ph);
-  border-radius:10px;background:#fff;
-  box-shadow:var(--card-shadow);
-  z-index:10;overflow:hidden;
-  transform-origin:center center;
-  transform-style:preserve-3d;
-  will-change:transform,opacity;
-}
+      /* COVER */
+      .cover-page {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(160deg, #3ab3e8 0%, #1e88c8 35%, #1a7abf 60%, #2d9e4f 100%);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      .cover-sky {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 18px 0;
+        position: relative;
+      }
+      .cover-logos {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .cover-logo-badge {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 6px;
+        padding: 3px 7px;
+        font-size: 9px;
+        font-weight: 800;
+        color: #1a7abf;
+        letter-spacing: 0.3px;
+      }
+      .cover-logo-badge.red {
+        color: #c0392b;
+      }
+      .cover-logo-badge.blue2 {
+        color: #1565c0;
+      }
+      .cover-kelas {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        font-family: "Fredoka One", cursive;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+      }
+      .cover-kelas span {
+        font-size: 20px;
+        line-height: 1;
+      }
+      .cover-title-main {
+        font-family: "Fredoka One", cursive;
+        font-size: clamp(24px, 6vw, 36px);
+        color: #fff;
+        text-shadow: 2px 3px 6px rgba(0, 0, 0, 0.4);
+        line-height: 1.15;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        max-width: 55%;
+      }
+      .cover-scene {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 72%;
+        overflow: hidden;
+      }
+      .cover-scene-img {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, transparent 0%, #2d9e4f 40%, #1e7a3a 100%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      /* School building mock */
+      .building {
+        position: absolute;
+        bottom: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 180px;
+        height: 120px;
+        background: #e8630a;
+        border-radius: 4px 4px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .building-sign {
+        background: #e8630a;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 4px;
+        margin-top: -30px;
+        font-family: "Fredoka One", cursive;
+        letter-spacing: 1px;
+        background: #d4580a;
+      }
+      .building::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 2px, transparent 2px, transparent 30px),
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 2px, transparent 2px, transparent 30px);
+      }
+      /* Characters row */
+      .chars {
+        position: absolute;
+        bottom: 12%;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 4px;
+        font-size: 32px;
+        letter-spacing: 2px;
+      }
+      /* Ground/trees */
+      .ground {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 14%;
+        background: #1a5e2a;
+      }
+      .trees {
+        position: absolute;
+        bottom: 13%;
+        font-size: 36px;
+        display: flex;
+        align-items: flex-end;
+        gap: 0;
+      }
+      .trees.left {
+        left: 8px;
+      }
+      .trees.right {
+        right: 8px;
+      }
+      /* Lung circle */
+      .lung-circle {
+        position: absolute;
+        bottom: 14%;
+        left: 16%;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid #fff;
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        z-index: 5;
+      }
+      /* NEXT button */
+      .next-sign {
+        position: absolute;
+        bottom: 14%;
+        right: 14%;
+        background: #c8860a;
+        color: #fff;
+        font-family: "Fredoka One", cursive;
+        font-size: 18px;
+        padding: 10px 22px;
+        border-radius: 8px;
+        letter-spacing: 1px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+        clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
+        padding-right: 32px;
+        cursor: pointer;
+        border: none;
+        z-index: 5;
+      }
+      .cover-footer {
+        background: rgba(255, 255, 255, 0.88);
+        padding: 5px 12px;
+        font-size: 10px;
+        color: #333;
+        font-style: italic;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 0 0 10px 10px;
+      }
 
-/* Realistic book-flip: page curls from right edge (next) or left edge (prev) */
-.main-page.flip-fwd{animation:bookFlipFwd .5s cubic-bezier(.4,0,.2,1) forwards;}
-.main-page.flip-back{animation:bookFlipBack .5s cubic-bezier(.4,0,.2,1) forwards;}
+      /* ---- INNER PAGES ---- */
+      .inner-page {
+        width: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Top nav bar on inner pages */
+      .inner-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 0;
+        flex-shrink: 0;
+      }
+      .topbar-back,
+      .topbar-next {
+        background: rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+        padding: 3px 10px;
+        cursor: pointer;
+        font-family: "Nunito", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        transition: all 0.15s;
+      }
+      .topbar-back:hover,
+      .topbar-next:hover {
+        background: rgba(255, 255, 255, 0.45);
+      }
+      .topbar-title {
+        font-family: "Fredoka One", cursive;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+      }
+      .inner-body {
+        flex: 1;
+        padding: 12px 14px;
+        overflow: auto;
+      }
 
-@keyframes bookFlipFwd{
-  0%  {transform:rotateY(0deg) scale(1);box-shadow:var(--card-shadow);}
-  30% {transform:rotateY(-25deg) scale(.97);box-shadow:14px 8px 40px rgba(0,0,0,.28);}
-  49% {transform:rotateY(-88deg) scale(.94);opacity:1;box-shadow:20px 4px 50px rgba(0,0,0,.32);}
-  50% {transform:rotateY(88deg) scale(.94);opacity:0;}
-  51% {opacity:1;}
-  75% {transform:rotateY(18deg) scale(.98);box-shadow:var(--card-shadow);}
-  100%{transform:rotateY(0deg) scale(1);box-shadow:var(--card-shadow);}
-}
-@keyframes bookFlipBack{
-  0%  {transform:rotateY(0deg) scale(1);box-shadow:var(--card-shadow);}
-  30% {transform:rotateY(25deg) scale(.97);box-shadow:-14px 8px 40px rgba(0,0,0,.28);}
-  49% {transform:rotateY(88deg) scale(.94);opacity:1;box-shadow:-20px 4px 50px rgba(0,0,0,.32);}
-  50% {transform:rotateY(-88deg) scale(.94);opacity:0;}
-  51% {opacity:1;}
-  75% {transform:rotateY(-18deg) scale(.98);box-shadow:var(--card-shadow);}
-  100%{transform:rotateY(0deg) scale(1);box-shadow:var(--card-shadow);}
-}
+      /* Cards */
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      }
+      .card-title {
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 5px;
+      }
+      .card-text {
+        font-size: 11px;
+        color: #555;
+        line-height: 1.55;
+      }
+      .highlight {
+        border-left: 4px solid;
+        border-radius: 0 8px 8px 0;
+        padding: 8px 11px;
+        margin-bottom: 8px;
+        font-size: 11px;
+        line-height: 1.55;
+      }
+      .mini-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+        margin-bottom: 8px;
+      }
+      .mini-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 7px;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+      .mini-card .micon {
+        font-size: 20px;
+        margin-bottom: 3px;
+      }
+      .mini-card .mlabel {
+        font-size: 10px;
+        font-weight: 800;
+        color: #333;
+        margin-bottom: 2px;
+      }
+      .mini-card .mdesc {
+        font-size: 9px;
+        color: #666;
+        line-height: 1.3;
+      }
+      .list-item {
+        display: flex;
+        gap: 7px;
+        margin-bottom: 5px;
+        font-size: 11px;
+        color: #444;
+        line-height: 1.45;
+      }
+      .list-item::before {
+        content: "✦";
+        color: currentColor;
+        flex-shrink: 0;
+        font-size: 9px;
+        margin-top: 2px;
+      }
+      .toc-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        margin-bottom: 6px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid;
+        transition: transform 0.15s;
+      }
+      .toc-row:hover {
+        transform: translateX(4px);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .toc-lbl {
+        font-size: 11px;
+        font-weight: 700;
+        color: #333;
+      }
+      .benefit-row {
+        display: flex;
+        gap: 9px;
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 10px;
+        margin-bottom: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+      }
+      .benefit-row .bicon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .benefit-row .btitle {
+        font-size: 11px;
+        font-weight: 800;
+        margin-bottom: 2px;
+      }
+      .benefit-row .bdesc {
+        font-size: 10px;
+        color: #555;
+        line-height: 1.4;
+      }
+      .game-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border-radius: 9px;
+        padding: 7px 10px;
+        margin-bottom: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      }
+      .game-emoji {
+        font-size: 20px;
+        flex-shrink: 0;
+        width: 28px;
+        text-align: center;
+      }
+      .game-q {
+        font-size: 10px;
+        color: #555;
+        margin-bottom: 3px;
+      }
+      .game-select {
+        flex: 1;
+        background: #f5faff;
+        border: 1.5px solid #90caf9;
+        color: #1565c0;
+        border-radius: 7px;
+        padding: 4px 7px;
+        font-family: "Nunito", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .game-select option {
+        background: #fff;
+        color: #333;
+      }
+      .btn-check {
+        width: 100%;
+        background: linear-gradient(135deg, #00bcd4, #0097a7);
+        color: #fff;
+        padding: 9px;
+        font-size: 13px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 800;
+        font-family: "Fredoka One", cursive;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.13);
+        transition: all 0.2s;
+        margin-top: 6px;
+      }
+      .btn-check:hover {
+        transform: scale(1.02);
+      }
+      .quiz-opt {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        border: 2px solid #ffb74d;
+        font-size: 11px;
+        font-weight: 600;
+        color: #37474f;
+        background: #fff;
+        transition: all 0.15s;
+      }
+      .quiz-opt:hover {
+        border-color: #e65100;
+        background: #fff8e1;
+      }
+      .quiz-opt.correct {
+        border-color: #43a047;
+        background: #e8f5e9;
+        color: #2e7d32;
+        pointer-events: none;
+      }
+      .quiz-opt.wrong {
+        border-color: #e53935;
+        background: #ffebee;
+        color: #b71c1c;
+        pointer-events: none;
+      }
+      .quiz-opt.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .fb-box {
+        border-radius: 8px;
+        padding: 7px 10px;
+        margin-top: 6px;
+        font-weight: 700;
+        font-size: 11px;
+        text-align: center;
+      }
+      .fb-box.correct {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 2px solid #43a047;
+      }
+      .fb-box.wrong {
+        background: #ffebee;
+        color: #c62828;
+        border: 2px solid #e53935;
+      }
+      .eval-opt {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        border: 2px solid #ce93d8;
+        font-size: 11px;
+        color: #333;
+        background: #fff;
+        transition: all 0.15s;
+      }
+      .eval-opt:hover {
+        border-color: #7b1fa2;
+        background: #f3e5f5;
+      }
+      .eval-opt.selected {
+        border-color: #7b1fa2;
+        background: #ede7f6;
+        color: #4527a0;
+      }
+      .btn-eval {
+        background: linear-gradient(135deg, #7b1fa2, #ab47bc);
+        color: #fff;
+        padding: 9px 24px;
+        font-size: 13px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 800;
+        font-family: "Fredoka One", cursive;
+        margin-top: 6px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.13);
+        transition: all 0.2s;
+      }
+      .btn-eval:hover {
+        transform: scale(1.02);
+      }
+      .lkpd-task {
+        background: #fff;
+        border-radius: 10px;
+        padding: 9px 11px;
+        margin-bottom: 7px;
+        border-left: 4px solid #43a047;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+      }
+      .lkpd-num {
+        font-family: "Fredoka One", cursive;
+        font-size: 15px;
+        color: #2e7d32;
+        margin-bottom: 2px;
+      }
+      .lkpd-title {
+        font-size: 11px;
+        font-weight: 800;
+        color: #1b5e20;
+        margin-bottom: 3px;
+      }
+      .lkpd-desc {
+        font-size: 10px;
+        color: #555;
+        line-height: 1.4;
+        margin-bottom: 5px;
+      }
+      .lkpd-input {
+        width: 100%;
+        background: #f9fbf9;
+        border: 1.5px solid #a5d6a7;
+        border-radius: 7px;
+        color: #333;
+        font-family: "Nunito", sans-serif;
+        font-size: 10px;
+        padding: 5px 7px;
+        resize: none;
+        height: 38px;
+        margin-top: 2px;
+      }
+      .glos-row {
+        display: flex;
+        gap: 8px;
+        padding: 6px 0;
+        border-bottom: 1.5px solid #eee;
+      }
+      .glos-term {
+        font-weight: 800;
+        color: #006064;
+        min-width: 95px;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+      .glos-def {
+        color: #555;
+        font-size: 10px;
+        line-height: 1.45;
+        flex: 1;
+      }
+      .pustaka-item {
+        padding: 5px 0;
+        border-bottom: 1.5px solid #f8bbd0;
+        font-size: 10px;
+        color: #555;
+        line-height: 1.5;
+      }
+      .pustaka-badge {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 9px;
+        font-weight: 800;
+        margin: 5px 0 3px;
+      }
+      .finish-box {
+        text-align: center;
+        background: #fff;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 8px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.09);
+      }
+      .finish-box .ficon {
+        font-size: 30px;
+        margin-bottom: 5px;
+      }
+      .finish-box .fmsg {
+        font-family: "Fredoka One", cursive;
+        font-size: 15px;
+        color: #c2185b;
+      }
+      .finish-box .fsub {
+        font-size: 10px;
+        color: #666;
+        margin-top: 3px;
+      }
+      .btn-restart {
+        background: linear-gradient(135deg, #ff6b6b, #c0392b);
+        color: #fff;
+        padding: 8px 20px;
+        font-size: 12px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 800;
+        font-family: "Fredoka One", cursive;
+        margin-top: 7px;
+        transition: all 0.2s;
+      }
+      .btn-restart:hover {
+        transform: scale(1.04);
+      }
+      .komp-chips {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-top: 7px;
+      }
+      .chip {
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 9px;
+        font-weight: 700;
+      }
+      .yt-wrap {
+        position: relative;
+        width: 100%;
+        padding-bottom: 52%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 9px;
+        margin: 7px 0;
+        border: 2px solid;
+      }
+      .yt-wrap iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      .yt-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+      .pg-footer {
+        text-align: center;
+        padding: 6px;
+        font-size: 9px;
+        color: #999;
+        border-top: 1px solid #eee;
+        font-style: italic;
+        flex-shrink: 0;
+      }
 
-/* swipe drag feel */
-.main-page.dragging{transition:transform .05s;will-change:transform;}
+      /* Result popup */
+      .result-pop {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+      .result-pop.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .result-box {
+        background: #fff;
+        border-radius: 18px;
+        padding: 22px 28px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+        max-width: 260px;
+        width: 88%;
+        transform: scale(0.82);
+        transition: transform 0.25s;
+      }
+      .result-pop.show .result-box {
+        transform: scale(1);
+      }
+      .r-icon {
+        font-size: 44px;
+        margin-bottom: 6px;
+      }
+      .r-title {
+        font-family: "Fredoka One", cursive;
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 4px;
+      }
+      .r-score {
+        font-family: "Fredoka One", cursive;
+        font-size: 44px;
+        color: #ff6b6b;
+      }
+      .r-msg {
+        font-size: 12px;
+        color: #666;
+        margin: 5px 0 12px;
+      }
+      .btn-close-pop {
+        background: linear-gradient(135deg, #4ecdc4, #0097a7);
+        color: #fff;
+        padding: 8px 22px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-family: "Fredoka One", cursive;
+        font-size: 13px;
+      }
 
-/* ── COVER ── */
-.cover-page{width:100%;height:100%;display:flex;flex-direction:column;background:linear-gradient(160deg,#1B5E20,#2E7D32,#43A047);}
-.cover-sky{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 12px 6px;text-align:center;}
-.cover-logos{display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap;justify-content:center;}
-.cover-logo-badge{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:7px;padding:2px 8px;font-size:8px;font-weight:800;line-height:1.3;text-align:center;}
-.cover-logo-badge.red{background:rgba(183,28,28,.35);}
-.cover-logo-badge.blue2{background:rgba(21,101,192,.35);}
-.cover-kelas{color:rgba(255,255,255,.7);font-size:10px;font-weight:800;letter-spacing:2px;margin-bottom:3px;}
-.cover-kelas span{font-family:'Fredoka One',cursive;font-size:16px;color:#fff;margin-left:3px;}
-.cover-title-main{font-family:'Fredoka One',cursive;font-size:clamp(20px,5vw,26px);color:#fff;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.25);margin-bottom:3px;}
-.cover-subtitle{font-size:9px;color:rgba(255,255,255,.85);font-weight:600;margin-bottom:5px;}
-.cover-scene{background:linear-gradient(180deg,#81C784,#A5D6A7);padding:10px 12px;display:flex;justify-content:center;align-items:center;}
-.cover-scene-img{width:100%;display:flex;align-items:flex-end;justify-content:center;gap:6px;}
-.building{width:60px;background:#FFF8E1;border-radius:6px 6px 0 0;padding:5px;text-align:center;border:2px solid #F9A825;}
-.building-sign{font-size:6px;font-weight:800;color:#E65100;background:#FFF9C4;border-radius:3px;padding:2px 3px;}
-.trees{font-size:16px;}
-.chars{font-size:16px;letter-spacing:-2px;}
-.lung-circle{font-size:24px;animation:float 3s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-.next-sign{background:linear-gradient(135deg,#FF6B35,#FF4500);color:#fff;border:none;border-radius:18px;padding:5px 13px;font-family:'Fredoka One',cursive;font-size:12px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.2);}
-.cover-footer{background:rgba(0,0,0,.25);padding:4px 10px;font-size:8px;color:rgba(255,255,255,.85);font-style:italic;text-align:center;border-radius:0 0 10px 10px;}
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 600px) {
+        :root {
+          --page-w: 90vw;
+          --page-h: 78vw;
+        }
+        .arrow-left {
+          left: -44px;
+        }
+        .arrow-right {
+          right: -44px;
+        }
+      }
+      @media (max-width: 440px) {
+        :root {
+          --page-w: 95vw;
+          --page-h: 126vw;
+        }
+        .arrow-left {
+          left: 4px;
+          z-index: 30;
+        }
+        .arrow-right {
+          right: 4px;
+          z-index: 30;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TOOLBAR top right -->
+    <div class="toolbar">
+      <button class="tb-btn" title="Zoom" onclick="toggleZoom()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.35-4.35M11 8v6M8 11h6" />
+        </svg>
+      </button>
+      <div class="tb-divider"></div>
+      <button class="tb-btn" title="Fullscreen" onclick="toggleFull()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></svg>
+      </button>
+      <div class="tb-divider"></div>
+      <button class="tb-btn" id="soundBtn" title="Suara" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+        </svg>
+      </button>
+    </div>
 
-/* ── INNER PAGES ── */
-.inner-page{width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+    <!-- Result popup -->
+    <div class="result-pop" id="resultPop">
+      <div class="result-box">
+        <div class="r-icon" id="rIcon">🎉</div>
+        <div class="r-title" id="rTitle">Hasilmu!</div>
+        <div class="r-score" id="rScore">80</div>
+        <div class="r-msg" id="rMsg"></div>
+        <button class="btn-close-pop" onclick="closePop()">Tutup ✓</button>
+      </div>
+    </div>
 
-/* Topbar: ONLY title (no nav buttons) */
-.inner-topbar{
-  display:flex;align-items:center;justify-content:center;
-  padding:7px 12px;font-size:11px;font-weight:700;color:#fff;
-  flex-shrink:0;
-}
-.topbar-title{font-family:'Fredoka One',cursive;font-size:13px;letter-spacing:.3px;text-align:center;}
+    <!-- BOOK SCENE -->
+    <div class="book-scene" id="bookScene">
+      <!-- Stacked cards behind -->
+      <div class="stack-card c2"></div>
+      <div class="stack-card c1"></div>
+      <!-- Main visible page -->
+      <div class="main-page" id="mainPage">
+        <div class="page-inner" id="pageInner"></div>
+      </div>
+      <!-- Arrow buttons -->
+      <button class="arrow-btn arrow-left" id="btnPrev" onclick="changePage(-1)" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6" /></svg>
+      </button>
+      <button class="arrow-btn arrow-right" id="btnNext" onclick="changePage(1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+      </button>
+    </div>
 
-/* Body: fills remaining space, NO scroll */
-.inner-body{
-  flex:1;
-  padding:8px 11px;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  gap:5px;
-  min-height:0;
-}
+    <!-- SLIDER BAR -->
+    <div class="slider-bar">
+      <input type="range" id="pageSlider" min="0" max="11" value="0" oninput="sliderChange(this.value)" />
+      <div class="slider-page-num" id="sliderLabel">1 / 16</div>
+    </div>
 
-/* Compact cards */
-.card{background:#fff;border-radius:8px;padding:7px 10px;box-shadow:0 2px 6px rgba(0,0,0,.07);flex-shrink:0;}
-.card-title{font-size:var(--fs);font-weight:800;margin-bottom:3px;}
-.card-text{font-size:var(--fs);color:#555;line-height:1.45;}
-.highlight{border-left:3px solid;border-radius:0 7px 7px 0;padding:6px 9px;font-size:var(--fs);line-height:1.45;flex-shrink:0;}
-.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex-shrink:0;}
-.mini-card{background:#fff;border-radius:8px;padding:6px 5px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,.08);}
-.mini-card .micon{font-size:17px;margin-bottom:2px;}
-.mini-card .mlabel{font-size:9px;font-weight:800;color:#333;margin-bottom:1px;}
-.mini-card .mdesc{font-size:8px;color:#666;line-height:1.25;}
-.list-item{display:flex;gap:6px;font-size:var(--fs);color:#444;line-height:1.4;flex-shrink:0;}
-.list-item::before{content:'✦';color:currentColor;flex-shrink:0;font-size:8px;margin-top:2px;}
-.toc-row{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;cursor:pointer;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.06);border-left:3px solid;transition:transform .15s;flex-shrink:0;}
-.toc-row:hover{transform:translateX(3px);}
-.toc-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
-.toc-lbl{font-size:10px;font-weight:700;color:#333;}
-.benefit-row{display:flex;gap:7px;background:#fff;border-radius:8px;padding:6px 8px;box-shadow:0 2px 5px rgba(0,0,0,.07);flex-shrink:0;}
-.benefit-row .bicon{font-size:17px;flex-shrink:0;}
-.benefit-row .btitle{font-size:10px;font-weight:800;margin-bottom:1px;}
-.benefit-row .bdesc{font-size:9px;color:#555;line-height:1.35;}
+    <script>
+      // ============================================================
+      // DATA
+      // ============================================================
+      const TOTAL = 12;
+      let current = 0;
+      let isAnimating = false;
 
-/* QUIZ */
-.quiz-opt{display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:7px;margin-bottom:4px;cursor:pointer;border:2px solid #FFB74D;font-size:var(--fs);font-weight:600;color:#37474F;background:#fff;transition:all .15s;flex-shrink:0;}
-.quiz-opt:hover{border-color:#E65100;background:#FFF8E1;}
-.quiz-opt.correct{border-color:#43A047;background:#E8F5E9;color:#2E7D32;pointer-events:none;}
-.quiz-opt.wrong{border-color:#E53935;background:#FFEBEE;color:#B71C1C;pointer-events:none;}
-.quiz-opt.disabled{pointer-events:none;opacity:.6;}
-.fb-box{border-radius:7px;padding:5px 9px;margin-top:4px;font-weight:700;font-size:10px;text-align:center;flex-shrink:0;}
-.fb-box.correct{background:#E8F5E9;color:#2E7D32;border:2px solid #43A047;}
-.fb-box.wrong{background:#FFEBEE;color:#C62828;border:2px solid #E53935;}
+      // Audio
+      let audioCtx = null,
+        musicOn = false,
+        musicInterval = null,
+        musicNodes = [];
+      function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      function playTone(f, dur, type = "sine", vol = 0.07, delay = 0) {
+        if (!audioCtx || !musicOn) return;
+        const o = audioCtx.createOscillator(),
+          g = audioCtx.createGain();
+        const fl = audioCtx.createBiquadFilter();
+        fl.type = "lowpass";
+        fl.frequency.value = 1200;
+        o.connect(fl);
+        fl.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = type;
+        o.frequency.value = f;
+        g.gain.setValueAtTime(0, audioCtx.currentTime + delay);
+        g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + delay + 0.06);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + dur);
+        o.start(audioCtx.currentTime + delay);
+        o.stop(audioCtx.currentTime + delay + dur + 0.1);
+        musicNodes.push(o);
+      }
+      const GN = [261.6, 293.6, 311.1, 392, 415.3, 523.2, 587.3];
+      function playChord() {
+        if (!musicOn) return;
+        const r = GN[Math.floor(Math.random() * 5)];
+        playTone(r * 0.5, 3, "sine", 0.06);
+        playTone(r, 2.5, "triangle", 0.07, 0.12);
+        playTone(r * 1.5, 2, "sine", 0.04, 0.22);
+        playTone(GN[5 + Math.floor(Math.random() * 2)], 1.2, "sine", 0.03, Math.random() * 0.5);
+      }
+      function startMusic() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        musicOn = true;
+        playChord();
+        musicInterval = setInterval(() => {
+          if (musicOn) playChord();
+        }, 2600);
+      }
+      function stopMusic() {
+        musicOn = false;
+        if (musicInterval) clearInterval(musicInterval);
+        musicNodes.forEach((n) => {
+          try {
+            n.stop();
+          } catch (e) {}
+        });
+        musicNodes = [];
+      }
+      function toggleMusic() {
+        initAudio();
+        if (musicOn) {
+          stopMusic();
+          document.getElementById("soundBtn").innerHTML =
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+        } else {
+          startMusic();
+          document.getElementById("soundBtn").innerHTML =
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+        }
+      }
+      function clickSnd(f = 600) {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const o = audioCtx.createOscillator(),
+          g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(f * 0.65, audioCtx.currentTime + 0.14);
+        g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.22);
+      }
+      function flipSnd() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const o = audioCtx.createOscillator(),
+          g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = "triangle";
+        o.frequency.setValueAtTime(900, audioCtx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.35);
+        g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.45);
+      }
+      function successSnd() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        [523, 659, 784, 1047].forEach((f, i) => {
+          const o = audioCtx.createOscillator(),
+            g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = "sine";
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.09, audioCtx.currentTime + i * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.28);
+          o.start(audioCtx.currentTime + i * 0.1);
+          o.stop(audioCtx.currentTime + i * 0.1 + 0.3);
+        });
+      }
+      function errorSnd() {
+        initAudio();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        [300, 240].forEach((f, i) => {
+          const o = audioCtx.createOscillator(),
+            g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = "sawtooth";
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.07, audioCtx.currentTime + i * 0.16);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.16 + 0.22);
+          o.start(audioCtx.currentTime + i * 0.16);
+          o.stop(audioCtx.currentTime + i * 0.16 + 0.25);
+        });
+      }
 
-/* EVAL */
-.eval-opt{display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:7px;margin-bottom:4px;cursor:pointer;border:2px solid #CE93D8;font-size:var(--fs);color:#333;background:#fff;transition:all .15s;flex-shrink:0;}
-.eval-opt:hover{border-color:#7B1FA2;background:#F3E5F5;}
-.eval-opt.selected{border-color:#7B1FA2;background:#EDE7F6;color:#4527A0;}
-.btn-eval{background:linear-gradient(135deg,#7B1FA2,#AB47BC);color:#fff;padding:7px 20px;font-size:12px;border-radius:22px;border:none;cursor:pointer;font-weight:800;font-family:'Fredoka One',cursive;margin-top:4px;box-shadow:0 3px 10px rgba(0,0,0,.13);transition:all .2s;flex-shrink:0;}
-.btn-eval:hover{transform:scale(1.02);}
+      // Quiz / Eval state
+      const quizData = [
+        { q: "Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...", opts: ["Prunggahan Kulon", "Kowang", "Gesing", "Bektiharjo"], ans: 0 },
+        { q: "Tradisi syukuran agar padi subur di Desa Ngino disebut...", opts: ["Siraman Waranggono", "Ritual Keleman", "Kenduren", "Tabuh Lesung"], ans: 1 },
+        { q: "Kerajinan tanah liat seperti gendok dan kuali banyak dibuat di desa...", opts: ["Bejagung", "Bektiharjo", "Karang", "Prunggahan"], ans: 2 },
+        { q: "Seni tarian pergaulan yang diiringi gamelan Jawa di Semanding disebut...", opts: ["Seni Sandur", "Seni Tayub", "Musik Kentrung", "Tabuh Lesung"], ans: 1 },
+      ];
+      let quizAns = new Array(4).fill(null);
+      const evalData = [
+        { q: "1. Siapa seniman patung terkenal dari Desa Bejagung?", opts: ["Mbah Somi", "Abah Janjang", "Pak Sandur", "Bu Waranggono"], ans: 1 },
+        { q: "2. Apa nama riasan pengantin khas daerah Semanding?", opts: ["Paes Jogja", "Paes Sunda", "Paes Semandingan", "Paes Bali"], ans: 2 },
+        { q: "3. Kesenian yang menggabungkan cerita, lawakan, musik dan tari disebut...", opts: ["Tayub", "Kentrung", "Sandur", "Tabuh Lesung"], ans: 2 },
+        { q: "4. Siraman Waranggono adalah prosesi penyucian penari sebelum...", opts: ["Belajar menari", "Tampil di depan umum", "Menikah", "Beribadah"], ans: 1 },
+        { q: "5. Lesung adalah alat tradisional yang digunakan untuk...", opts: ["Memasak nasi", "Menumbuk padi", "Mengambil air", "Membuat gerabah"], ans: 1 },
+      ];
+      let evalAns = new Array(5).fill(null);
+      const gameAns = { g1: "Ritual Keleman", g2: "Siraman Waranggono", g3: "Seni Tayub", g4: "Gerabah", g5: "Paes Semandingan" };
 
-/* LKPD */
-.lkpd-task{background:#fff;border-radius:8px;padding:7px 10px;border-left:3px solid #43A047;box-shadow:0 2px 5px rgba(0,0,0,.07);flex-shrink:0;}
-.lkpd-num{font-family:'Fredoka One',cursive;font-size:13px;color:#2E7D32;margin-bottom:1px;}
-.lkpd-title{font-size:10px;font-weight:800;color:#1B5E20;margin-bottom:2px;}
-.lkpd-desc{font-size:9px;color:#555;line-height:1.35;margin-bottom:3px;}
-.lkpd-input{width:100%;background:#F9FBF9;border:1.5px solid #A5D6A7;border-radius:6px;color:#333;font-family:'Nunito',sans-serif;font-size:9px;padding:4px 6px;resize:none;height:32px;margin-top:1px;}
-
-/* GLOSARIUM */
-.glos-row{display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #eee;flex-shrink:0;}
-.glos-term{font-weight:800;color:#1B5E20;min-width:85px;font-size:9px;flex-shrink:0;}
-.glos-def{color:#555;font-size:9px;line-height:1.4;flex:1;}
-
-/* YT */
-.yt-wrap{position:relative;width:100%;padding-bottom:50%;height:0;overflow:hidden;border-radius:8px;border:2px solid;flex-shrink:0;}
-.yt-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
-.yt-lbl{font-size:9px;font-weight:700;margin-bottom:2px;flex-shrink:0;}
-.pg-footer{text-align:center;padding:4px;font-size:8px;color:#aaa;border-top:1px solid rgba(0,0,0,.06);font-style:italic;flex-shrink:0;}
-
-/* RESULT POPUP */
-.result-pop{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s;}
-.result-pop.show{opacity:1;pointer-events:all;}
-.result-box{background:#fff;border-radius:18px;padding:20px 26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.28);max-width:260px;width:88%;transform:scale(.82);transition:transform .25s;}
-.result-pop.show .result-box{transform:scale(1);}
-.r-icon{font-size:40px;margin-bottom:5px;}
-.r-title{font-family:'Fredoka One',cursive;font-size:17px;color:#333;margin-bottom:3px;}
-.r-score{font-family:'Fredoka One',cursive;font-size:42px;color:#2E7D32;}
-.r-msg{font-size:11px;color:#666;margin:4px 0 10px;}
-.btn-close-pop{background:linear-gradient(135deg,#43A047,#1B5E20);color:#fff;padding:7px 20px;border-radius:22px;border:none;cursor:pointer;font-family:'Fredoka One',cursive;font-size:12px;}
-
-/* FINISH */
-.finish-box{text-align:center;background:#fff;border-radius:10px;padding:10px;box-shadow:0 3px 10px rgba(0,0,0,.09);flex-shrink:0;}
-.finish-box .ficon{font-size:26px;margin-bottom:4px;}
-.finish-box .fmsg{font-family:'Fredoka One',cursive;font-size:14px;color:#1B5E20;}
-.finish-box .fsub{font-size:9px;color:#666;margin-top:2px;}
-.btn-restart{background:linear-gradient(135deg,#43A047,#1B5E20);color:#fff;padding:6px 16px;font-size:11px;border-radius:22px;border:none;cursor:pointer;font-weight:800;font-family:'Fredoka One',cursive;margin-top:6px;transition:all .2s;}
-.btn-restart:hover{transform:scale(1.04);}
-
-.nilai-badge{display:inline-block;font-family:'Fredoka One',cursive;font-size:30px;color:#2E7D32;border:3px solid #43A047;border-radius:10px;padding:3px 15px;background:#E8F5E9;margin:5px 0;}
-.chip{padding:2px 8px;border-radius:18px;font-size:8px;font-weight:700;}
-
-/* ── SWIPE HINT ── */
-.swipe-hint{
-  position:absolute;bottom:38px;left:50%;transform:translateX(-50%);
-  font-size:9px;color:rgba(255,255,255,.6);font-weight:600;
-  pointer-events:none;white-space:nowrap;
-  animation:hintFade 3s ease forwards 1.5s;
-  opacity:0;
-}
-@keyframes hintFade{0%{opacity:0;}20%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
-
-/* ── RESPONSIVE ── */
-@media(max-width:480px){
-  .arrow-left{left:5px;z-index:30;}
-  .arrow-right{right:5px;z-index:30;}
-  .toolbar{top:max(6px, calc(var(--sat) + 4px));right:6px;padding:3px 5px;}
-}
-@media(max-height:500px) and (orientation:landscape){
-  :root{--pw:min(320px,52vw);--ph:min(430px,calc(var(--vh100) - 60px));}
-  .arrow-left{left:-40px;}
-  .arrow-right{right:-40px;}
-}
-</style>
-</head>
-<body>
-
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <button class="tb-btn" title="Zoom" onclick="toggleZoom()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
-  </button>
-  <div class="tb-divider"></div>
-  <button class="tb-btn" title="Fullscreen" onclick="toggleFull()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-  </button>
-  <div class="tb-divider"></div>
-  <button class="tb-btn" id="soundBtn" title="Suara" onclick="toggleMusic()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-  </button>
-</div>
-
-<!-- RESULT POPUP -->
-<div class="result-pop" id="resultPop">
-  <div class="result-box">
-    <div class="r-icon" id="rIcon">🎉</div>
-    <div class="r-title" id="rTitle">Hasilmu!</div>
-    <div class="nilai-badge" id="rScore">80</div>
-    <div class="r-msg" id="rMsg"></div>
-    <button class="btn-close-pop" onclick="closePop()">Tutup ✓</button>
-  </div>
-</div>
-
-<!-- BOOK SCENE -->
-<div class="book-scene" id="bookScene">
-  <div class="stack-card c2"></div>
-  <div class="stack-card c1"></div>
-  <div class="main-page" id="mainPage">
-    <div class="page-inner" id="pageInner"></div>
-  </div>
-  <button class="arrow-btn arrow-left" id="btnPrev" onclick="changePage(-1)" disabled>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <button class="arrow-btn arrow-right" id="btnNext" onclick="changePage(1)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-  <div class="swipe-hint" id="swipeHint">👆 Geser kiri/kanan untuk pindah halaman</div>
-</div>
-
-<!-- SLIDER -->
-<div class="slider-bar">
-  <input type="range" id="pageSlider" min="0" max="17" value="0" oninput="sliderChange(this.value)"/>
-  <div class="slider-page-num" id="sliderLabel">1 / 18</div>
-</div>
-
-<script>
-const TOTAL = 18;
-let current = 0;
-let isAnimating = false;
-
-// ── AUDIO ──
-let audioCtx=null,musicOn=false,musicInterval=null,musicNodes=[];
-function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
-function playTone(f,dur,type='sine',vol=.07,delay=0){
-  if(!audioCtx||!musicOn)return;
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  const fl=audioCtx.createBiquadFilter();fl.type='lowpass';fl.frequency.value=1200;
-  o.connect(fl);fl.connect(g);g.connect(audioCtx.destination);
-  o.type=type;o.frequency.value=f;
-  g.gain.setValueAtTime(0,audioCtx.currentTime+delay);
-  g.gain.linearRampToValueAtTime(vol,audioCtx.currentTime+delay+.06);
-  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+delay+dur);
-  o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+dur+.1);
-  musicNodes.push(o);
-}
-const GN=[261.6,293.6,311.1,392,415.3,523.2,587.3];
-function playChord(){if(!musicOn)return;const r=GN[Math.floor(Math.random()*5)];
-  playTone(r*.5,3,'sine',.06);playTone(r,2.5,'triangle',.07,.12);
-  playTone(r*1.5,2,'sine',.04,.22);}
-function startMusic(){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  musicOn=true;playChord();musicInterval=setInterval(()=>{if(musicOn)playChord();},2600);}
-function stopMusic(){musicOn=false;if(musicInterval)clearInterval(musicInterval);
-  musicNodes.forEach(n=>{try{n.stop();}catch(e){}});musicNodes=[];}
-function toggleMusic(){
-  initAudio();
-  if(musicOn){stopMusic();document.getElementById('soundBtn').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;}
-  else{startMusic();document.getElementById('soundBtn').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;}
-}
-function clickSnd(f=600){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
-  o.type='sine';o.frequency.setValueAtTime(f,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(f*.65,audioCtx.currentTime+.14);
-  g.gain.setValueAtTime(.09,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.2);
-  o.start();o.stop(audioCtx.currentTime+.22);}
-function flipSnd(){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
-  o.type='triangle';o.frequency.setValueAtTime(900,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(200,audioCtx.currentTime+.35);
-  g.gain.setValueAtTime(.06,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.4);
-  o.start();o.stop(audioCtx.currentTime+.45);}
-function successSnd(){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  [523,659,784,1047].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.value=f;
-    g.gain.setValueAtTime(.09,audioCtx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.1+.28);
-    o.start(audioCtx.currentTime+i*.1);o.stop(audioCtx.currentTime+i*.1+.3);});}
-function errorSnd(){initAudio();if(audioCtx.state==='suspended')audioCtx.resume();
-  [300,240].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(audioCtx.destination);o.type='sawtooth';o.frequency.value=f;
-    g.gain.setValueAtTime(.07,audioCtx.currentTime+i*.16);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.16+.22);
-    o.start(audioCtx.currentTime+i*.16);o.stop(audioCtx.currentTime+i*.16+.25);});}
-
-// ── QUIZ DATA (berdasarkan konten e-book Semanding) ──
-const quizData=[
-  {q:"Di mana pusat pemerintahan Tuban pernah berada pada masa Kerajaan Majapahit?",opts:["Desa Kowang","Desa Prunggahan Kulon","Desa Bektiharjo","Desa Gesing"],ans:1},
-  {q:"Ritual Keleman atau Tingkepan Dewi Sri dilaksanakan oleh warga desa mana?",opts:["Desa Bektiharjo","Desa Bejagung","Desa Ngino","Desa Karang"],ans:2},
-  {q:"Kerajinan gerabah (tembikar) banyak dibuat oleh pengrajin di desa mana?",opts:["Desa Bejagung","Desa Karang","Desa Bektiharjo","Desa Prunggahan"],ans:1},
-  {q:"Seni Sandur berkembang di desa mana sebagai pusat kesenian rakyat di Tuban?",opts:["Desa Karang","Desa Ngino","Desa Prunggahan Kulon","Desa Gesing"],ans:2},
-  {q:"Tempat wisata Pemandian Bektiharjo sering digunakan untuk upacara adat apa?",opts:["Tabuh Lesung","Siraman Waranggono","Ritual Keleman","Seni Sandur"],ans:1},
-  {q:"Dewi Sri dalam ritual Keleman dianggap sebagai simbol apa?",opts:["Kesuburan dan kemakmuran","Keberanian dan kekuatan","Kecerdasan dan ilmu","Kesucian dan keindahan"],ans:0},
-  {q:"Alat utama dalam kesenian Tabuh Lesung adalah...",opts:["Gamelan","Kentrung","Lesung dan alu","Gendang"],ans:2},
-  {q:"Apa nama pengrajin gerabah terkenal dari Desa Karang?",opts:["Mbah Sari","Mbah Somi","Mbah Janjang","Mbah Wiro"],ans:1},
-];
-let quizAns=new Array(quizData.length).fill(null);
-
-const evalData=[
-  {q:"1. Apa yang dimaksud dengan Paes Semandingan?",opts:["Tari tradisional Semanding","Tata rias pengantin khas Semanding","Upacara adat panen","Kerajinan anyaman bambu"],ans:1},
-  {q:"2. Seni Sandur menggabungkan unsur-unsur apa?",opts:["Hanya tari dan musik","Cerita, lawakan, dialog, musik, nyanyian, dan tarian","Hanya nyanyian dan tarian","Hanya cerita dan dialog"],ans:1},
-  {q:"3. Musik Kentrung menggunakan alat musik dari bahan apa?",opts:["Logam","Kulit binatang","Bambu","Kayu jati"],ans:2},
-  {q:"4. Nilai apa yang paling mencerminkan Ritual Keleman?",opts:["Persaingan dan kompetisi","Rasa syukur, gotong royong, dan pelestarian budaya","Kesenangan individu","Kemewahan dan gaya hidup"],ans:1},
-  {q:"5. Siraman Waranggono merupakan prosesi untuk apa?",opts:["Merayakan panen raya","Wisuda penari Tayub sebelum tampil di muka umum","Menyambut tamu kehormatan","Memperingati hari kemerdekaan"],ans:1},
-  {q:"6. Apa fungsi suara Tabuh Lesung pada zaman dahulu selain sebagai seni?",opts:["Hiburan raja","Alat komunikasi warga desa","Tanda bahaya kebakaran","Panggilan untuk sembahyang"],ans:1},
-  {q:"7. Wilayah Semanding sebagian besar berupa apa?",opts:["Dataran rendah dan rawa","Perbukitan kapur","Padang pasir","Pantai berpasir"],ans:1},
-];
-let evalAns=new Array(evalData.length).fill(null);
-
-// ── PAGE GENERATOR ──
-function pg(num){
-  switch(num){
-
-// COVER
-case 1: return `<div class="cover-page">
+      // ============================================================
+      // PAGE HTML GENERATOR
+      // ============================================================
+      function pg(num) {
+        switch (num) {
+          // ---- COVER ----
+          case 1:
+            return `<div class="cover-page">
   <div class="cover-sky">
     <div class="cover-logos">
       <div class="cover-logo-badge">Kurikulum<br>Merdeka</div>
-      <div class="cover-logo-badge red">IPAS<br>Kelas VI</div>
-      <div class="cover-logo-badge blue2">SD<br>2026</div>
+      <div class="cover-logo-badge red">MERDEKA<br>BELAJAR</div>
+      <div class="cover-logo-badge blue2">Merdeka<br>Mengajar</div>
     </div>
-    <div class="cover-kelas">KELAS <span>VI</span> SD</div>
-    <div class="cover-title-main">Menggali<br>Kearifan Lokal<br>Semanding</div>
-    <div class="cover-subtitle">Menjelajahi Warisan Budaya & Ilmu Pengetahuan Sosial</div>
+    <div class="cover-kelas">KELAS<span>VI</span></div>
+    <div class="cover-title-main">Menggali<br>Kearifan<br>Lokal<br>Semanding</div>
   </div>
   <div class="cover-scene">
     <div class="cover-scene-img">
-      <div class="building"><div class="building-sign">BEKTIHARJO</div></div>
+      <div class="building">
+        <div class="building-sign">SEMANDING</div>
+      </div>
       <div class="trees left">🌳🌲</div>
-      <div class="lung-circle">🏺</div>
-      <div class="chars">👨‍🎓👩‍🎓🧒👧</div>
       <div class="trees right">🌲🌳</div>
-      <button class="next-sign" onclick="changePage(1)">MULAI BACA ▶</button>
+      <div class="chars">👨‍🎓👩‍🎓🧒👧🧒‍♂️👦</div>
+      <div class="lung-circle">🏺</div>
+      <button class="next-sign" onclick="changePage(1)">MULAI BACA</button>
+      <div class="ground"></div>
     </div>
   </div>
-  <div class="cover-footer">Menggali Kearifan Lokal Semanding &nbsp;|&nbsp; Penulis: Siti Nurhalimah &nbsp;|&nbsp; IPAS Kelas VI SD &nbsp;|&nbsp; 2026</div>
+  <div class="cover-footer">Menggali Kearifan Lokal Semanding &nbsp;|&nbsp; Penulis: Siti Nurhalimah &nbsp;|&nbsp; Mata Pelajaran: IPAS &nbsp;|&nbsp; Kelas VI/SD &nbsp;|&nbsp; 2026</div>
 </div>`;
 
-// KATA PENGANTAR
-case 2: return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
-  <div class="inner-topbar" style="background:#1B5E20">
-      <div class="topbar-title">📝 Kata Pengantar</div>
-    </div>
-  <div class="inner-body">
-    <div class="highlight" style="border-color:#43A047;background:#F1F8E9;color:#1B5E20;font-style:italic;font-size:11px">
-      Assalamu'alaikum Warahmatullahi Wabarakatuh
-    </div>
-    <div class="card" style="border-left:4px solid #43A047">
-      <div class="card-text">Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul <strong>"Menggali Kearifan Lokal Semanding"</strong> ini dapat diselesaikan dengan baik.</div>
-    </div>
-    <div class="card" style="border-left:4px solid #66BB6A">
-      <div class="card-text">Kecamatan Semanding bukan hanya tempat tinggal kita, tetapi juga tanah yang kaya akan sejarah, tradisi, dan nilai-nilai luhur yang diwariskan leluhur.</div>
-    </div>
-    <div class="highlight" style="border-color:#FFA726;background:#FFF8E1;color:#E65100">
-      💡 <strong>Tahukah kamu?</strong> Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di Prunggahan Kulon, wilayah Semanding!
-    </div>
-    <div class="card" style="border-left:4px solid #26A69A">
-      <div class="card-text">Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah! 🌿</div>
-    </div>
-    <div style="text-align:right;font-size:10px;color:#666;margin-top:8px;font-style:italic">Wassalamu'alaikum Warahmatullahi Wabarakatuh<br><strong>Penulis</strong></div>
+          // ---- KATA PENGANTAR ----
+          // ---- KATA PENGANTAR ----
+          case 2:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE082 45%,#FFD54F 100%)">
+
+  <!-- TOPBAR -->
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#F9A825,#F57F17)">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📖 Kata Pengantar</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
   </div>
-  <div class="pg-footer">Halaman 2 dari 18</div>
-</div>`;
 
-// PETUNJUK
-case 3: return `<div class="inner-page" style="background:linear-gradient(160deg,#E3F2FD,#BBDEFB)">
-  <div class="inner-topbar" style="background:#1565C0">
-      <div class="topbar-title">📋 Petunjuk Penggunaan</div>
-    </div>
+  <!-- BODY -->
   <div class="inner-body">
-    <div style="font-size:12px;font-weight:800;color:#1565C0;margin-bottom:8px">Ayo Belajar dengan Cara Seru! 🎉</div>
-    ${[['👈','Navigasi Halaman','Geser kiri/kanan di layar untuk membalik halaman, atau gunakan tombol panah di sisi buku'],
-       ['🎵','Musik Latar','Klik ikon 🔊 di toolbar kanan atas untuk mengaktifkan musik instrumen tradisional'],
-       ['🎥','Tonton Video','Klik ▶ pada video YouTube untuk menonton materi berbasis video'],
-       ['🧠','Kuis Interaktif','Pilih jawaban pada soal — kamu langsung tahu benar atau salah!'],
-       ['📝','LKPD','Kerjakan soal latihan dengan jujur dan sungguh-sungguh'],
-       ['🏆','Evaluasi Akhir','Kerjakan semua soal evaluasi untuk mendapatkan nilai akhirmu'],
-    ].map(([ic,t,d])=>`<div class="card" style="border-left:3px solid #42A5F5">
-      <div style="display:flex;gap:7px;align-items:flex-start">
-        <span style="font-size:16px;flex-shrink:0;width:22px;text-align:center">${ic}</span>
-        <div><div class="card-title" style="color:#1565C0">${t}</div><div class="card-text">${d}</div></div>
-      </div></div>`).join('')}
-  </div>
-  <div class="pg-footer">Halaman 3 dari 18</div>
-</div>`;
 
-// DAFTAR ISI
-case 4: return `<div class="inner-page" style="background:linear-gradient(160deg,#F9FBE7,#F0F4C3)">
-  <div class="inner-topbar" style="background:#558B2F">
-      <div class="topbar-title">📚 Daftar Isi</div>
-    </div>
-  <div class="inner-body">
-    ${[['#1B5E20','1','BAB 1: Mengenal Semanding',5],
-       ['#E65100','2','BAB 2: Tradisi dan Upacara Adat',7],
-       ['#7B1FA2','3','BAB 3: Kerajinan dan Kearifan Hidup',10],
-       ['#1565C0','4','BAB 4: Seni dan Budaya yang Memukau',12],
-       ['#C62828','5','Kuis Interaktif',14],
-       ['#4527A0','6','Evaluasi Akhir',16],
-       ['#006064','7','Penutup & Glosarium',17],
-    ].map(([c,n,lbl,pg])=>`<div class="toc-row" style="border-color:${c}" onclick="goToPage(${pg})">
-      <div class="toc-num" style="background:${c}">${n}</div>
-      <div class="toc-lbl">${lbl}</div>
-      <div style="margin-left:auto;font-size:10px;color:#888">Hal ${pg}</div>
-    </div>`).join('')}
-    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
-      <span class="chip" style="background:#E8F5E9;color:#2E7D32;border:1px solid #43A047">📚 IPAS</span>
-      <span class="chip" style="background:#F3E5F5;color:#7B1FA2;border:1px solid #AB47BC">🎨 Budaya Lokal</span>
-      <span class="chip" style="background:#FFF9C4;color:#F57F17;border:1px solid #FDD835">Kelas VI SD</span>
-      <span class="chip" style="background:#FCE4EC;color:#C2185B;border:1px solid #F48FB1">Semanding 2026</span>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 4 dari 18</div>
-</div>`;
+    <!-- HEADER -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFFDE7,#FFF8E1);
+      border:2px dashed #FBC02D;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    ">
 
-// BAB 1 - MENGENAL SEMANDING
-case 5: return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
-  <div class="inner-topbar" style="background:#2E7D32">
-      <div class="topbar-title">🗺️ BAB 1: Mengenal Semanding</div>
-    </div>
-  <div class="inner-body">
-    <div style="font-size:11px;font-weight:800;color:#1B5E20;margin-bottom:5px">Tujuan Pembelajaran:</div>
-    ${['Mengetahui letak geografis dan sejarah singkat Semanding','Menyebutkan potensi alam dan tempat bersejarah di sekitarnya'].map(t=>`<div class="list-item" style="color:#2E7D32">${t}</div>`).join('')}
-    <div class="highlight" style="border-color:#FFA726;background:#FFF8E1;color:#E65100;margin-top:8px">
-      💭 <strong>Ayo Pikir Dulu!</strong><br>Semanding terletak di bagian selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?
-    </div>
-    <div class="card" style="border-left:4px solid #43A047">
-      <div class="card-title" style="color:#1B5E20">🏔️ Wilayah Bersejarah dan Berbukit</div>
-      <div class="card-text">Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa <strong>perbukitan kapur</strong>. Pada masa Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di <strong>Desa Prunggahan Kulon</strong>.</div>
-    </div>
-    <div class="mini-grid">
-      <div class="mini-card"><div class="micon">💧</div><div class="mlabel" style="color:#1B5E20">Sumber Air</div><div class="mdesc">Banyak mata air jernih, termasuk Pemandian Bektiharjo</div></div>
-      <div class="mini-card"><div class="micon">🌾</div><div class="mlabel" style="color:#1B5E20">Hasil Bumi</div><div class="mdesc">Padi, jagung, dan kelapa melimpah di wilayah ini</div></div>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 5 dari 18</div>
-</div>`;
+      <div style="
+        position:absolute;
+        top:-18px;
+        right:-18px;
+        font-size:70px;
+        opacity:.08;
+      ">📚</div>
 
-// BAB 1 - BEKTIHARJO
-case 6: return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
-  <div class="inner-topbar" style="background:#00695C">
-      <div class="topbar-title">💧 Pemandian Bektiharjo</div>
-    </div>
-  <div class="inner-body">
-    <div class="highlight" style="border-color:#26C6DA;background:#E0F7FA;color:#006064">
-      🌊 Pemandian Bektiharjo tidak hanya untuk mandi, tetapi juga memiliki <strong>nilai sejarah</strong> dan sering digunakan untuk upacara adat masyarakat Semanding.
-    </div>
-    <div class="card" style="border-left:4px solid #00BCD4">
-      <div class="card-title" style="color:#006064">📌 Fakta Menarik Semanding</div>
-      <div class="card-text">
-        <div class="list-item">Semanding terdiri dari banyak desa: Prunggahan Wetan, Bektiharjo, Karang, dan lain-lain</div>
-        <div class="list-item">Wilayahnya yang bergunung-gunung membuat udaranya sejuk dan asri</div>
-        <div class="list-item">Merupakan salah satu kecamatan dengan kekayaan budaya terbesar di Tuban</div>
+      <div style="font-size:42px;margin-bottom:4px">✨</div>
+
+      <div class="card-title" style="
+        font-size:18px;
+        color:#E65100;
+        font-family:'Fredoka One',cursive;
+        letter-spacing:.5px;
+      ">
+        KATA PENGANTAR
+      </div>
+
+      <div class="card-text" style="
+        font-size:11px;
+        color:#795548;
+        margin-top:4px;
+      ">
+        E-Book Interaktif <b>“Menggali Kearifan Lokal Semanding”</b>
       </div>
     </div>
-    <div class="yt-lbl" style="color:#006064">🎥 Video: Profil Kecamatan Semanding</div>
-    <div class="yt-wrap" style="border-color:#26C6DA">
-      <iframe src="https://www.youtube.com/embed/J3hF9yX7wQk" frameborder="0" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 6 dari 18</div>
-</div>`;
 
-// BAB 2 - RITUAL KELEMAN
-case 7: return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1,#FFECB3)">
-  <div class="inner-topbar" style="background:#E65100">
-      <div class="topbar-title">🌾 BAB 2: Ritual Keleman</div>
+    <!-- SALAM -->
+    <div class="highlight" style="
+      background:#FFF3E0;
+      border-left-color:#FB8C00;
+      color:#6D4C41;
+      font-weight:700;
+    ">
+      🌸 Assalamu’alaikum Warahmatullahi Wabarakatuh 🌸
     </div>
+
+    <!-- ISI -->
+    <div class="card" style="
+      border-left:5px solid #FFA000;
+      background:rgba(255,255,255,.96);
+    ">
+      <div class="card-text" style="
+        font-size:11px;
+        line-height:1.9;
+        text-align:justify;
+        color:#5D4037;
+      ">
+
+        <p style="margin-bottom:10px">
+          Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa.
+          Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul
+          <span style="
+            background:#FFF8E1;
+            color:#E65100;
+            font-weight:800;
+            padding:2px 6px;
+            border-radius:6px;
+          ">
+            “Menggali Kearifan Lokal Semanding”
+          </span>
+          ini dapat diselesaikan dengan baik.
+        </p>
+
+        <p style="margin-bottom:10px">
+          Kecamatan <b>Semanding</b> bukan hanya tempat tinggal kita,
+          tetapi juga tanah yang kaya akan sejarah, tradisi,
+          dan nilai-nilai luhur yang diwariskan leluhur.
+        </p>
+
+        <div style="
+          background:linear-gradient(135deg,#FFF8E1,#FFECB3);
+          border-radius:10px;
+          padding:10px;
+          margin:12px 0;
+          border:1.5px solid #FFD54F;
+        ">
+          <div style="
+            display:flex;
+            align-items:flex-start;
+            gap:8px;
+          ">
+            <div style="font-size:22px">🏛️</div>
+
+            <div style="
+              font-size:10.5px;
+              color:#6D4C41;
+              line-height:1.7;
+            ">
+              <b>Tahukah kamu?</b><br>
+              Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di
+              <b>Prunggahan Kulon</b>, wilayah Semanding lho!
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-bottom:10px">
+          Melalui buku ini, kita diajak untuk lebih mengenal,
+          mencintai, dan melestarikan budaya sendiri.
+        </p>
+
+        <div style="
+          margin-top:14px;
+          padding:10px;
+          border-radius:10px;
+          background:linear-gradient(135deg,#E8F5E9,#F1F8E9);
+          border-left:4px solid #43A047;
+          color:#2E7D32;
+          font-weight:700;
+          text-align:center;
+          line-height:1.7;
+        ">
+          📖 Selamat membaca dan menjelajah budaya lokal Semanding! 🌿
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PENUTUP -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFFDE7,#FFF8E1);
+      text-align:center;
+      border:1.5px solid #FFE082;
+    ">
+
+      <div style="
+        font-size:11px;
+        color:#6D4C41;
+        line-height:1.8;
+        font-weight:700;
+      ">
+        Wassalamu’alaikum Warahmatullahi Wabarakatuh.
+      </div>
+
+      <div style="
+        margin-top:18px;
+        text-align:right;
+        color:#795548;
+      ">
+        <div style="font-size:10px">✍️</div>
+        <div style="
+          font-family:'Fredoka One',cursive;
+          font-size:13px;
+          color:#E65100;
+        ">
+          Siti Nurhalimah 
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="pg-footer">
+    Halaman 2 dari 16
+  </div>
+
+</div>`;
+          // ---- DAFTAR ISI ----
+          // ---- PETUNJUK PENGGUNAAN E-BOOK ----
+          case 3:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#E3F2FD 0%,#BBDEFB 45%,#90CAF9 100%)">
+
+  <!-- TOPBAR -->
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#1976D2,#1565C0)">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📘 Petunjuk Penggunaan</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+
+  <!-- BODY -->
   <div class="inner-body">
-    <div class="card" style="border-left:4px solid #FFA726">
-      <div class="card-title" style="color:#E65100">Tingkepan Dewi Sri — Desa Ngino</div>
-      <div class="card-text">Ritual penghormatan kepada Dewi Sri, simbol kesuburan dan kemakmuran. Dilakukan saat padi mulai tumbuh subur sebagai ungkapan rasa syukur dan harapan panen melimpah.</div>
+
+    <!-- HEADER -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#E1F5FE,#FFFFFF);
+      border:2px dashed #42A5F5;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    ">
+
+      <div style="
+        position:absolute;
+        top:-10px;
+        right:-10px;
+        font-size:70px;
+        opacity:.08;
+      ">📚</div>
+
+      <div style="font-size:40px;margin-bottom:5px">🚀</div>
+
+      <div class="card-title" style="
+        font-size:18px;
+        color:#1565C0;
+        font-family:'Fredoka One',cursive;
+        letter-spacing:.5px;
+      ">
+        Ayo Belajar dengan Cara Seru!
+      </div>
+
+      <div class="card-text" style="
+        margin-top:5px;
+        color:#546E7A;
+        font-size:11px;
+      ">
+        Ikuti petunjuk berikut agar belajar menjadi lebih mudah dan menyenangkan ✨
+      </div>
+
     </div>
-    <div class="card" style="border-left:4px solid #66BB6A">
-      <div class="card-text">Warga berkumpul di area persawahan membawa <strong>tumpeng, jajanan pasar, hasil bumi</strong>. Diawali doa bersama, sebagian makanan ditaburkan ke sawah sebagai "tolak bala".</div>
+
+    <!-- LIST PETUNJUK -->
+    ${[
+      ["➡️", "#42A5F5", "Klik tombol panah di pojok kanan atau kiri untuk membalik halaman."],
+      ["🖼️", "#26A69A", "Perhatikan gambar dan baca teks dengan teliti."],
+      ["🔊", "#FB8C00", "Klik ikon Speaker jika ingin mendengar suara penjelasan."],
+      ["✏️", "#8E24AA", "Kerjakan soal latihan dan kuis dengan jujur."],
+      ["🎉", "#43A047", "Selamat belajar dan semoga menyenangkan!"],
+    ]
+      .map(
+        ([icon, color, text], i) => `
+      <div class="benefit-row" style="
+        border-left:4px solid ${color};
+        background:rgba(255,255,255,.96);
+      ">
+
+        <div class="bicon" style="
+          width:42px;
+          height:42px;
+          border-radius:12px;
+          background:${color};
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:20px;
+          color:#fff;
+          box-shadow:0 3px 8px rgba(0,0,0,.12);
+        ">
+          ${icon}
+        </div>
+
+        <div>
+          <div class="btitle" style="
+            color:${color};
+            font-size:11px;
+          ">
+            Petunjuk ${i + 1}
+          </div>
+
+          <div class="bdesc" style="
+            font-size:10.5px;
+            line-height:1.6;
+            color:#555;
+          ">
+            ${text}
+          </div>
+        </div>
+
+      </div>
+    `,
+      )
+      .join("")}
+
+    <!-- BOX PENUTUP -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFF8E1,#FFFDE7);
+      border:1.5px solid #FFD54F;
+      text-align:center;
+    ">
+
+      <div style="font-size:34px;margin-bottom:4px">🌟</div>
+
+      <div style="
+        font-family:'Fredoka One',cursive;
+        font-size:15px;
+        color:#F57F17;
+        margin-bottom:4px;
+      ">
+        Siap Menjelajah?
+      </div>
+
+      <div class="card-text" style="
+        font-size:11px;
+        color:#6D4C41;
+        line-height:1.7;
+      ">
+        Yuk mulai petualangan mengenal <b>Kearifan Lokal Semanding</b> dengan semangat dan rasa ingin tahu!
+      </div>
+
     </div>
-    <div style="font-size:11px;font-weight:800;color:#E65100;margin:6px 0 4px">🌟 Nilai-Nilai Ritual Keleman:</div>
-    <div class="mini-grid">
-      ${[['🙏','Rasa Syukur'],['🌿','Keseimbangan Alam'],['🤝','Gotong Royong'],['🏛️','Pelestarian Budaya']].map(([ic,t])=>`<div class="mini-card"><div class="micon">${ic}</div><div class="mlabel" style="color:#E65100">${t}</div></div>`).join('')}
-    </div>
+
   </div>
-  <div class="pg-footer">Halaman 7 dari 18</div>
+
+  <!-- FOOTER -->
+  <div class="pg-footer">
+    Halaman 3 dari 16
+  </div>
+
+</div>`;
+          // ---- KOMPETENSI ----
+          case 4:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9 0%,#C8E6C9 45%,#A5D6A7 100%)">
+
+  <!-- TOPBAR -->
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">🌿 BAB 1: Mengenal Semanding</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="inner-body">
+
+    <!-- HEADER BAB -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#F1F8E9,#FFFFFF);
+      border:2px dashed #66BB6A;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    ">
+
+      <div style="
+        position:absolute;
+        right:-12px;
+        top:-12px;
+        font-size:70px;
+        opacity:.08;
+      ">🏞️</div>
+
+      <div style="font-size:42px;margin-bottom:5px">🌿</div>
+
+      <div class="card-title" style="
+        font-size:18px;
+        color:#1B5E20;
+        font-family:'Fredoka One',cursive;
+        letter-spacing:.5px;
+      ">
+        BAB 1
+      </div>
+
+      <div style="
+        font-family:'Fredoka One',cursive;
+        font-size:16px;
+        color:#2E7D32;
+        margin-top:3px;
+      ">
+        Mengenal Semanding
+      </div>
+
+      <div class="card-text" style="
+        margin-top:6px;
+        color:#607D8B;
+        font-size:11px;
+      ">
+        Yuk mengenal wilayah bersejarah dan penuh kekayaan alam 🌱
+      </div>
+
+    </div>
+
+    <!-- TUJUAN -->
+    <div class="card" style="
+      border-left:5px solid #43A047;
+      background:rgba(255,255,255,.97);
+    ">
+
+      <div class="card-title" style="
+        color:#2E7D32;
+        display:flex;
+        align-items:center;
+        gap:6px;
+      ">
+        🎯 Tujuan Pembelajaran
+      </div>
+
+      <div class="list-item" style="color:#2E7D32">
+        Siswa dapat mengetahui letak geografis dan sejarah singkat Semanding.
+      </div>
+
+      <div class="list-item" style="color:#2E7D32">
+        Siswa dapat menyebutkan potensi alam dan tempat bersejarah di sekitarnya.
+      </div>
+
+    </div>
+
+    <!-- AYO PIKIR -->
+    <div class="highlight" style="
+      background:linear-gradient(135deg,#FFF8E1,#FFFDE7);
+      border-left-color:#F9A825;
+      color:#6D4C41;
+    ">
+
+      <div style="
+        font-weight:800;
+        color:#E65100;
+        margin-bottom:4px;
+        font-size:11px;
+      ">
+        🤔 Ayo Pikir Dulu!
+      </div>
+
+      <div style="line-height:1.7">
+        “Semanding terletak di bagian selatan Kabupaten Tuban.
+        Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?”
+      </div>
+
+    </div>
+
+    <!-- MATERI -->
+    <div class="card" style="
+      border-left:5px solid #66BB6A;
+      background:#fff;
+    ">
+
+      <div class="card-title" style="
+        color:#1B5E20;
+        font-size:13px;
+      ">
+        🏔️ Semanding: Wilayah Bersejarah dan Berbukit
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+        color:#555;
+      ">
+
+        Kecamatan <b>Semanding</b> terletak di bagian selatan Tuban,
+        dengan wilayah yang sebagian besar berupa <b>perbukitan kapur</b>.
+
+        <br><br>
+
+        Wilayah ini memiliki sejarah yang sangat penting karena
+        pada masa <b>Kerajaan Majapahit</b>, pusat pemerintahan Tuban
+        pernah berada di <b>Desa Prunggahan Kulon</b>, Semanding.
+
+        <br><br>
+
+        Di sini juga terdapat banyak sumber mata air yang jernih
+        dan menjadi tempat wisata favorit, seperti
+        <b>Pemandian Bektiharjo</b>.
+
+        <br><br>
+
+        Selain itu, daerah ini kaya akan hasil bumi seperti
+        <b>padi, jagung, dan kelapa</b>.
+      </div>
+
+    </div>
+
+    <!-- GALERI -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#E3F2FD,#F5F5F5);
+      border:1.5px solid #90CAF9;
+    ">
+
+      <div class="card-title" style="
+        color:#1565C0;
+        margin-bottom:8px;
+      ">
+        🖼️ Galeri Foto & Info
+      </div>
+
+      <!-- FOTO 1 -->
+      <div style="
+        background:#fff;
+        border-radius:10px;
+        overflow:hidden;
+        margin-bottom:10px;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);
+      ">
+
+        <div style="
+          height:120px;
+          background:linear-gradient(135deg,#AED581,#81C784);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:50px;
+        ">
+          🗺️
+        </div>
+
+        <div style="padding:8px 10px">
+
+          <div style="
+            font-size:10px;
+            font-weight:800;
+            color:#2E7D32;
+            margin-bottom:5px;
+          ">
+            [Gambar: Peta Wilayah Semanding]
+          </div>
+
+          <div class="card-text" style="
+            font-size:10px;
+            line-height:1.6;
+          ">
+            <b>Fakta Menarik:</b>
+            <br>
+            • Semanding terdiri dari banyak desa, seperti
+            Prunggahan Wetan, Bektiharjo, Karang, dan lainnya.
+            <br>
+            • Wilayahnya yang bergunung-gunung membuat udaranya
+            sejuk dan asri.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOTO 2 -->
+      <!-- FOTO 2 -->
+<div style="
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+">
+
+  <img 
+    src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg"
+    alt="Pemandian Bektiharjo"
+    style="
+      width:100%;
+      height:120px;
+      object-fit:cover;
+      display:block;
+    "
+  />
+
+  <div style="padding:8px 10px">
+
+    <div style="
+      font-size:10px;
+      font-weight:800;
+      color:#006064;
+      margin-bottom:5px;
+    ">
+      📍 Pemandian Bektiharjo
+    </div>
+
+    <div class="card-text" style="
+      font-size:10px;
+      line-height:1.6;
+    ">
+      <b>Keterangan:</b><br>
+      Tempat ini tidak hanya untuk mandi,
+      tetapi juga memiliki nilai sejarah
+      dan sering digunakan untuk upacara adat.
+    </div>
+
+  </div>
+
+</div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="pg-footer">
+    Halaman 4 dari 16
+  </div>
+
 </div>`;
 
-// BAB 2 - SIRAMAN WARANGGONO
-case 8: return `<div class="inner-page" style="background:linear-gradient(160deg,#F3E5F5,#E1BEE7)">
+          // ---- APERSEPSI ----
+          case 5:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE0B2 45%,#FFCC80 100%)">
+
+  <!-- TOPBAR -->
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#E65100,#BF360C)">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">🏮 BAB 2: Tradisi & Upacara Adat</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="inner-body">
+
+    <!-- HEADER -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFF3E0,#FFFFFF);
+      border:2px dashed #FB8C00;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    ">
+
+      <div style="
+        position:absolute;
+        top:-12px;
+        right:-12px;
+        font-size:72px;
+        opacity:.08;
+      ">🎭</div>
+
+      <div style="font-size:42px;margin-bottom:5px">🏮</div>
+
+      <div class="card-title" style="
+        font-size:18px;
+        color:#E65100;
+        font-family:'Fredoka One',cursive;
+      ">
+        BAB 2
+      </div>
+
+      <div style="
+        font-family:'Fredoka One',cursive;
+        font-size:15px;
+        color:#BF360C;
+      ">
+        Tradisi dan Upacara Adat
+      </div>
+
+      <div class="card-text" style="
+        margin-top:6px;
+        color:#6D4C41;
+      ">
+        Mengenal tradisi unik yang masih hidup di tengah masyarakat Semanding ✨
+      </div>
+
+    </div>
+
+    <!-- TUJUAN -->
+    <div class="card" style="
+      border-left:5px solid #FB8C00;
+    ">
+
+      <div class="card-title" style="color:#E65100">
+        🎯 Tujuan Pembelajaran
+      </div>
+
+      <div class="list-item" style="color:#6D4C41">
+        Siswa dapat mengenal berbagai tradisi unik di Semanding.
+      </div>
+
+      <div class="list-item" style="color:#6D4C41">
+        Siswa dapat memahami makna dan nilai yang terkandung di dalamnya.
+      </div>
+
+    </div>
+
+    <!-- RITUAL KELEMAN -->
+    <div class="card" style="
+      border-left:5px solid #43A047;
+      background:#fff;
+    ">
+
+      <div class="card-title" style="
+        color:#2E7D32;
+        font-size:13px;
+      ">
+        🌾 1. Ritual Keleman / Tingkepan Dewi Sri
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Ritual Keleman merupakan tradisi masyarakat Desa Ngino
+        sebagai bentuk penghormatan kepada <b>Dewi Sri</b>,
+        simbol kesuburan dan kemakmuran.
+
+        <br><br>
+
+        Tradisi ini dilakukan ketika tanaman padi mulai tumbuh
+        subur atau menjelang panen sebagai bentuk rasa syukur
+        dan harapan agar hasil pertanian melimpah.
+
+        <br><br>
+
+        Warga berkumpul di sawah membawa
+        <b>tumpeng, jajanan pasar, dan hasil bumi</b>.
+        Setelah doa bersama, sebagian makanan ditaburkan
+        di sawah sebagai simbol penolak bala.
+
+      </div>
+
+      <div style="
+        margin-top:10px;
+        background:#F1F8E9;
+        border-radius:10px;
+        padding:10px;
+        border:1px solid #A5D6A7;
+      ">
+
+        <div style="
+          font-size:10px;
+          font-weight:800;
+          color:#2E7D32;
+          margin-bottom:5px;
+        ">
+          🌟 Nilai yang Terkandung
+        </div>
+
+        <div class="mini-grid">
+
+          <div class="mini-card">
+            <div class="micon">🙏</div>
+            <div class="mlabel">Rasa Syukur</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="micon">🌱</div>
+            <div class="mlabel">Menjaga Alam</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="micon">🤝</div>
+            <div class="mlabel">Gotong Royong</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="micon">🏺</div>
+            <div class="mlabel">Pelestarian Budaya</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SIRAMAN WARANGGONO -->
+    <div class="card" style="
+      border-left:5px solid #8E24AA;
+    ">
+
+      <div class="card-title" style="
+        color:#6A1B9A;
+        font-size:13px;
+      ">
+        💧 2. Siraman Waranggono
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Siraman Waranggono adalah tradisi penyucian bagi
+        penari Tayub sebelum tampil di depan umum.
+
+        <br><br>
+
+        Prosesi dilakukan di
+        <b>Pemandian Bektiharjo</b>
+        menggunakan air suci yang dipercaya membawa keberkahan.
+
+        <br><br>
+
+        Para calon penari mengenakan pakaian putih
+        sebagai simbol kesucian hati dan niat yang baik.
+        Mereka disiram air sambil dipanjatkan doa keselamatan.
+
+      </div>
+
+      <!-- VIDEO -->
+      <div class="yt-lbl" style="
+        color:#8E24AA;
+        margin-top:10px;
+      ">
+        🎥 Video Siraman Waranggono
+      </div>
+
+      <div class="yt-wrap" style="
+        border-color:#CE93D8;
+      ">
+        <iframe
+          src="https://www.youtube.com/embed/EpPbhZF95gs"
+          frameborder="0"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+        </iframe>
+      </div>
+
+      <div style="
+        margin-top:8px;
+        background:#F3E5F5;
+        border-radius:10px;
+        padding:10px;
+      ">
+
+        <div class="list-item" style="color:#6A1B9A">
+          Mengajarkan kesucian hati dan tanggung jawab.
+        </div>
+
+        <div class="list-item" style="color:#6A1B9A">
+          Menghormati seni tradisional sebagai warisan budaya.
+        </div>
+
+        <div class="list-item" style="color:#6A1B9A">
+          Menjaga pelestarian budaya Tayub.
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TABUH LESUNG -->
+    <div class="card" style="
+      border-left:5px solid #1565C0;
+    ">
+
+      <div class="card-title" style="
+        color:#1565C0;
+        font-size:13px;
+      ">
+        🥁 3. Tabuh Lesung
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Tabuh Lesung adalah kesenian tradisional
+        menggunakan <b>lesung</b> dan <b>alu</b>
+        yang dahulu dipakai untuk menumbuk padi.
+
+        <br><br>
+
+        Ketika dipukul bersama-sama,
+        lesung menghasilkan bunyi khas dan berirama.
+        Tradisi ini sering dimainkan saat panen,
+        syukuran, atau festival budaya.
+
+        <br><br>
+
+        Tabuh Lesung juga mengajarkan pentingnya
+        kerja sama karena setiap pemain harus
+        menjaga irama agar tetap harmonis.
+
+      </div>
+
+      <!-- AUDIO MOCK -->
+      <div style="
+        margin-top:10px;
+        background:linear-gradient(135deg,#E3F2FD,#F5F5F5);
+        border-radius:12px;
+        padding:10px;
+        border:1px solid #90CAF9;
+      ">
+
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+        ">
+
+          <button style="
+            width:42px;
+            height:42px;
+            border:none;
+            border-radius:50%;
+            background:#1565C0;
+            color:#fff;
+            font-size:18px;
+            cursor:pointer;
+          ">
+            🔊
+          </button>
+
+          <div>
+            <div style="
+              font-size:11px;
+              font-weight:800;
+              color:#1565C0;
+            ">
+              Dengarkan Irama Tabuh Lesung
+            </div>
+
+            <div style="
+              font-size:10px;
+              color:#666;
+            ">
+              Suara tabuhan khas masyarakat desa 🎶
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- GALERI -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFF8E1,#FFFFFF);
+      border:1.5px solid #FFCC80;
+    ">
+
+      <div class="card-title" style="
+        color:#E65100;
+      ">
+        🖼️ Galeri Foto & Info
+      </div>
+
+      <!-- FOTO 1 -->
+      <div style="
+        background:#fff;
+        border-radius:10px;
+        overflow:hidden;
+        margin-bottom:10px;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);
+      ">
+
+        <div style="
+          height:120px;
+          background:linear-gradient(135deg,#81C784,#43A047);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:50px;
+        ">
+          🌾
+        </div>
+
+        <div style="padding:8px 10px">
+
+          <div style="
+            font-size:10px;
+            font-weight:800;
+            color:#2E7D32;
+            margin-bottom:5px;
+          ">
+            [Gambar: Prosesi Ritual Keleman]
+          </div>
+
+          <div class="card-text" style="font-size:10px">
+            Warga berkumpul di dekat mata air
+            untuk berdoa bersama.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOTO 2 -->
+      <div style="
+        background:#fff;
+        border-radius:10px;
+        overflow:hidden;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);
+      ">
+
+        <div style="
+          height:120px;
+          background:linear-gradient(135deg,#64B5F6,#1976D2);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:50px;
+        ">
+          🥁
+        </div>
+
+        <div style="padding:8px 10px">
+
+          <div style="
+            font-size:10px;
+            font-weight:800;
+            color:#1565C0;
+            margin-bottom:5px;
+          ">
+            [Gambar: Kegiatan Tabuh Lesung]
+          </div>
+
+          <div class="card-text" style="font-size:10px">
+            🔊 Dengarkan irama tabuhan lesung yang gagah dan harmonis!
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="pg-footer">
+    Halaman 5 dari 16
+  </div>
+
+</div>`;
+          // ---- MATERI 1 ----
+          case 6:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#F3E5F5 0%,#E1BEE7 45%,#CE93D8 100%)">
+
+  <!-- TOPBAR -->
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#7B1FA2,#4A148C)">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">🏺 BAB 3: Kerajinan & Kearifan Hidup</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="inner-body">
+
+    <!-- HEADER -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#F8EAFB,#FFFFFF);
+      border:2px dashed #AB47BC;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    ">
+
+      <div style="
+        position:absolute;
+        top:-14px;
+        right:-14px;
+        font-size:72px;
+        opacity:.08;
+      ">🎨</div>
+
+      <div style="font-size:42px;margin-bottom:4px">🏺</div>
+
+      <div class="card-title" style="
+        font-size:18px;
+        color:#6A1B9A;
+        font-family:'Fredoka One',cursive;
+      ">
+        BAB 3
+      </div>
+
+      <div style="
+        font-family:'Fredoka One',cursive;
+        font-size:15px;
+        color:#7B1FA2;
+      ">
+        Kerajinan dan Kearifan Hidup
+      </div>
+
+      <div class="card-text" style="
+        margin-top:5px;
+        color:#666;
+      ">
+        Mengenal kecerdasan dan keterampilan masyarakat Semanding ✨
+      </div>
+
+    </div>
+
+    <!-- TUJUAN -->
+    <div class="card" style="
+      border-left:5px solid #8E24AA;
+    ">
+
+      <div class="card-title" style="color:#7B1FA2">
+        🎯 Tujuan Pembelajaran
+      </div>
+
+      <div class="list-item" style="color:#6A1B9A">
+        Siswa dapat mengetahui kerajinan tangan khas Semanding.
+      </div>
+
+      <div class="list-item" style="color:#6A1B9A">
+        Siswa dapat memahami cara nenek moyang memanfaatkan alam sekitar.
+      </div>
+
+    </div>
+
+    <!-- PENGANTAR -->
+    <div class="highlight" style="
+      background:#F3E5F5;
+      border-left-color:#AB47BC;
+      color:#4A148C;
+    ">
+
+      🧠 <strong>Kecerdasan dan Keterampilan Warga Semanding</strong><br>
+      Masyarakat Semanding memiliki berbagai keterampilan yang diwariskan secara turun-temurun dan menjadi bagian penting dari budaya daerah.
+
+    </div>
+
+    <!-- GERABAH -->
+    <div class="card" style="
+      border-left:5px solid #FB8C00;
+    ">
+
+      <div class="card-title" style="
+        color:#E65100;
+        font-size:13px;
+      ">
+        🏺 1. Kerajinan Gerabah / Tembikar
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Di Desa Karang terdapat pengrajin gerabah seperti
+        <b>Mbah Somi</b> yang masih mempertahankan tradisi membuat
+        peralatan dari tanah liat secara manual.
+
+        <br><br>
+
+        Gerabah dibuat dari tanah liat yang dibentuk,
+        dikeringkan, lalu dibakar hingga keras.
+        Hasilnya berupa kendi, kuali, pot, dan vas bunga.
+
+      </div>
+
+      <!-- TAHAPAN -->
+      <div style="
+        margin-top:10px;
+        background:#FFF3E0;
+        border-radius:10px;
+        padding:10px;
+        border:1px solid #FFCC80;
+      ">
+
+        <div style="
+          font-size:11px;
+          font-weight:800;
+          color:#E65100;
+          margin-bottom:6px;
+        ">
+          🔥 Tahapan Membuat Gerabah
+        </div>
+
+        ${["Mengambil tanah liat berkualitas", "Mengolah tanah hingga lentur", "Membentuk menggunakan tangan atau roda putar", "Mengeringkan di bawah matahari", "Membakar hingga keras"]
+          .map(
+            (t, i) => `
+            <div class="list-item" style="color:#6D4C41">
+              <b>${i + 1}.</b> ${t}
+            </div>
+          `,
+          )
+          .join("")}
+
+      </div>
+
+      <!-- NILAI -->
+      <div class="komp-chips" style="margin-top:8px">
+        <span class="chip" style="background:#FFF3E0;color:#E65100">💪 Kerja Keras</span>
+        <span class="chip" style="background:#FFF8E1;color:#F57F17">🎯 Ketekunan</span>
+        <span class="chip" style="background:#F3E5F5;color:#7B1FA2">🎨 Kreativitas</span>
+        <span class="chip" style="background:#E8F5E9;color:#2E7D32">🏺 Budaya Lokal</span>
+      </div>
+
+    </div>
+
+    <!-- SENI PATUNG -->
+    <div class="card" style="
+      border-left:5px solid #1565C0;
+    ">
+
+      <div class="card-title" style="
+        color:#1565C0;
+        font-size:13px;
+      ">
+        🗿 2. Seni Patung
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Di Desa Bejagung terdapat seniman patung terkenal
+        bernama <b>Abah Janjang</b>.
+        Beliau membuat karya seni dari kayu dan batu
+        untuk menghiasi taman dan bangunan penting.
+
+        <br><br>
+
+        Seni patung membutuhkan imajinasi,
+        keterampilan tangan, dan kesabaran tinggi.
+
+      </div>
+
+      <div class="mini-grid" style="margin-top:10px">
+
+        <div class="mini-card">
+          <div class="micon">📐</div>
+          <div class="mlabel">Desain</div>
+          <div class="mdesc">Membuat rancangan patung</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">🪵</div>
+          <div class="mlabel">Bahan</div>
+          <div class="mdesc">Kayu atau batu pilihan</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">🔨</div>
+          <div class="mlabel">Memahat</div>
+          <div class="mdesc">Membentuk sedikit demi sedikit</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">✨</div>
+          <div class="mlabel">Finishing</div>
+          <div class="mdesc">Menghaluskan dan mewarnai</div>
+        </div>
+
+      </div>
+
+      <div style="
+        margin-top:10px;
+        background:#E3F2FD;
+        border-radius:10px;
+        padding:10px;
+      ">
+
+        <div class="list-item" style="color:#1565C0">
+          Ketelitian dan kesabaran sangat penting.
+        </div>
+
+        <div class="list-item" style="color:#1565C0">
+          Patung memiliki nilai keindahan dan budaya.
+        </div>
+
+        <div class="list-item" style="color:#1565C0">
+          Seni patung menjadi warisan budaya daerah.
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- PAES -->
+    <div class="card" style="
+      border-left:5px solid #C2185B;
+    ">
+
+      <div class="card-title" style="
+        color:#C2185B;
+        font-size:13px;
+      ">
+        👰 3. Paes Semandingan
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.9;
+        text-align:justify;
+      ">
+
+        Paes Semandingan merupakan rias pengantin khas daerah
+        Semanding yang terkenal sederhana tetapi tetap anggun.
+
+        <br><br>
+
+        Riasan ini dipadukan dengan pakaian adat Jawa
+        dan aksesoris tradisional yang melambangkan
+        kesucian serta harapan rumah tangga harmonis.
+
+      </div>
+
+      <div class="mini-grid" style="margin-top:10px">
+
+        <div class="mini-card">
+          <div class="micon">🌸</div>
+          <div class="mlabel">Anggun</div>
+          <div class="mdesc">Tampilan lembut dan elegan</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">👘</div>
+          <div class="mlabel">Busana Jawa</div>
+          <div class="mdesc">Dipadukan pakaian adat</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">💎</div>
+          <div class="mlabel">Aksesoris</div>
+          <div class="mdesc">Hiasan tradisional khas</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">❤️</div>
+          <div class="mlabel">Makna</div>
+          <div class="mdesc">Harapan hidup harmonis</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- KESIMPULAN -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FFF8E1,#FFFFFF);
+      border:1.5px solid #FFD54F;
+    ">
+
+      <div class="card-title" style="
+        color:#F57F17;
+      ">
+        📚 Kesimpulan
+      </div>
+
+      <div class="card-text" style="
+        line-height:1.8;
+        text-align:justify;
+      ">
+
+        Masyarakat Semanding memiliki banyak keterampilan seperti
+        membuat gerabah, seni patung, dan Paes Semandingan.
+
+        <br><br>
+
+        Semua keterampilan tersebut mengandung nilai
+        kerja keras, kreativitas, ketelitian,
+        kesabaran, dan pelestarian budaya lokal
+        yang perlu dijaga oleh generasi muda.
+
+      </div>
+
+    </div>
+
+    <!-- GALERI -->
+    <div class="card" style="
+      background:linear-gradient(135deg,#FCE4EC,#FFFFFF);
+      border:1.5px solid #F48FB1;
+    ">
+
+      <div class="card-title" style="
+        color:#C2185B;
+      ">
+        🖼️ Galeri Foto & Info
+      </div>
+
+      <!-- FOTO GERABAH -->
+      <div style="
+        background:#fff;
+        border-radius:10px;
+        overflow:hidden;
+        margin-bottom:10px;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);
+      ">
+
+        <div style="
+          height:120px;
+          background:linear-gradient(135deg,#D7CCC8,#A1887F);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:52px;
+        ">
+          🏺
+        </div>
+
+        <div style="padding:8px 10px">
+
+          <div style="
+            font-size:10px;
+            font-weight:800;
+            color:#6D4C41;
+            margin-bottom:5px;
+          ">
+            [Gambar: Sedang Membuat Gerabah]
+          </div>
+
+          <div class="card-text" style="font-size:10px">
+            Tanah liat dibentuk menggunakan roda putar,
+            lalu dijemur dan dibakar hingga keras.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOTO PAES -->
+      <div style="
+        background:#fff;
+        border-radius:10px;
+        overflow:hidden;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);
+      ">
+
+        <div style="
+          height:120px;
+          background:linear-gradient(135deg,#F8BBD0,#F48FB1);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:52px;
+        ">
+          👰
+        </div>
+
+        <div style="padding:8px 10px">
+
+          <div style="
+            font-size:10px;
+            font-weight:800;
+            color:#C2185B;
+            margin-bottom:5px;
+          ">
+            [Gambar: Contoh Paes Semandingan]
+          </div>
+
+          <div class="card-text" style="font-size:10px">
+            Wajah diberi bedak tipis dan hiasan elegan
+            yang menampilkan kesan anggun dan sopan.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="pg-footer">
+    Halaman 6 dari 16
+  </div>
+
+</div>`;
+          // ---- MATERI 2 ----
+          case 7:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#F3E5F5,#E1BEE7)">
   <div class="inner-topbar" style="background:#7B1FA2">
-      <div class="topbar-title">💦 Siraman Waranggono</div>
-    </div>
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">🎪 Materi 2: Contoh KL</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
   <div class="inner-body">
-    <div class="highlight" style="border-color:#AB47BC;background:#F3E5F5;color:#4A148C">
-      💜 Prosesi penyucian atau "wisuda" bagi para penari <strong>Tayub (Waranggono)</strong> sebelum tampil di muka umum. Dilakukan di Pemandian Bektiharjo yang dianggap sakral.
+    <div class="mini-grid">
+      ${[
+        ["🤝", "Gotong Royong", "Kerja bersama tanpa pamrih"],
+        ["🎭", "Upacara Adat", "Grebeg, ngaben, tabot"],
+        ["🍛", "Makanan Tradisional", "Rendang, gudeg, pempek"],
+        ["🎵", "Seni Tradisional", "Gamelan, tari saman"],
+        ["🏺", "Batik", "Warisan UNESCO dari Indonesia"],
+        ["🏠", "Rumah Adat", "Joglo, gadang, honai"],
+      ]
+        .map(([ic, t, d]) => `<div class="mini-card"><div class="micon">${ic}</div><div class="mlabel" style="color:#7B1FA2">${t}</div><div class="mdesc">${d}</div></div>`)
+        .join("")}
     </div>
-    <div class="card" style="border-left:4px solid #AB47BC">
-      <div class="card-text">Para calon Waranggono mengenakan <strong>pakaian putih</strong> sebagai simbol kesucian. Sesepuh desa memimpin doa dan prosesi siraman dengan air berkah.</div>
-    </div>
-    <div class="yt-lbl" style="color:#7B1FA2">🎥 Video: Prosesi Siraman Waranggono</div>
+    <div class="yt-lbl" style="color:#7B1FA2">🎥 Video: Budaya Daerah Indonesia</div>
     <div class="yt-wrap" style="border-color:#AB47BC">
-      <iframe src="https://www.youtube.com/embed/EpPbhZF95gs" frameborder="0" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
+      <iframe src="https://www.youtube.com/embed/Gb0n0R_zWAQ" frameborder="0" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
     </div>
-    <div style="font-size:11px;font-weight:800;color:#7B1FA2;margin:5px 0 3px">Nilai yang Terkandung:</div>
-    ${['Kesucian hati sebelum mengemban tugas seni','Penghormatan terhadap seni tradisional','Disiplin dan tanggung jawab seniman','Pelestarian seni Tayub dari generasi ke generasi'].map(t=>`<div class="list-item" style="color:#7B1FA2">${t}</div>`).join('')}
   </div>
-  <div class="pg-footer">Halaman 8 dari 18</div>
+  <div class="pg-footer">Halaman 7 dari 16</div>
 </div>`;
 
-// BAB 2 - TABUH LESUNG
-case 9: return `<div class="inner-page" style="background:linear-gradient(160deg,#FCE4EC,#F8BBD0)">
-  <div class="inner-topbar" style="background:#C62828">
-      <div class="topbar-title">🥁 Tabuh Lesung</div>
-    </div>
+          // ---- MATERI 3 ----
+          case 8:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
+  <div class="inner-topbar" style="background:#D84315">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">🎭 BAB 4: Seni & Budaya</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+
   <div class="inner-body">
-    <div class="card" style="border-left:4px solid #E53935">
-      <div class="card-title" style="color:#C62828">Kesenian Tradisional Masyarakat Jawa</div>
-      <div class="card-text">Lesung adalah alat dari <strong>kayu panjang</strong> untuk menumbuk padi. Dipukul dengan alu, menghasilkan bunyi khas berirama yang berkembang menjadi kesenian Tabuh Lesung.</div>
+
+    <div class="card" style="border-left:5px solid #FF7043;background:#FFF8F5">
+      <div class="card-title" style="color:#BF360C;font-size:14px">
+        🎯 Tujuan Pembelajaran
+      </div>
+
+      <div class="list-item" style="color:#5D4037">
+        Siswa dapat mengenal kesenian khas Semanding.
+      </div>
+
+      <div class="list-item" style="color:#5D4037">
+        Siswa dapat menghargai karya seni daerah sendiri.
+      </div>
     </div>
-    <div class="card" style="border-left:4px solid #FF8A80">
-      <div class="card-text">Pada zaman dahulu, bunyi tabuhan lesung juga sebagai <strong>alat komunikasi warga</strong>: tanda kerja bakti, panen raya, atau hajatan penting lainnya.</div>
+
+    <div class="highlight" style="border-color:#FF7043;background:#FFF3E0;color:#BF360C">
+      ✨ <strong>Kesenian yang Membanggakan di Semanding</strong><br>
+      Kecamatan Semanding memiliki berbagai kesenian tradisional yang menjadi kebanggaan masyarakat dan diwariskan turun-temurun.
     </div>
-    <div class="mini-grid">
-      ${[['🤝','Kerja Sama'],['👨‍👩‍👧','Kebersamaan'],['💪','Gotong Royong'],['🙏','Rasa Syukur']].map(([ic,t])=>`<div class="mini-card"><div class="micon">${ic}</div><div class="mlabel" style="color:#C62828">${t}</div></div>`).join('')}
+
+    <!-- TAYUB -->
+    <div class="card" style="border-left:5px solid #EC407A">
+      <div class="card-title" style="color:#C2185B">
+        💃 1. Seni Tayub
+      </div>
+
+      <div class="card-text">
+        Seni Tayub adalah tarian tradisional yang diiringi gamelan Jawa dan biasa ditampilkan saat hajatan, pernikahan, syukuran, dan acara adat.
+      </div>
+
+      <div class="mini-grid" style="margin-top:8px">
+        <div class="mini-card">
+          <div class="micon">🎵</div>
+          <div class="mlabel">Gamelan</div>
+          <div class="mdesc">Diiringi musik Jawa tradisional</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">👘</div>
+          <div class="mlabel">Busana Adat</div>
+          <div class="mdesc">Menggunakan pakaian tradisional</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:800;color:#C2185B;margin:8px 0 4px">
+        🌟 Nilai dalam Seni Tayub
+      </div>
+
+      ${["Penghormatan terhadap seni budaya", "Kebersamaan dan kekeluargaan", "Kesopanan dan etika", "Pelestarian tradisi daerah"].map((t) => `<div class="list-item" style="color:#AD1457">${t}</div>`).join("")}
+
+      <div class="yt-lbl" style="color:#C2185B;margin-top:8px">
+        🎥 Tayub Tradisional
+      </div>
+
+      <div class="yt-wrap" style="border-color:#F48FB1">
+        <iframe src="https://www.youtube.com/embed/EpPbhZF95gs"
+        allowfullscreen></iframe>
+      </div>
     </div>
-    <div style="background:#FFF9C4;border-radius:9px;padding:8px;border:2px dashed #FFA726;font-size:10px;color:#555">
-      🎵 Tabuh Lesung dimainkan secara berkelompok, biasanya ibu-ibu desa saat perayaan panen atau festival budaya daerah.
+
+    <!-- SANDUR -->
+    <div class="card" style="border-left:5px solid #7E57C2">
+      <div class="card-title" style="color:#5E35B1">
+        🎪 2. Seni Sandur
+      </div>
+
+      <div class="card-text">
+        Seni Sandur merupakan pertunjukan rakyat yang memadukan cerita, lawakan, tari, musik, dan dialog lucu yang menghibur masyarakat.
+      </div>
+
+      <div class="mini-grid" style="margin-top:8px">
+        <div class="mini-card">
+          <div class="micon">😂</div>
+          <div class="mlabel">Humor</div>
+          <div class="mdesc">Penuh lawakan dan hiburan</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">📖</div>
+          <div class="mlabel">Pesan Moral</div>
+          <div class="mdesc">Mengajarkan nilai kehidupan</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:800;color:#5E35B1;margin:8px 0 4px">
+        🎭 Ciri-Ciri Seni Sandur
+      </div>
+
+      ${["Menggabungkan tari, musik, cerita, dan lawakan", "Menggunakan bahasa Jawa", "Bersifat menghibur dan penuh humor", "Mengandung pesan moral"].map((t) => `<div class="list-item" style="color:#5E35B1">${t}</div>`).join("")}
+
+      <div class="highlight" style="margin-top:8px;border-color:#B39DDB;background:#F3E5F5;color:#4A148C">
+        🎭 Tokoh dalam Sandur: Tangsil, Pelat, Pethak, dan Cawik membuat pertunjukan menjadi seru dan lucu.
+      </div>
     </div>
+
+    <!-- KENTRUNG -->
+    <div class="card" style="border-left:5px solid #26A69A">
+      <div class="card-title" style="color:#00695C">
+        🥁 3. Musik Kentrung
+      </div>
+
+      <div class="card-text">
+        Musik Kentrung adalah musik tradisional sederhana dari bambu yang digunakan untuk hiburan dan menyampaikan cerita rakyat.
+      </div>
+
+      <div class="mini-grid" style="margin-top:8px">
+        <div class="mini-card">
+          <div class="micon">🎋</div>
+          <div class="mlabel">Bambu</div>
+          <div class="mdesc">Menggunakan alat sederhana</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">🎶</div>
+          <div class="mlabel">Irama Khas</div>
+          <div class="mdesc">Memiliki bunyi unik dan merakyat</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:800;color:#00695C;margin:8px 0 4px">
+        🌱 Nilai Musik Kentrung
+      </div>
+
+      ${["Kreativitas masyarakat", "Kesederhanaan", "Pelestarian budaya lokal", "Pendidikan moral melalui cerita rakyat"].map((t) => `<div class="list-item" style="color:#00695C">${t}</div>`).join("")}
+    </div>
+
+    <!-- KESIMPULAN -->
+    <div class="highlight" style="border-color:#FFA000;background:#FFF8E1;color:#E65100">
+      📚 <strong>Kesimpulan</strong><br>
+      Tayub, Sandur, dan Musik Kentrung adalah kekayaan budaya Semanding yang harus dijaga dan diwariskan kepada generasi muda agar tetap lestari.
+    </div>
+
+    <!-- GALERI -->
+    <div class="card" style="border-left:5px solid #FB8C00">
+      <div class="card-title" style="color:#E65100">
+        🖼️ Galeri Foto & Info
+      </div>
+
+      <div class="mini-grid">
+
+        <div class="mini-card">
+          <div class="micon">💃</div>
+          <div class="mlabel">Penari Tayub</div>
+          <div class="mdesc">
+            Gerakan lembut dan anggun dengan iringan gamelan.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="micon">🎪</div>
+          <div class="mlabel">Seni Sandur</div>
+          <div class="mdesc">
+            Pertunjukan rakyat penuh humor dan pesan moral.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:8px;border-color:#FFB74D;background:#FFF3E0;color:#E65100">
+        🔊 Dengarkan irama gamelan dan musik tradisional khas Semanding!
+      </div>
+    </div>
+
   </div>
-  <div class="pg-footer">Halaman 9 dari 18</div>
+
+  <div class="pg-footer">Halaman 8 dari 16</div>
 </div>`;
+          // ---- QUIZ 1-2 ----
+          case 9:
+            return buildQuizPage(0, 2, 10);
+          // ---- QUIZ 3-4 ----
+          case 10:
+            return buildQuizPage(2, 4, 11);
 
-// BAB 3 - KERAJINAN
-case 10: return `<div class="inner-page" style="background:linear-gradient(160deg,#FBE9E7,#FFCCBC)">
-  <div class="inner-topbar" style="background:#BF360C">
-      <div class="topbar-title">🏺 BAB 3: Kerajinan Gerabah</div>
-    </div>
-  <div class="inner-body">
-    <div class="highlight" style="border-color:#FF5722;background:#FBE9E7;color:#BF360C">
-      🏺 Pengrajin gerabah di <strong>Desa Karang</strong> masih mempertahankan tradisi membuat peralatan dari tanah liat secara manual. Salah satunya adalah <strong>Mbah Somi</strong>.
-    </div>
-    <div style="font-size:11px;font-weight:800;color:#BF360C;margin:6px 0 4px">⚙️ Proses Pembuatan Gerabah:</div>
-    ${[['1','Pengambilan Tanah Liat','Dipilih tanah lembut dan dibersihkan dari batu'],
-       ['2','Pengolahan Tanah','Dicampur air, diinjak hingga lentur'],
-       ['3','Pembentukan','Dibentuk dengan tangan atau alat pemutar'],
-       ['4','Pengeringan','Dijemur hingga setengah kering'],
-       ['5','Pembakaran','Dibakar dengan kayu/sekam suhu tinggi']].map(([n,t,d])=>`<div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start">
-        <div style="background:#BF360C;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${n}</div>
-        <div><div style="font-size:11px;font-weight:700;color:#BF360C">${t}</div><div style="font-size:10px;color:#666">${d}</div></div>
-      </div>`).join('')}
-  </div>
-  <div class="pg-footer">Halaman 10 dari 18</div>
-</div>`;
-
-// BAB 3 - PAES SEMANDINGAN
-case 11: return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
-  <div class="inner-topbar" style="background:#E65100">
-      <div class="topbar-title">💄 Paes Semandingan & Patung</div>
-    </div>
-  <div class="inner-body">
-    <div class="card" style="border-left:4px solid #FFA726">
-      <div class="card-title" style="color:#E65100">💄 Paes Semandingan</div>
-      <div class="card-text">Paes adalah <strong>tata rias pengantin khas Semanding</strong> yang diwariskan secara turun-temurun. Setiap motif dan warna memiliki makna filosofis tentang kebahagiaan, kesucian, dan harapan.</div>
-    </div>
-    <div class="card" style="border-left:4px solid #66BB6A">
-      <div class="card-title" style="color:#2E7D32">🗿 Seni Patung & Ukir — Desa Bejagung</div>
-      <div class="card-text">Pengrajin seperti <strong>Abah Janjang</strong> menghasilkan karya patung dan ukiran berbahan kayu yang mencerminkan nilai seni tinggi masyarakat Semanding.</div>
-    </div>
-    <div class="mini-grid">
-      <div class="mini-card"><div class="micon">💐</div><div class="mlabel" style="color:#E65100">Filosofi</div><div class="mdesc">Setiap motif punya makna mendalam</div></div>
-      <div class="mini-card"><div class="micon">🎨</div><div class="mlabel" style="color:#E65100">Kreativitas</div><div class="mdesc">Keahlian diwariskan turun-temurun</div></div>
-    </div>
-    <div style="background:#FFF9C4;border-radius:9px;padding:8px;border:2px dashed #FFA726;font-size:10px;color:#E65100;font-weight:600">
-      🌟 Masyarakat Semanding memiliki kecerdasan dan keterampilan yang menjadi bagian penting dari budaya daerah.
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 11 dari 18</div>
-</div>`;
-
-// BAB 4 - TAYUB
-case 12: return `<div class="inner-page" style="background:linear-gradient(160deg,#E8EAF6,#C5CAE9)">
-  <div class="inner-topbar" style="background:#283593">
-      <div class="topbar-title">💃 BAB 4: Seni Tayub</div>
-    </div>
-  <div class="inner-body">
-    <div class="card" style="border-left:4px solid #5C6BC0">
-      <div class="card-title" style="color:#283593">💃 Seni Tayub / Waranggono</div>
-      <div class="card-text">Seni tari tradisional yang dibawakan oleh <strong>Waranggono (Sindir)</strong> — perempuan dengan kemampuan menari dan menyanyi. Diiringi gamelan khas Tuban, Tayub menjadi kebanggaan budaya Semanding.</div>
-    </div>
-    <div style="font-size:11px;font-weight:800;color:#283593;margin:6px 0 3px">Nilai dalam Seni Tayub:</div>
-    ${['Kebersamaan dan kekeluargaan antar warga','Kesopanan dan etika dalam pertunjukan seni','Pelestarian tradisi seni daerah Tuban'].map(t=>`<div class="list-item" style="color:#283593">${t}</div>`).join('')}
-    <div class="yt-lbl" style="color:#283593">🎥 Video: Pertunjukan Seni Tayub Semanding</div>
-    <div class="yt-wrap" style="border-color:#5C6BC0">
-      <iframe src="https://www.youtube.com/embed/4tG3vX7bL9c" frameborder="0" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 12 dari 18</div>
-</div>`;
-
-// BAB 4 - SANDUR & KENTRUNG
-case 13: return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
-  <div class="inner-topbar" style="background:#006064">
-      <div class="topbar-title">🎭 Seni Sandur & Kentrung</div>
-    </div>
-  <div class="inner-body">
-    <div class="card" style="border-left:4px solid #00BCD4">
-      <div class="card-title" style="color:#006064">🎭 Seni Sandur — Prunggahan Kulon</div>
-      <div class="card-text">Menggabungkan <strong>cerita, lawakan, dialog, musik, nyanyian, dan tarian</strong>. Tokohnya ada Tangsil, Pelat, Pethak, dan Cawik. Mengandung pesan moral kehidupan sehari-hari.</div>
-    </div>
-    <div class="card" style="border-left:4px solid #80DEEA">
-      <div class="card-title" style="color:#00695C">🎵 Musik Kentrung</div>
-      <div class="card-text">Kesenian musik dari alat <strong>bambu sederhana</strong> dengan irama unik. Digunakan untuk mengiringi lagu daerah, pertunjukan rakyat, dan cerita rakyat tradisional.</div>
-    </div>
-    <div class="mini-grid">
-      ${[['🎭','Sandur','Tari + Cerita + Lawak'],['🎵','Kentrung','Musik bambu tradisional'],['📚','Moral','Mengandung nasihat hidup'],['🤝','Bersama','Hiburan rakyat bersama']].map(([ic,t,d])=>`<div class="mini-card"><div class="micon">${ic}</div><div class="mlabel" style="color:#006064">${t}</div><div class="mdesc">${d}</div></div>`).join('')}
-    </div>
-    <div style="background:#E0F7FA;border-radius:9px;padding:8px;border:2px solid #26C6DA;font-size:10px;color:#006064;font-style:italic">
-      🌟 Ketiga kesenian (Tayub, Sandur, Kentrung) merupakan kekayaan budaya yang membanggakan masyarakat Semanding!
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 13 dari 18</div>
-</div>`;
-
-// KUIS 1-4
-case 14: return buildQuizPage(0,4,14);
-// KUIS 5-8
-case 15: return buildQuizPage(4,8,15);
-
-// LKPD TANTANGAN AKHIR
-case 16: return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
+          // ---- LKPD ----
+          case 11:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
   <div class="inner-topbar" style="background:#2E7D32">
-      <div class="topbar-title">📝 Tantangan Akhir & Evaluasi</div>
-    </div>
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📝 LKPD — Tugas Kelompok</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
   <div class="inner-body">
     <div class="lkpd-task">
-      <div class="lkpd-num">Tantangan 1</div>
-      <div class="lkpd-title">Amati Lingkunganmu!</div>
-      <div class="lkpd-desc">Apa tradisi atau kerajinan yang ada di desamu? Ceritakan di sini!</div>
-      <textarea class="lkpd-input" placeholder="Tuliskan tradisi atau kerajinan di desamu..." style="height:50px"></textarea>
+      <div class="lkpd-num">Tugas 1</div>
+      <div class="lkpd-title">Pengamatan Lingkungan</div>
+      <div class="lkpd-desc">Amatilah lingkungan sekitarmu! Tuliskan 2 contoh kearifan lokal yang kamu temukan!</div>
+      <div style="font-size:9px;color:#2E7D32;font-weight:700">Contoh 1:</div>
+      <textarea class="lkpd-input" placeholder="Tuliskan contoh pertama kearifan lokal..."></textarea>
+      <div style="font-size:9px;color:#2E7D32;font-weight:700;margin-top:4px">Contoh 2:</div>
+      <textarea class="lkpd-input" placeholder="Tuliskan contoh kedua kearifan lokal..."></textarea>
     </div>
     <div class="lkpd-task">
-      <div class="lkpd-num">Tantangan 2</div>
-      <div class="lkpd-title">Nilai Favoritmu</div>
-      <div class="lkpd-desc">Nilai apa yang paling kamu sukai dari budaya Semanding? Mengapa?</div>
-      <textarea class="lkpd-input" placeholder="Nilai yang saya sukai adalah..." style="height:50px"></textarea>
+      <div class="lkpd-num">Tugas 2</div>
+      <div class="lkpd-title">Wawancara Sederhana</div>
+      <div class="lkpd-desc">Tanyakan kepada orang tua tentang satu tradisi unik di keluargamu!</div>
+      <textarea class="lkpd-input" placeholder="Tuliskan tradisi unik dari wawancara..." style="height:44px"></textarea>
     </div>
     <div class="lkpd-task">
-      <div class="lkpd-num">Tantangan 3</div>
-      <div class="lkpd-title">Komitmen Melestarikan</div>
-      <div class="lkpd-desc">Apa yang bisa kamu lakukan untuk melestarikan budaya lokal?</div>
-      <textarea class="lkpd-input" placeholder="Saya berkomitmen untuk..." style="height:50px"></textarea>
+      <div class="lkpd-num">Tugas 3</div>
+      <div class="lkpd-title">Diskusi Kelompok</div>
+      <div class="lkpd-desc">Mengapa kearifan lokal perlu dilestarikan? Diskusikan bersama kelompokmu!</div>
+      <textarea class="lkpd-input" placeholder="Tuliskan hasil diskusi kelompok..." style="height:44px"></textarea>
     </div>
-    <button class="btn-eval" onclick="changePage(1)" style="background:linear-gradient(135deg,#2E7D32,#43A047);width:100%;margin-top:2px">Lanjut ke Evaluasi Akhir 🏆</button>
   </div>
-  <div class="pg-footer">Halaman 16 dari 18</div>
+  <div class="pg-footer">Halaman 12 dari 16</div>
 </div>`;
 
-// EVALUASI AKHIR
-case 17: return buildEvalPage();
+          // ---- RANGKUMAN ----
+          case 12:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1,#FFE082)">
+  <div class="inner-topbar" style="background:#F57F17">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📚 Penutup & Refleksi</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
 
-// PENUTUP & GLOSARIUM
-case 18: return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
-  <div class="inner-topbar" style="background:#006064">
-      <div class="topbar-title">📖 Penutup & Glosarium</div>
-    </div>
   <div class="inner-body">
-    <div style="background:#E0F7FA;border-radius:10px;padding:10px;margin-bottom:8px;border:2px solid #26C6DA;text-align:center">
-      <div style="font-size:14px;font-weight:800;color:#006064;margin-bottom:4px">💬 Pesan Bijak</div>
-      <div style="font-size:11px;color:#444;font-style:italic;line-height:1.6">"Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman." 🌿</div>
+
+    <div class="card" style="border-left:4px solid #F57F17">
+      <div class="card-title" style="color:#F57F17">
+        🌟 Apa yang Sudah Dipelajari?
+      </div>
+      <div class="card-text">
+        Kita telah belajar tentang sejarah, tradisi, kesenian, dan kerajinan khas Kecamatan Semanding yang menjadi warisan budaya masyarakat Tuban.
+      </div>
     </div>
-    <div style="font-size:11px;font-weight:800;color:#006064;margin-bottom:5px">📖 Glosarium</div>
-    ${[['Kearifan Lokal','Nilai-nilai luhur yang berlaku dalam tata kehidupan masyarakat'],
-       ['Waranggono','Penari wanita dalam pertunjukan Tayub'],
-       ['Gerabah','Barang pecah belah yang terbuat dari tanah liat'],
-       ['Paes','Tata rias atau bedak wajah pengantin'],
-       ['Lesung','Alat tradisional dari kayu untuk menumbuk padi'],
-       ['Alu','Alat penumbuk yang digunakan bersama lesung'],
-       ['Siraman','Prosesi penyucian dengan air sebagai simbol kebersihan hati'],
-    ].map(([t,d])=>`<div class="glos-row"><div class="glos-term">${t}</div><div class="glos-def">${d}</div></div>`).join('')}
+
+    <div class="card" style="border-left:4px solid #2E7D32">
+      <div class="card-title" style="color:#2E7D32">
+        🏺 Budaya yang Harus Dilestarikan
+      </div>
+      <div class="card-text">
+        Ritual Keleman, Siraman Waranggono, Tabuh Lesung, Seni Tayub, Sandur, hingga kerajinan gerabah merupakan kekayaan budaya yang harus dijaga oleh generasi muda.
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #1565C0">
+      <div class="card-title" style="color:#1565C0">
+        🤝 Nilai-Nilai Penting
+      </div>
+      <div class="card-text">
+        Budaya Semanding mengajarkan nilai gotong royong, rasa syukur, kerja keras, kreativitas, kebersamaan, dan penghormatan terhadap tradisi leluhur.
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #7B1FA2">
+      <div class="card-title" style="color:#7B1FA2">
+        💡 Pesan untuk Siswa
+      </div>
+      <div class="card-text">
+        Sebagai generasi penerus bangsa, kita harus bangga terhadap budaya daerah sendiri dan ikut melestarikannya agar tidak hilang oleh perkembangan zaman.
+      </div>
+    </div>
+
+    <div style="background:#FFF9C4;border-radius:10px;padding:10px;border:2px dashed #F57F17;margin-top:8px">
+      <div style="font-size:11px;font-weight:800;color:#E65100;margin-bottom:5px">
+        ✍️ Refleksi Diri
+      </div>
+
+      <textarea
+        style="width:100%;background:#fff;border:1.5px solid #FFCA28;border-radius:8px;
+        font-family:'Nunito',sans-serif;font-size:10px;padding:6px;
+        resize:none;height:50px;color:#333"
+        placeholder="Tuliskan hal menarik yang kamu pelajari tentang budaya Semanding hari ini..."></textarea>
+    </div>
+
+    <div style="text-align:center;font-size:11px;font-style:italic;color:#666;
+      margin-top:10px;padding:8px;background:#fff;border-radius:8px">
+      "Budaya daerah adalah identitas bangsa yang harus dijaga bersama." 🌺
+    </div>
+
+  </div>
+
+  <div class="pg-footer">Halaman 12 dari 16</div>
+</div>`;
+
+          // ---- GLOSARIUM ----
+          case 13:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
+  <div class="inner-topbar" style="background:#006064">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📖 Glosarium</div>
+    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  </div>
+  <div class="inner-body">
+    ${[
+      ["Kearifan Lokal", "Nilai, norma, dan pengetahuan budaya yang berkembang di masyarakat setempat dan diwariskan turun-temurun"],
+      ["Tradisi", "Kebiasaan yang diwariskan dari nenek moyang kepada generasi berikutnya"],
+      ["Gotong Royong", "Kegiatan kerja sama warga masyarakat secara bersama-sama tanpa pamrih"],
+      ["Upacara Adat", "Kegiatan ritual yang dilakukan sesuai tata cara adat yang berlaku di daerahnya"],
+      ["Batik", "Kain bermotif khas yang dibuat dengan teknik pewarnaan khusus; warisan UNESCO"],
+      ["Identitas Budaya", "Ciri khas yang membedakan suatu kelompok masyarakat dari kelompok lainnya"],
+      ["Pelestarian", "Upaya menjaga dan memelihara budaya agar tidak punah"],
+      ["Gamelan", "Seperangkat alat musik tradisional Jawa/Bali yang dimainkan bersama"],
+      ["Musyawarah", "Pengambilan keputusan bersama melalui diskusi untuk mencapai mufakat"],
+    ]
+      .map(([t, d]) => `<div class="glos-row"><div class="glos-term">${t}</div><div class="glos-def">${d}</div></div>`)
+      .join("")}
+  </div>
+  <div class="pg-footer">Halaman 15 dari 16</div>
+</div>`;
+
+          // ---- PUSTAKA ----
+          case 14:
+            return `<div class="inner-page" style="background:linear-gradient(160deg,#FCE4EC,#F8BBD0)">
+  <div class="inner-topbar" style="background:#C2185B">
+    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+    <div class="topbar-title">📚 Daftar Pustaka</div>
+    <button class="topbar-next" disabled style="opacity:.3;cursor:not-allowed">Selesai ✓</button>
+  </div>
+  <div class="inner-body">
+    <span class="pustaka-badge" style="background:#FCE4EC;color:#C2185B;border:1px solid #F48FB1">Buku Teks</span>
+    <div class="pustaka-item"><strong style="color:#C2185B">Kemendikbud.</strong> (2018). <em>Buku Tematik Terpadu Kelas IV: Indahnya Kebersamaan.</em> Jakarta: Pusat Kurikulum dan Perbukuan.</div>
+    <div class="pustaka-item"><strong style="color:#C2185B">Suparlan, P.</strong> (2004). <em>Hubungan Antar Suku Bangsa.</em> Jakarta: KIK Press.</div>
+    <span class="pustaka-badge" style="background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9">Jurnal</span>
+    <div class="pustaka-item"><strong style="color:#C2185B">Sibarani, R.</strong> (2012). Kearifan Lokal: Hakikat, Peran, dan Metode. <em>Jurnal Masyarakat dan Budaya,</em> 14(2), 1–20.</div>
+    <div class="pustaka-item"><strong style="color:#C2185B">Wagiran.</strong> (2012). Pengembangan Karakter Berbasis Kearifan Lokal. <em>Jurnal Pendidikan Karakter,</em> 2(3), 329–339.</div>
+    <span class="pustaka-badge" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7">Internet</span>
+    <div class="pustaka-item"><strong style="color:#C2185B">Kemdikbud.</strong> (2023). Portal Budaya Indonesia. <span style="color:#1565C0">kebudayaan.kemdikbud.go.id</span></div>
     <div class="finish-box">
       <div class="ficon">🎉</div>
       <div class="fmsg">Selamat! E-Book Selesai!</div>
-      <div class="fsub">Terus cintai dan lestarikan budaya Semanding! 🌺</div>
+      <div class="fsub">Terus cintai dan lestarikan budaya daerahmu! 🌺</div>
       <button class="btn-restart" onclick="goToPage(1)">🔄 Mulai dari Awal</button>
     </div>
   </div>
-  <div class="pg-footer">Halaman 18 dari 18</div>
+  <div class="pg-footer">Halaman 16 dari 16</div>
 </div>`;
 
-default: return `<div style="padding:20px;font-size:14px;color:#333">Halaman ${num}</div>`;
-  }
-}
+          default:
+            return `<div style="padding:20px;font-size:14px;color:#333">Halaman ${num}</div>`;
+        }
+      }
 
-// ── QUIZ BUILDER ──
-function buildQuizPage(from,to,pgNum){
-  let h=`<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
+      function buildQuizPage(from, to, pgNum) {
+        let h = `<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
     <div class="inner-topbar" style="background:#E65100">
-      <div class="topbar-title">✏️ Kuis Interaktif Semanding</div>
+      <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
+      <div class="topbar-title">✏️ Latihan Soal</div>
+      <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
     </div>
-    <div class="inner-body">
-    <div style="font-size:10px;color:#777;margin-bottom:6px">Pilih jawaban yang benar — jawaban langsung dinilai! 🎯</div>`;
-  for(let qi=from;qi<to;qi++){
-    const q=quizData[qi];
-    h+=`<div style="margin-bottom:12px">
-      <div style="font-size:9px;font-weight:800;color:#E65100;background:#FFF3E0;border:1px solid #FF9800;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:5px">Soal ${qi+1}</div>
+    <div class="inner-body">`;
+        for (let qi = from; qi < to; qi++) {
+          const q = quizData[qi];
+          h += `<div style="margin-bottom:12px">
+      <div style="font-size:9px;font-weight:800;color:#E65100;background:#FFF3E0;border:1px solid #FF9800;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:5px">Soal ${qi + 1}</div>
       <div style="font-size:11px;font-weight:800;color:#BF360C;margin-bottom:6px;line-height:1.4">${q.q}</div>
-      ${q.opts.map((opt,oi)=>`<div class="quiz-opt" id="qo_${qi}_${oi}" onclick="answerQuiz(${qi},${oi})">${String.fromCharCode(65+oi)}. ${opt}</div>`).join('')}
+      ${q.opts.map((opt, oi) => `<div class="quiz-opt" id="qo_${qi}_${oi}" onclick="answerQuiz(${qi},${oi})">${String.fromCharCode(65 + oi)}. ${opt}</div>`).join("")}
       <div class="fb-box" id="qf_${qi}" style="display:none"></div>
     </div>`;
-  }
-  h+=`</div><div class="pg-footer">Halaman ${pgNum} dari 18</div></div>`;
-  return h;
-}
-
-// ── EVAL BUILDER ──
-function buildEvalPage(){
-  let h=`<div class="inner-page" style="background:linear-gradient(160deg,#EDE7F6,#D1C4E9)">
+        }
+        h += `</div><div class="pg-footer">Halaman ${pgNum} dari 16</div></div>`;
+        return h;
+      }
+      function buildEvalPage() {
+        let h = `<div class="inner-page" style="background:linear-gradient(160deg,#EDE7F6,#D1C4E9)">
     <div class="inner-topbar" style="background:#4527A0">
+      <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
       <div class="topbar-title">🏆 Evaluasi Akhir</div>
+      <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
     </div>
     <div class="inner-body">
-    <div style="font-size:10px;color:#555;margin-bottom:7px">Jawab semua soal, lalu klik "Lihat Nilai"! 🎯</div>`;
-  evalData.forEach((q,qi)=>{
-    h+=`<div style="margin-bottom:9px">
+    <div style="font-size:10px;color:#555;margin-bottom:7px">Jawab semua soal, lalu klik "Lihat Nilai"!</div>`;
+        evalData.forEach((q, qi) => {
+          h += `<div style="margin-bottom:9px">
       <div style="font-size:11px;font-weight:700;color:#4527A0;margin-bottom:5px;line-height:1.4">${q.q}</div>
-      ${q.opts.map((opt,oi)=>`<div class="eval-opt" id="eo_${qi}_${oi}" onclick="selectEval(${qi},${oi})">${String.fromCharCode(65+oi)}. ${opt}</div>`).join('')}
+      ${q.opts.map((opt, oi) => `<div class="eval-opt" id="eo_${qi}_${oi}" onclick="selectEval(${qi},${oi})">${String.fromCharCode(65 + oi)}. ${opt}</div>`).join("")}
     </div>`;
-  });
-  h+=`<button class="btn-eval" id="evalBtn" onclick="submitEval()">🏆 Lihat Nilai</button>
-  </div><div class="pg-footer">Halaman 17 dari 18</div></div>`;
-  return h;
-}
+        });
+        h += `<button class="btn-eval" id="evalBtn" onclick="submitEval()">🏆 Lihat Nilai</button>
+  </div><div class="pg-footer">Halaman 13 dari 16</div></div>`;
+        return h;
+      }
 
-// ── QUIZ LOGIC ──
-function answerQuiz(qi,oi){
-  if(quizAns[qi]!==null)return;
-  quizAns[qi]=oi;const c=quizData[qi].ans;
-  for(let i=0;i<quizData[qi].opts.length;i++){
-    const el=document.getElementById('qo_'+qi+'_'+i);if(!el)continue;
-    el.classList.add(i===c?'correct':'disabled');
-    if(i===oi&&i!==c)el.classList.add('wrong');
-  }
-  const fb=document.getElementById('qf_'+qi);if(!fb)return;
-  fb.style.display='block';
-  if(oi===c){fb.className='fb-box correct';fb.textContent='✅ Jawaban Benar! Hebat!';successSnd();}
-  else{fb.className='fb-box wrong';fb.textContent='❌ Benar: '+String.fromCharCode(65+c)+'. '+quizData[qi].opts[c];errorSnd();}
-}
-function selectEval(qi,oi){
-  clickSnd(550);
-  for(let i=0;i<evalData[qi].opts.length;i++){const el=document.getElementById('eo_'+qi+'_'+i);if(el)el.classList.remove('selected');}
-  const el=document.getElementById('eo_'+qi+'_'+oi);if(el)el.classList.add('selected');
-  evalAns[qi]=oi;
-}
-function submitEval(){
-  clickSnd(700);
-  const score=evalAns.filter((a,i)=>a===evalData[i].ans).length;
-  const pct=Math.round(score/evalData.length*100);
-  evalData.forEach((q,qi)=>{
-    for(let oi=0;oi<q.opts.length;oi++){
-      const el=document.getElementById('eo_'+qi+'_'+oi);if(!el)continue;
-      el.style.pointerEvents='none';
-      if(oi===q.ans){el.style.borderColor='#43A047';el.style.background='#E8F5E9';}
-      else if(evalAns[qi]===oi){el.style.borderColor='#E53935';el.style.background='#FFEBEE';}
-    }
-  });
-  const eb=document.getElementById('evalBtn');if(eb)eb.style.display='none';
-  let msg=pct>=80?'🌟 Luar biasa! Sangat Hebat!':pct>=60?'👍 Bagus! Terus semangat!':'💪 Jangan menyerah! Pelajari lagi ya!';
-  showPop(pct>=80?'🎉':pct>=60?'😊':'💪','Nilai Evaluasi Akhir',pct,msg+` (${score}/${evalData.length} benar)`);
-  if(pct>=80)successSnd();else if(pct>=60)clickSnd(600);else errorSnd();
-}
+      // ============================================================
+      // QUIZ LOGIC
+      // ============================================================
+      function answerQuiz(qi, oi) {
+        if (quizAns[qi] !== null) return;
+        quizAns[qi] = oi;
+        const c = quizData[qi].ans;
+        for (let i = 0; i < quizData[qi].opts.length; i++) {
+          const el = document.getElementById("qo_" + qi + "_" + i);
+          if (!el) continue;
+          el.classList.add(i === c ? "correct" : "disabled");
+          if (i === oi && i !== c) el.classList.add("wrong");
+        }
+        const fb = document.getElementById("qf_" + qi);
+        if (!fb) return;
+        fb.style.display = "block";
+        if (oi === c) {
+          fb.className = "fb-box correct";
+          fb.textContent = "✅ Jawaban Benar! Hebat!";
+          successSnd();
+        } else {
+          fb.className = "fb-box wrong";
+          fb.textContent = "❌ Benar: " + String.fromCharCode(65 + c) + ". " + quizData[qi].opts[c];
+          errorSnd();
+        }
+      }
+      function selectEval(qi, oi) {
+        clickSnd(550);
+        for (let i = 0; i < evalData[qi].opts.length; i++) {
+          const el = document.getElementById("eo_" + qi + "_" + i);
+          if (el) el.classList.remove("selected");
+        }
+        const el = document.getElementById("eo_" + qi + "_" + oi);
+        if (el) el.classList.add("selected");
+        evalAns[qi] = oi;
+      }
+      function submitEval() {
+        clickSnd(700);
+        const score = evalAns.filter((a, i) => a === evalData[i].ans).length;
+        const pct = Math.round((score / evalData.length) * 100);
+        evalData.forEach((q, qi) => {
+          for (let oi = 0; oi < q.opts.length; oi++) {
+            const el = document.getElementById("eo_" + qi + "_" + oi);
+            if (!el) continue;
+            el.style.pointerEvents = "none";
+            if (oi === q.ans) {
+              el.style.borderColor = "#43A047";
+              el.style.background = "#E8F5E9";
+            } else if (evalAns[qi] === oi) {
+              el.style.borderColor = "#E53935";
+              el.style.background = "#FFEBEE";
+            }
+          }
+        });
+        const eb = document.getElementById("evalBtn");
+        if (eb) eb.style.display = "none";
+        let msg = pct >= 80 ? "🌟 Luar biasa! Sangat Hebat!" : pct >= 60 ? "👍 Bagus! Terus semangat!" : "💪 Jangan menyerah! Pelajari lagi ya!";
+        showPop(pct >= 80 ? "🎉" : pct >= 60 ? "😊" : "💪", "Nilai Evaluasi", pct, msg + ` (${score}/${evalData.length} benar)`);
+        if (pct >= 80) successSnd();
+        else if (pct >= 60) clickSnd(600);
+        else errorSnd();
+      }
+      function checkGame() {
+        clickSnd(660);
+        let correct = 0;
+        for (const [id, ans] of Object.entries(gameAns)) {
+          const el = document.getElementById(id);
+          if (el && el.value === ans) correct++;
+        }
+        const pct = correct * 20;
+        let msg = correct === 5 ? "🎉 Sempurna!" : correct >= 3 ? "👍 Hampir sempurna!" : "💪 Coba lagi ya!";
+        showPop(correct >= 4 ? "🎊" : correct >= 2 ? "😊" : "💪", "Skor Permainan", pct, `${msg} (${correct}/5 jawaban benar)`);
+        if (correct >= 4) successSnd();
+        else if (correct >= 2) clickSnd(600);
+        else errorSnd();
+      }
+      function showPop(icon, title, score, msg) {
+        document.getElementById("rIcon").textContent = icon;
+        document.getElementById("rTitle").textContent = title;
+        document.getElementById("rScore").textContent = score;
+        document.getElementById("rMsg").textContent = msg;
+        document.getElementById("resultPop").classList.add("show");
+      }
+      function closePop() {
+        document.getElementById("resultPop").classList.remove("show");
+      }
 
-function showPop(icon,title,score,msg){
-  document.getElementById('rIcon').textContent=icon;
-  document.getElementById('rTitle').textContent=title;
-  document.getElementById('rScore').textContent=score;
-  document.getElementById('rMsg').textContent=msg;
-  document.getElementById('resultPop').classList.add('show');
-}
-function closePop(){document.getElementById('resultPop').classList.remove('show');}
+      // ============================================================
+      // NAVIGATION
+      // ============================================================
+      function renderPage(n) {
+        document.getElementById("pageInner").innerHTML = pg(n + 1);
+        document.getElementById("btnPrev").disabled = n === 0;
+        document.getElementById("btnNext").disabled = n === TOTAL - 1;
+        document.getElementById("pageSlider").value = n;
+        document.getElementById("sliderLabel").textContent = n + 1 + " / " + TOTAL;
+      }
+      function changePage(dir) {
+        initAudio();
+        const next = current + dir;
+        if (next < 0 || next >= TOTAL || isAnimating) return;
+        isAnimating = true;
+        flipSnd();
+        const page = document.getElementById("mainPage");
+        page.classList.add(dir > 0 ? "flip-left" : "flip-right");
+        setTimeout(() => {
+          page.classList.remove("flip-left", "flip-right");
+          current = next;
+          renderPage(current);
+          isAnimating = false;
+        }, 450);
+      }
+      function goToPage(n) {
+        initAudio();
+        clickSnd(700);
+        if (n - 1 === current || isAnimating) return;
+        const dir = n - 1 > current ? 1 : -1;
+        isAnimating = true;
+        flipSnd();
+        const page = document.getElementById("mainPage");
+        page.classList.add(dir > 0 ? "flip-left" : "flip-right");
+        setTimeout(() => {
+          page.classList.remove("flip-left", "flip-right");
+          current = n - 1;
+          renderPage(current);
+          isAnimating = false;
+        }, 450);
+      }
+      function sliderChange(val) {
+        if (parseInt(val) === current || isAnimating) return;
+        const dir = parseInt(val) > current ? 1 : -1;
+        isAnimating = true;
+        flipSnd();
+        const page = document.getElementById("mainPage");
+        page.classList.add(dir > 0 ? "flip-left" : "flip-right");
+        setTimeout(() => {
+          page.classList.remove("flip-left", "flip-right");
+          current = parseInt(val);
+          renderPage(current);
+          isAnimating = false;
+        }, 450);
+      }
 
-// ── NAVIGATION ──
-function renderPage(n){
-  document.getElementById('pageInner').innerHTML=pg(n+1);
-  document.getElementById('btnPrev').disabled=n===0;
-  document.getElementById('btnNext').disabled=n===TOTAL-1;
-  document.getElementById('pageSlider').value=n;
-  document.getElementById('sliderLabel').textContent=(n+1)+' / '+TOTAL;
-}
-function changePage(dir){
-  initAudio();
-  const next=current+dir;
-  if(next<0||next>=TOTAL||isAnimating)return;
-  isAnimating=true;flipSnd();
-  const page=document.getElementById('mainPage');
-  page.classList.add(dir>0?'flip-fwd':'flip-back');
-  setTimeout(()=>{
-    page.classList.remove('flip-fwd','flip-back');
-    current=next;renderPage(current);isAnimating=false;
-  },500);
-}
-function goToPage(n){
-  initAudio();clickSnd(700);
-  if(n-1===current||isAnimating)return;
-  const dir=n-1>current?1:-1;
-  isAnimating=true;flipSnd();
-  const page=document.getElementById('mainPage');
-  page.classList.add(dir>0?'flip-fwd':'flip-back');
-  setTimeout(()=>{page.classList.remove('flip-fwd','flip-back');current=n-1;renderPage(current);isAnimating=false;},500);
-}
-function sliderChange(val){
-  if(parseInt(val)===current||isAnimating)return;
-  const dir=parseInt(val)>current?1:-1;
-  isAnimating=true;flipSnd();
-  const page=document.getElementById('mainPage');
-  page.classList.add(dir>0?'flip-fwd':'flip-back');
-  setTimeout(()=>{page.classList.remove('flip-fwd','flip-back');current=parseInt(val);renderPage(current);isAnimating=false;},500);
-}
-function toggleFull(){
-  if(!document.fullscreenElement){document.documentElement.requestFullscreen();}
-  else{document.exitFullscreen();}
-}
-let zoomed=false;
-function toggleZoom(){
-  zoomed=!zoomed;
-  const bs=document.getElementById('bookScene');
-  bs.style.transform=zoomed?'scale(1.12)':'scale(1)';
-  bs.style.transformOrigin='center center';
-  bs.style.transition='transform .3s';
-}
+      // Fullscreen / zoom
+      function toggleFull() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      }
+      let zoomed = false;
+      function toggleZoom() {
+        zoomed = !zoomed;
+        const bs = document.getElementById("bookScene");
+        bs.style.transform = zoomed ? "scale(1.25)" : "scale(1)";
+        bs.style.transition = "transform .3s";
+      }
 
-// ── SWIPE / DRAG ──
-(function(){
-  const page=document.getElementById('mainPage');
-  let startX=0,startY=0,dragging=false,dragDx=0;
-  const THRESHOLD=50;
-
-  function onStart(x,y){
-    if(isAnimating)return;
-    startX=x;startY=y;dragging=true;dragDx=0;
-  }
-  function onMove(x,y){
-    if(!dragging)return;
-    const dx=x-startX,dy=y-startY;
-    // If primarily vertical, cancel (allow scroll in interactive elements)
-    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dx)<15){dragging=false;return;}
-    dragDx=dx;
-    // Visual drag feedback
-    const rot=dx*0.04;
-    const sc=1-Math.abs(dx)*0.0003;
-    page.style.transform=`translateX(${dx*0.35}px) rotateY(${-rot}deg) scale(${sc})`;
-    page.style.boxShadow=dx>0?
-      `-${Math.abs(dx)*0.2}px 8px 40px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.10)`:
-      `${Math.abs(dx)*0.2}px 8px 40px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.10)`;
-  }
-  function onEnd(){
-    if(!dragging)return;
-    dragging=false;
-    page.style.transform='';
-    page.style.boxShadow='';
-    if(Math.abs(dragDx)>THRESHOLD){
-      changePage(dragDx<0?1:-1);
-    }
-  }
-
-  // Touch
-  page.addEventListener('touchstart',e=>{
-    const t=e.touches[0];onStart(t.clientX,t.clientY);
-  },{passive:true});
-  page.addEventListener('touchmove',e=>{
-    const t=e.touches[0];
-    const dx=t.clientX-startX,dy=t.clientY-startY;
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8)e.preventDefault();
-    onMove(t.clientX,t.clientY);
-  },{passive:false});
-  page.addEventListener('touchend',onEnd);
-  page.addEventListener('touchcancel',onEnd);
-
-  // Mouse (desktop drag)
-  page.addEventListener('mousedown',e=>{onStart(e.clientX,e.clientY);});
-  window.addEventListener('mousemove',e=>{if(dragging)onMove(e.clientX,e.clientY);});
-  window.addEventListener('mouseup',onEnd);
-})();
-
-// ── VIEWPORT HEIGHT FALLBACK (older Android/iOS) ──
-function setVh(){
-  // Use visualViewport if available (excludes browser chrome precisely)
-  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  document.documentElement.style.setProperty('--vh100', h + 'px');
-}
-setVh();
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize', setVh);
-} else {
-  window.addEventListener('resize', setVh);
-  window.addEventListener('orientationchange', ()=>setTimeout(setVh,150));
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  renderPage(0);
-  startMusic();
-});
-</script>
-</body>
+      // INIT
+      document.addEventListener("DOMContentLoaded", () => {
+        renderPage(0);
+        startMusic();
+      });
+    </script>
+  </body>
 </html>
