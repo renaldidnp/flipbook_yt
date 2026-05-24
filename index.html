@@ -467,8 +467,13 @@
       .inner-page {
         width: 100%;
         min-height: 100%;
+
         display: flex;
         flex-direction: column;
+
+        overflow: hidden;
+
+        position: relative; /* TAMBAHAN */
       }
       /* Top nav bar on inner pages */
       .inner-topbar {
@@ -508,6 +513,11 @@
         flex: 1;
         padding: 12px 14px;
         overflow: auto;
+        background: linear-gradient(160deg, rgba(255, 243, 224, 0.92), rgba(255, 224, 178, 0.92)), url("https://i.pinimg.com/736x/84/d4/ff/84d4ff21a197ae5b0dc29f415069f8b0.jpg");
+        background-size: cover;
+        background-position: center;
+        background-blend-mode: overlay;
+        border-radius: 0 0 10px 10px;
       }
 
       /* Cards */
@@ -930,13 +940,26 @@
         margin-bottom: 3px;
       }
       .pg-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+
         text-align: center;
         padding: 6px;
         font-size: 9px;
-        color: #999;
-        border-top: 1px solid #eee;
+
+        color: rgba(0, 0, 0, 0.65);
+
+        border: none;
+        background: transparent !important;
+
+        box-shadow: none;
+        backdrop-filter: none;
+
         font-style: italic;
-        flex-shrink: 0;
+
+        z-index: 20;
       }
 
       /* Result popup */
@@ -1084,7 +1107,7 @@
 
     <!-- SLIDER BAR -->
     <div class="slider-bar">
-      <input type="range" id="pageSlider" min="0" max="11" value="0" oninput="sliderChange(this.value)" />
+      <input type="range" id="pageSlider" min="0" max="8" value="0" oninput="sliderChange(this.value)" />
       <div class="slider-page-num" id="sliderLabel">1 / 16</div>
     </div>
 
@@ -1092,7 +1115,7 @@
       // ============================================================
       // DATA
       // ============================================================
-      const TOTAL = 12;
+      const TOTAL = 9;
       let current = 0;
       let isAnimating = false;
 
@@ -1228,10 +1251,9 @@
 
       // Quiz / Eval state
       const quizData = [
-        { q: "Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...", opts: ["Prunggahan Kulon", "Kowang", "Gesing", "Bektiharjo"], ans: 0 },
-        { q: "Tradisi syukuran agar padi subur di Desa Ngino disebut...", opts: ["Siraman Waranggono", "Ritual Keleman", "Kenduren", "Tabuh Lesung"], ans: 1 },
-        { q: "Kerajinan tanah liat seperti gendok dan kuali banyak dibuat di desa...", opts: ["Bejagung", "Bektiharjo", "Karang", "Prunggahan"], ans: 2 },
-        { q: "Seni tarian pergaulan yang diiringi gamelan Jawa di Semanding disebut...", opts: ["Seni Sandur", "Seni Tayub", "Musik Kentrung", "Tabuh Lesung"], ans: 1 },
+        { q: "Seni tradisional khas Semanding adalah …", opts: ["Reog", "Tayub", "Jaipong", "Kecak"], ans: 1 },
+        { q: "Mata pencaharian utama masyarakat Semanding adalah …", opts: ["Nelayan", "Pilot", "Petani", "Dokter"], ans: 2 },
+        { q: "Sandur merupakan kesenian yang berasal dari kehidupan …", opts: ["Pedagang", "Petani", "Nelayan", "Polisi"], ans: 1 },
       ];
       let quizAns = new Array(4).fill(null);
       const evalData = [
@@ -1251,1821 +1273,720 @@
         switch (num) {
           // ---- COVER ----
           case 1:
-            return `<div class="cover-page">
-  <div class="cover-sky">
-    <div class="cover-logos">
-      <div class="cover-logo-badge">Kurikulum<br>Merdeka</div>
-      <div class="cover-logo-badge red">MERDEKA<br>BELAJAR</div>
-      <div class="cover-logo-badge blue2">Merdeka<br>Mengajar</div>
-    </div>
-    <div class="cover-kelas">KELAS<span>VI</span></div>
-    <div class="cover-title-main">Menggali<br>Kearifan<br>Lokal<br>Semanding</div>
-  </div>
-  <div class="cover-scene">
-    <div class="cover-scene-img">
-      <div class="building">
-        <div class="building-sign">SEMANDING</div>
-      </div>
-      <div class="trees left">🌳🌲</div>
-      <div class="trees right">🌲🌳</div>
-      <div class="chars">👨‍🎓👩‍🎓🧒👧🧒‍♂️👦</div>
-      <div class="lung-circle">🏺</div>
-      <button class="next-sign" onclick="changePage(1)">MULAI BACA</button>
-      <div class="ground"></div>
-    </div>
-  </div>
-  <div class="cover-footer">Menggali Kearifan Lokal Semanding &nbsp;|&nbsp; Penulis: Siti Nurhalimah &nbsp;|&nbsp; Mata Pelajaran: IPAS &nbsp;|&nbsp; Kelas VI/SD &nbsp;|&nbsp; 2026</div>
-</div>`;
+            return `
+<style>
+  /* Animasi berdenyut lembut pada tombol agar anak-anak tertarik untuk menekan */
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 4px 15px rgba(245, 127, 23, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 6px 22px rgba(245, 127, 23, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245, 127, 23, 0.4); }
+  }
+  .btn-mulai-baca {
+    animation: pulse 2s infinite ease-in-out;
+    transition: transform 0.1s, filter 0.2s;
+  }
+  .btn-mulai-baca:active {
+    transform: scale(0.95) !important;
+    filter: brightness(0.9);
+  }
+</style>
 
-          // ---- KATA PENGANTAR ----
+<div class="cover-page" style="
+  background: url('img/cover.png') center center no-repeat; 
+  background-size: cover;
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  box-sizing: border-box;
+  overflow: hidden;
+">
+  
+  <div class="cover-sky" style="padding: 15px; text-align: center; height: 25vh; background: transparent;">
+  </div>
+
+  <div class="cover-scene" style="
+    flex-grow: 1; 
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: center; 
+    position: relative;
+    margin-bottom: -5px;
+  ">
+    
+    <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); width: 100%; max-width: 280px; text-align: center; z-index: 10;">
+      <button class="btn-mulai-baca" onclick="changePage(1)" style="
+        background: linear-gradient(135deg, #FF9800, #F57F17);
+        color: white; 
+        border: 3px solid #FFFFFF; 
+        padding: 14px 40px; 
+        border-radius: 30px;
+        font-family: 'Fredoka One', cursive; 
+        font-size: 18px; 
+        font-weight: bold; 
+        cursor: pointer;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        width: 85%;
+        outline: none;
+      ">MULAI BACA ➔</button>
+    </div>
+
+  </div>
+
+  <div class="cover-footer" style="
+    background: rgba(255,255,255,0.75); 
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(4px);
+    color: #5D4037; 
+    font-weight: bold; 
+    text-align: center; 
+    padding: 12px 10px; 
+    font-size: 11px; 
+    line-height: 1.4;
+    z-index: 11;
+  ">
+    Mengenal Kearifan Lokal Semanding &nbsp;|&nbsp; Penulis: Siti Nurhalimah &nbsp;|&nbsp; Mata Pelajaran: IPAS &nbsp;|&nbsp; Kelas IV/SD &nbsp;|&nbsp; 2026
+  </div>
+
+</div>`;
           case 2:
             return `
-<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE082 45%,#FFD54F 100%)">
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE082 45%,#FFD54F 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
 
-  <!-- TOPBAR -->
-  <div class="inner-topbar" style="background:linear-gradient(135deg,#F9A825,#F57F17)">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📖 Kata Pengantar</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#F9A825,#F57F17); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #FF9800; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 16px; text-align: center; flex: 1; margin: 0 10px;">Kata Pengantar</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #FF9800; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
 
-  <!-- BODY -->
-  <div class="inner-body">
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 
-    <!-- HEADER -->
     <div class="card" style="
-      background:linear-gradient(135deg,#FFFDE7,#FFF8E1);
-      border:2px dashed #FBC02D;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-left: 6px solid #FFa000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     ">
-
-      <div style="
-        position:absolute;
-        top:-18px;
-        right:-18px;
-        font-size:70px;
-        opacity:.08;
-      ">📚</div>
-
-      <div style="font-size:42px;margin-bottom:4px">✨</div>
 
       <div class="card-title" style="
-        font-size:18px;
-        color:#E65100;
-        font-family:'Fredoka One',cursive;
-        letter-spacing:.5px;
+        font-size: 20px;
+        color: #BF360C;
+        font-family: 'Fredoka One', cursive;
+        letter-spacing: .5px;
+        text-shadow: 1px 1px 0px rgba(255,255,255,0.6);
+        text-align: center;
+        margin-bottom: 15px;
       ">
-        KATA PENGANTAR
+        👋 HALO ANAK HEBAT!
       </div>
 
       <div class="card-text" style="
-        font-size:11px;
-        color:#795548;
-        margin-top:4px;
-      ">
-        E-Book Interaktif <b>“Menggali Kearifan Lokal Semanding”</b>
-      </div>
-    </div>
-
-    <!-- SALAM -->
-    <div class="highlight" style="
-      background:#FFF3E0;
-      border-left-color:#FB8C00;
-      color:#6D4C41;
-      font-weight:700;
-    ">
-      🌸 Assalamu’alaikum Warahmatullahi Wabarakatuh 🌸
-    </div>
-
-    <!-- ISI -->
-    <div class="card" style="
-      border-left:5px solid #FFA000;
-      background:rgba(255,255,255,.96);
-    ">
-      <div class="card-text" style="
-        font-size:11px;
-        line-height:1.9;
-        text-align:justify;
-        color:#5D4037;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: left;
+        color: #3E2723;
+        font-weight: 500;
       ">
 
-        <p style="margin-bottom:10px">
-          Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa.
-          Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul
-          <span style="
-            background:#FFF8E1;
-            color:#E65100;
-            font-weight:800;
-            padding:2px 6px;
-            border-radius:6px;
-          ">
-            “Menggali Kearifan Lokal Semanding”
-          </span>
-          ini dapat diselesaikan dengan baik.
+        <p style="margin-bottom: 12px">
+          Puji syukur ke hadirat Tuhan Yang Maha Esa karena 📱 <b>E-Book Interaktif</b> berbasis kearifan lokal daerah Semanding ini dapat selesai dengan baik.
         </p>
 
-        <p style="margin-bottom:10px">
-          Kecamatan <b>Semanding</b> bukan hanya tempat tinggal kita,
-          tetapi juga tanah yang kaya akan sejarah, tradisi,
-          dan nilai-nilai luhur yang diwariskan leluhur.
+        <p style="margin-bottom: 12px">
+          Buku digital ini dibuat khusus untuk membantu kamu, siswa kelas IV SD, agar bisa belajar materi <b>IPAS</b> dengan cara yang lebih seru, asyik, dan dekat dengan kehidupanmu sehari-hari.
         </p>
 
-        <div style="
-          background:linear-gradient(135deg,#FFF8E1,#FFECB3);
-          border-radius:10px;
-          padding:10px;
-          margin:12px 0;
-          border:1.5px solid #FFD54F;
-        ">
-          <div style="
-            display:flex;
-            align-items:flex-start;
-            gap:8px;
-          ">
-            <div style="font-size:22px">🏛️</div>
-
-            <div style="
-              font-size:10.5px;
-              color:#6D4C41;
-              line-height:1.7;
-            ">
-              <b>Tahukah kamu?</b><br>
-              Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di
-              <b>Prunggahan Kulon</b>, wilayah Semanding lho!
-            </div>
-          </div>
-        </div>
-
-        <p style="margin-bottom:10px">
-          Melalui buku ini, kita diajak untuk lebih mengenal,
-          mencintai, dan melestarikan budaya sendiri.
+        <p style="margin-bottom: 12px">
+          Di dalam buku ini, kita akan berjalan-jalan mengenal 🎭 <b>budaya lokal</b>, 🎨 <b>kesenian indah</b>, 👨‍🌾 <b>pekerjaan seru</b>, serta 🌳 <b>lingkungan alam</b> di sekitar Semanding. Semoga kamu makin suka belajar dan makin cinta dengan daerahmu sendiri ya!
         </p>
 
-        <div style="
-          margin-top:14px;
-          padding:10px;
-          border-radius:10px;
-          background:linear-gradient(135deg,#E8F5E9,#F1F8E9);
-          border-left:4px solid #43A047;
-          color:#2E7D32;
-          font-weight:700;
-          text-align:center;
-          line-height:1.7;
-        ">
-          📖 Selamat membaca dan menjelajah budaya lokal Semanding! 🌿
-        </div>
+        <p style="margin-bottom: 5px">
+          Selamat belajar petualang cilik! 🌟
+        </p>
 
-      </div>
-    </div>
-
-    <!-- PENUTUP -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#FFFDE7,#FFF8E1);
-      text-align:center;
-      border:1.5px solid #FFE082;
-    ">
-
-      <div style="
-        font-size:11px;
-        color:#6D4C41;
-        line-height:1.8;
-        font-weight:700;
-      ">
-        Wassalamu’alaikum Warahmatullahi Wabarakatuh.
       </div>
 
       <div style="
-        margin-top:18px;
-        text-align:right;
-        color:#795548;
+        margin-top: 15px;
+        text-align: right;
+        color: #5D4037;
+        font-weight: bold;
       ">
-        <div style="font-size:10px">✍️</div>
         <div style="
-          font-family:'Fredoka One',cursive;
-          font-size:13px;
-          color:#E65100;
+          font-family: 'Fredoka One', cursive;
+          font-size: 14px;
+          color: #BF360C;
+          text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         ">
-          Siti Nurhalimah 
+          ✍️ Tim Penulis
         </div>
       </div>
+
+      <div style="
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px dashed #FF9800;
+        text-align: center;
+      ">
+        <span style="font-size: 13px; font-weight: bold; color: #BF360C; display: block; margin-bottom: 8px;">Apakah kamu siap bertualang? Ketuk tombol di bawah!</span>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button onclick="alert('Yey! Semangat belajar ya! 💪🔥')" style="background: #FF9800; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Siap! 🔥</button>
+          <button onclick="alert('Keren! Yuk, langsung klik tombol Lanjut di atas! ✨')" style="background: #FFB300; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Sangat Siap! ⭐</button>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-  <!-- FOOTER -->
-  <div class="pg-footer">
-    Halaman 2 dari 16
+  <div class="pg-footer" style="
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #5D4037;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+  ">
+    📖 Halaman 2 dari 16
   </div>
 
 </div>`;
-          // ---- DAFTAR ISI ----
           // ---- PETUNJUK PENGGUNAAN E-BOOK ----
           case 3:
             return `
-<div class="inner-page" style="background:linear-gradient(160deg,#E3F2FD 0%,#BBDEFB 45%,#90CAF9 100%)">
-
-  <!-- TOPBAR -->
-  <div class="inner-topbar" style="background:linear-gradient(135deg,#1976D2,#1565C0)">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📘 Petunjuk Penggunaan</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+<div class="inner-page" style="background:linear-gradient(160deg,#E3F2FD 0%,#BBDEFB 45%,#90CAF9 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+ 
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#1976D2,#1565C0); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #2196F3; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">📘 Petunjuk Penggunaan</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #2196F3; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
-
-  <!-- BODY -->
-  <div class="inner-body">
-
-    <!-- HEADER -->
+ 
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+ 
     <div class="card" style="
-      background:linear-gradient(135deg,#E1F5FE,#FFFFFF);
-      border:2px dashed #42A5F5;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+      background: rgba(255, 255, 255, 0.25);
+      border: 3px dashed rgba(25, 118, 210, 0.5);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
     ">
-
-      <div style="
-        position:absolute;
-        top:-10px;
-        right:-10px;
-        font-size:70px;
-        opacity:.08;
-      ">📚</div>
-
-      <div style="font-size:40px;margin-bottom:5px">🚀</div>
-
-      <div class="card-title" style="
-        font-size:18px;
-        color:#1565C0;
-        font-family:'Fredoka One',cursive;
-        letter-spacing:.5px;
-      ">
+      <div style="position: absolute; top: -10px; right: -10px; font-size: 70px; opacity: .08;">📚</div>
+      <div style="font-size: 40px; margin-bottom: 5px;">🚀</div>
+      <div class="card-title" style="font-size: 18px; color: #1565C0; font-family: 'Fredoka One', cursive; letter-spacing: .5px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
         Ayo Belajar dengan Cara Seru!
       </div>
-
-      <div class="card-text" style="
-        margin-top:5px;
-        color:#546E7A;
-        font-size:11px;
-      ">
+      <div class="card-text" style="margin-top: 5px; color: #1A237E; font-size: 13px; font-weight: bold;">
         Ikuti petunjuk berikut agar belajar menjadi lebih mudah dan menyenangkan ✨
       </div>
-
     </div>
-
-    <!-- LIST PETUNJUK -->
+ 
     ${[
-      ["➡️", "#42A5F5", "Klik tombol panah di pojok kanan atau kiri untuk membalik halaman."],
-      ["🖼️", "#26A69A", "Perhatikan gambar dan baca teks dengan teliti."],
-      ["🔊", "#FB8C00", "Klik ikon Speaker jika ingin mendengar suara penjelasan."],
-      ["✏️", "#8E24AA", "Kerjakan soal latihan dan kuis dengan jujur."],
-      ["🎉", "#43A047", "Selamat belajar dan semoga menyenangkan!"],
+      ["➡️", "#1976D2", "Klik tombol panah di pojok kanan atau kiri untuk membalik halaman."],
+      ["🖼️", "#00796B", "Perhatikan gambar dan baca teks dengan teliti."],
+      ["🔊", "#E65100", "Klik ikon Speaker jika ingin mendengar suara penjelasan."],
+      ["✏️", "#7B1FA2", "Kerjakan soal latihan dan kuis dengan jujur."],
+      ["🎉", "#2E7D32", "Selamat belajar dan semoga menyenangkan!"],
     ]
       .map(
         ([icon, color, text], i) => `
       <div class="benefit-row" style="
-        border-left:4px solid ${color};
-        background:rgba(255,255,255,.96);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-left: 5px solid ${color};
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,.04);
       ">
-
         <div class="bicon" style="
-          width:42px;
-          height:42px;
-          border-radius:12px;
-          background:${color};
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:20px;
-          color:#fff;
-          box-shadow:0 3px 8px rgba(0,0,0,.12);
-        ">
-          ${icon}
-        </div>
-
+          width: 44px; height: 44px; border-radius: 12px; background: ${color};
+          display: flex; align-items: center; justify-content: center;
+          font-size: 22px; color: #fff; box-shadow: 0 3px 8px rgba(0,0,0,.15);
+          flex-shrink: 0;
+        ">${icon}</div>
         <div>
-          <div class="btitle" style="
-            color:${color};
-            font-size:11px;
-          ">
-            Petunjuk ${i + 1}
-          </div>
-
-          <div class="bdesc" style="
-            font-size:10.5px;
-            line-height:1.6;
-            color:#555;
-          ">
-            ${text}
-          </div>
+          <div class="btitle" style="color: ${color}; font-size: 13px; font-weight: 900; font-family: 'Fredoka One', cursive; text-shadow: 1px 1px 0px rgba(255,255,255,0.3);">Petunjuk ${i + 1}</div>
+          <div class="bdesc" style="font-size: 13px; line-height: 1.5; color: #1C2833; font-weight: 500; margin-top: 2px;">${text}</div>
         </div>
-
       </div>
     `,
       )
       .join("")}
-
-    <!-- BOX PENUTUP -->
+ 
     <div class="card" style="
-      background:linear-gradient(135deg,#FFF8E1,#FFFDE7);
-      border:1.5px solid #FFD54F;
-      text-align:center;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      margin-top: 15px;
     ">
-
-      <div style="font-size:34px;margin-bottom:4px">🌟</div>
-
-      <div style="
-        font-family:'Fredoka One',cursive;
-        font-size:15px;
-        color:#F57F17;
-        margin-bottom:4px;
-      ">
-        Siap Menjelajah?
-      </div>
-
-      <div class="card-text" style="
-        font-size:11px;
-        color:#6D4C41;
-        line-height:1.7;
-      ">
+      <div style="font-size: 34px; margin-bottom: 4px;">🌟</div>
+      <div style="font-family: 'Fredoka One', cursive; font-size: 16px; color: #E65100; margin-bottom: 6px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">Siap Menjelajah?</div>
+      <div class="card-text" style="font-size: 13px; color: #3E2723; line-height: 1.6; font-weight: 500; margin-bottom: 12px;">
         Yuk mulai petualangan mengenal <b>Kearifan Lokal Semanding</b> dengan semangat dan rasa ingin tahu!
       </div>
-
     </div>
-
+ 
   </div>
-
-  <!-- FOOTER -->
-  <div class="pg-footer">
-    Halaman 3 dari 16
+ 
+  <div class="pg-footer" style="
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #1565C0;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+  ">
+    📖 Halaman 3 dari 16
   </div>
-
 </div>`;
-          // ---- KOMPETENSI ----
+          // ---- BAB 1 ----
           case 4:
             return `
-<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9 0%,#C8E6C9 45%,#A5D6A7 100%)">
-
-  <!-- TOPBAR -->
-  <div class="inner-topbar" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">🌿 BAB 1: Mengenal Semanding</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9 0%,#C8E6C9 45%,#A5D6A7 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+ 
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#2E7D32,#1B5E20); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #4CAF50; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 16px; text-align: center; flex: 1; margin: 0 10px;">BAB 1: Semanding</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #4CAF50; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
-
-  <!-- BODY -->
-  <div class="inner-body">
-
-    <!-- HEADER BAB -->
+ 
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+ 
     <div class="card" style="
-      background:linear-gradient(135deg,#F1F8E9,#FFFFFF);
-      border:2px dashed #66BB6A;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+      background: rgba(255, 255, 255, 0.25);
+      border: 3px dashed rgba(46, 125, 50, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      text-align: center;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     ">
-
-      <div style="
-        position:absolute;
-        right:-12px;
-        top:-12px;
-        font-size:70px;
-        opacity:.08;
-      ">🏞️</div>
-
-      <div style="font-size:42px;margin-bottom:5px">🌿</div>
-
-      <div class="card-title" style="
-        font-size:18px;
-        color:#1B5E20;
-        font-family:'Fredoka One',cursive;
-        letter-spacing:.5px;
-      ">
-        BAB 1
+      <div class="card-title" style="font-size: 22px; color: #1B5E20; font-family: 'Fredoka One', cursive; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+        ✨ BAB 1 ✨
       </div>
-
-      <div style="
-        font-family:'Fredoka One',cursive;
-        font-size:16px;
-        color:#2E7D32;
-        margin-top:3px;
-      ">
-        Mengenal Semanding
+      <div style="font-family: 'Fredoka One', cursive; font-size: 18px; color: #1B5E20; margin-top: 5px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+        Lingkungan Daerahku
       </div>
-
-      <div class="card-text" style="
-        margin-top:6px;
-        color:#607D8B;
-        font-size:11px;
-      ">
-        Yuk mengenal wilayah bersejarah dan penuh kekayaan alam 🌱
+      <div class="card-text" style="margin-top: 8px; color: #2E4A3F; font-size: 13px; font-weight: bold;">
+        🌳 Mengenal lingkungan dan kehidupan masyarakat Semanding
       </div>
-
     </div>
-
-    <!-- TUJUAN -->
+ 
     <div class="card" style="
-      border-left:5px solid #43A047;
-      background:rgba(255,255,255,.97);
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
     ">
-
-      <div class="card-title" style="
-        color:#2E7D32;
-        display:flex;
-        align-items:center;
-        gap:6px;
-      ">
-        🎯 Tujuan Pembelajaran
+      <div class="card-title" style="color: #1B5E20; font-family: 'Fredoka One', cursive; font-size: 16px; margin-bottom: 10px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+        A. Mengenal Daerah Semanding
       </div>
 
-      <div class="list-item" style="color:#2E7D32">
-        Siswa dapat mengetahui letak geografis dan sejarah singkat Semanding.
-      </div>
-
-      <div class="list-item" style="color:#2E7D32">
-        Siswa dapat menyebutkan potensi alam dan tempat bersejarah di sekitarnya.
-      </div>
-
-    </div>
-
-    <!-- AYO PIKIR -->
-    <div class="highlight" style="
-      background:linear-gradient(135deg,#FFF8E1,#FFFDE7);
-      border-left-color:#F9A825;
-      color:#6D4C41;
-    ">
-
-      <div style="
-        font-weight:800;
-        color:#E65100;
-        margin-bottom:4px;
-        font-size:11px;
-      ">
-        🤔 Ayo Pikir Dulu!
-      </div>
-
-      <div style="line-height:1.7">
-        “Semanding terletak di bagian selatan Kabupaten Tuban.
-        Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?”
-      </div>
-
-    </div>
-
-    <!-- MATERI -->
-    <div class="card" style="
-      border-left:5px solid #66BB6A;
-      background:#fff;
-    ">
-
-      <div class="card-title" style="
-        color:#1B5E20;
-        font-size:13px;
-      ">
-        🏔️ Semanding: Wilayah Bersejarah dan Berbukit
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-        color:#555;
-      ">
-
-        Kecamatan <b>Semanding</b> terletak di bagian selatan Tuban,
-        dengan wilayah yang sebagian besar berupa <b>perbukitan kapur</b>.
-
+      <div class="card-text" style="line-height: 1.6; text-align: left; color: #0b3c11; font-size: 14px; font-weight: 500;">
+        <b>Semanding</b> merupakan salah satu wilayah di Kabupaten Tuban, Jawa Timur. Daerah ini memiliki kekayaan budaya, kesenian, dan tradisi yang masih dijaga lho!
         <br><br>
-
-        Wilayah ini memiliki sejarah yang sangat penting karena
-        pada masa <b>Kerajaan Majapahit</b>, pusat pemerintahan Tuban
-        pernah berada di <b>Desa Prunggahan Kulon</b>, Semanding.
-
-        <br><br>
-
-        Di sini juga terdapat banyak sumber mata air yang jernih
-        dan menjadi tempat wisata favorit, seperti
-        <b>Pemandian Bektiharjo</b>.
-
-        <br><br>
-
-        Selain itu, daerah ini kaya akan hasil bumi seperti
-        <b>padi, jagung, dan kelapa</b>.
+        Masyarakat Semanding hidup rukun dan saling bekerja sama. Banyak penduduk bekerja sebagai 👨‍🌾 <b>petani</b>, 🛍️ <b>pedagang</b>, dan 🎨 <b>pengrajin</b>.
       </div>
 
+      <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+        <img src="img/1.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 1"/>
+        <img src="img/2.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 2"/>
+        <img src="img/3.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 3"/>
+        <img src="img/4.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 4"/>
+        <img src="img/5.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 5"/>
+        <img src="img/6.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+        <img src="img/7.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 7"/>
+        <img src="img/8.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 8"/>
+      </div>
+      <small style="color: #1B5E20; font-size: 10px; display: block; text-align: center; margin-top: 7px; font-weight: bold;">*Ketuk gambar untuk memperbesar</small>
     </div>
-
-    <!-- GALERI -->
+ 
     <div class="card" style="
-      background:linear-gradient(135deg,#E3F2FD,#F5F5F5);
-      border:1.5px solid #90CAF9;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
     ">
-
-      <div class="card-title" style="
-        color:#1565C0;
-        margin-bottom:8px;
-      ">
-        🖼️ Galeri Foto & Info
+      <div class="card-title" style="color: #1B5E20; font-family: 'Fredoka One', cursive; font-size: 16px; margin-bottom: 10px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+        B. Lingkungan Alam Semanding
       </div>
 
-      <!-- FOTO 1 -->
-      <div style="
-        background:#fff;
-        border-radius:10px;
-        overflow:hidden;
-        margin-bottom:10px;
-        box-shadow:0 2px 8px rgba(0,0,0,.08);
-      ">
-
-        <div style="
-          height:120px;
-          background:linear-gradient(135deg,#AED581,#81C784);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:50px;
-        ">
-          🗺️
+      <div class="card-text" style="line-height: 1.6; color: #0b3c11; font-size: 14px; font-weight: 500;">
+        Daerah Semanding memiliki alam yang indah:
+        <div style="margin: 10px 0; padding-left: 10px; border-left: 3px solid #2E7D32; font-weight: bold;">
+          🌾 • Persawahan<br>
+          🏡 • Perkebunan<br>
+          💧 • Sungai<br>
+          ⛰️ • Daerah perbukitan
         </div>
+        Lingkungan alam ini dimanfaatkan masyarakat untuk bertani dan beternak hewan.
+      </div>
 
-        <div style="padding:8px 10px">
-
-          <div style="
-            font-size:10px;
-            font-weight:800;
-            color:#2E7D32;
-            margin-bottom:5px;
-          ">
-            [Gambar: Peta Wilayah Semanding]
-          </div>
-
-          <div class="card-text" style="
-            font-size:10px;
-            line-height:1.6;
-          ">
-            <b>Fakta Menarik:</b>
-            <br>
-            • Semanding terdiri dari banyak desa, seperti
-            Prunggahan Wetan, Bektiharjo, Karang, dan lainnya.
-            <br>
-            • Wilayahnya yang bergunung-gunung membuat udaranya
-            sejuk dan asri.
-          </div>
-
+      <div style="
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255, 245, 157, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-left: 5px solid #FBC02D;
+        color: #4E342E;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      ">
+        <span style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">🎮 Aktivitas Seru</span>
+        <label for="jawaban-anak" style="font-size: 13px; display:block; margin-bottom: 8px; font-weight: 500;">✏️ Sebutkan lingkungan alam yang ada di sekitar rumahmu!</label>
+        <div style="display: flex; gap: 5px;">
+          <input id="jawaban-anak" type="text" placeholder="Ketik jawabanmu di sini..." style="flex: 1; padding: 8px 10px; border: 1px solid #FBC02D; border-radius: 8px; font-size: 13px; outline: none; background: rgba(255,255,255,0.7); font-weight: bold; color: #4E342E;"/>
+          <button onclick="alert('Hebat! Jawabanmu sudah tersimpan! 🌟')" style="background: #FBC02D; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; color: #4E342E; cursor: pointer; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">Kirim</button>
         </div>
-
-      </div>
-
-      <!-- FOTO 2 -->
-      <!-- FOTO 2 -->
-<div style="
-  background:#fff;
-  border-radius:10px;
-  overflow:hidden;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-">
-
-  <img 
-    src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg"
-    alt="Pemandian Bektiharjo"
-    style="
-      width:100%;
-      height:120px;
-      object-fit:cover;
-      display:block;
-    "
-  />
-
-  <div style="padding:8px 10px">
-
-    <div style="
-      font-size:10px;
-      font-weight:800;
-      color:#006064;
-      margin-bottom:5px;
-    ">
-      📍 Pemandian Bektiharjo
-    </div>
-
-    <div class="card-text" style="
-      font-size:10px;
-      line-height:1.6;
-    ">
-      <b>Keterangan:</b><br>
-      Tempat ini tidak hanya untuk mandi,
-      tetapi juga memiliki nilai sejarah
-      dan sering digunakan untuk upacara adat.
-    </div>
-
-  </div>
-
-</div>
-
       </div>
 
     </div>
-
+ 
   </div>
-
-  <!-- FOOTER -->
-  <div class="pg-footer">
-    Halaman 4 dari 16
+ 
+  <div class="pg-footer" style="
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #1B5E20;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+  ">
+    📖 Halaman 4 dari 16
   </div>
 
 </div>`;
 
-          // ---- APERSEPSI ----
+          // ---- BAB 2 ----
           case 5:
             return `
-<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE0B2 45%,#FFCC80 100%)">
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1 0%,#FFE0B2 45%,#FFCC80 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
 
-  <!-- TOPBAR -->
-  <div class="inner-topbar" style="background:linear-gradient(135deg,#E65100,#BF360C)">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">🏮 BAB 2: Tradisi & Upacara Adat</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#E65100,#BF360C); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #FF9800; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">🏮 BAB 2: Kearifan Lokal Semanding</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #FF9800; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
 
-  <!-- BODY -->
-  <div class="inner-body">
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 
-    <!-- HEADER -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#FFF3E0,#FFFFFF);
-      border:2px dashed #FB8C00;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    ">
-
-      <div style="
-        position:absolute;
-        top:-12px;
-        right:-12px;
-        font-size:72px;
-        opacity:.08;
-      ">🎭</div>
-
-      <div style="font-size:42px;margin-bottom:5px">🏮</div>
-
-      <div class="card-title" style="
-        font-size:18px;
-        color:#E65100;
-        font-family:'Fredoka One',cursive;
-      ">
-        BAB 2
+    <div class="card" style="border-left: 6px solid #D84315; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #D84315; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">A. Seni Tayub</div>
+      <div class="card-text" style="line-height: 1.6; color: #5D4037; font-size: 14px; margin-bottom: 10px;">
+        Seni Tayub merupakan tarian tradisional khas Tuban yang dimainkan dengan iringan gamelan. Penari perempuan disebut waranggono. Kesenian Tayub menjadi hiburan masyarakat sekaligus bentuk pelestarian budaya daerah.
       </div>
-
-      <div style="
-        font-family:'Fredoka One',cursive;
-        font-size:15px;
-        color:#BF360C;
-      ">
-        Tradisi dan Upacara Adat
+     <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+  <img src="img/bab2/1.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 1"/>
+  <img src="img/bab2/2.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 2"/>
+  <img src="img/bab2/3.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 3"/>
+  <img src="img/bab2/4.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 4"/>
+  <img src="img/bab2/5.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 5"/>
+  <img src="img/bab2/6.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+</div>
+      <div style="background: rgba(255, 255, 255, 0.6); padding: 10px; border-radius: 10px;">
+        <div style="font-weight: bold; color: #BF360C; margin-bottom: 5px;">Tahukah Kamu?</div>
+        <div style="font-size: 13px;">Tayub mengajarkan nilai:</div>
+        <ul style="margin: 5px 0; padding-left: 20px; font-size: 13px;">
+          <li>Kebersamaan</li>
+          <li>Gotong royong</li>
+          <li>Menghormati budaya daerah</li>
+        </ul>
       </div>
-
-      <div class="card-text" style="
-        margin-top:6px;
-        color:#6D4C41;
-      ">
-        Mengenal tradisi unik yang masih hidup di tengah masyarakat Semanding ✨
-      </div>
-
     </div>
 
-    <!-- TUJUAN -->
-    <div class="card" style="
-      border-left:5px solid #FB8C00;
-    ">
-
-      <div class="card-title" style="color:#E65100">
-        🎯 Tujuan Pembelajaran
+    <div class="card" style="border-left: 6px solid #2E7D32; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #2E7D32; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">B. Seni Sandur</div>
+      <div class="card-text" style="line-height: 1.6; color: #3E2723; font-size: 14px; margin-bottom: 10px;">
+        Sandur merupakan pertunjukan rakyat yang berasal dari kehidupan petani. Kesenian ini memadukan tari, musik, dan cerita rakyat. Biasanya pertunjukan Sandur dilakukan saat panen atau acara desa.
       </div>
-
-      <div class="list-item" style="color:#6D4C41">
-        Siswa dapat mengenal berbagai tradisi unik di Semanding.
-      </div>
-
-      <div class="list-item" style="color:#6D4C41">
-        Siswa dapat memahami makna dan nilai yang terkandung di dalamnya.
-      </div>
-
+      <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+  <img src="img/bab2/7.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 1"/>
+  <img src="img/bab2/8.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 2"/>
+  <img src="img/bab2/9.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 3"/>
+  <img src="img/bab2/10.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 4"/>
+  <img src="img/bab2/11.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 5"/>
+  <img src="img/bab2/12.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+  <img src="img/bab2/13.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+  <img src="img/bab2/14.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+  <img src="img/bab2/15.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Gambar 6"/>
+</div>
     </div>
 
-    <!-- RITUAL KELEMAN -->
-    <div class="card" style="
-      border-left:5px solid #43A047;
-      background:#fff;
-    ">
-
-      <div class="card-title" style="
-        color:#2E7D32;
-        font-size:13px;
-      ">
-        🌾 1. Ritual Keleman / Tingkepan Dewi Sri
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Ritual Keleman merupakan tradisi masyarakat Desa Ngino
-        sebagai bentuk penghormatan kepada <b>Dewi Sri</b>,
-        simbol kesuburan dan kemakmuran.
-
-        <br><br>
-
-        Tradisi ini dilakukan ketika tanaman padi mulai tumbuh
-        subur atau menjelang panen sebagai bentuk rasa syukur
-        dan harapan agar hasil pertanian melimpah.
-
-        <br><br>
-
-        Warga berkumpul di sawah membawa
-        <b>tumpeng, jajanan pasar, dan hasil bumi</b>.
-        Setelah doa bersama, sebagian makanan ditaburkan
-        di sawah sebagai simbol penolak bala.
-
-      </div>
-
-      <div style="
-        margin-top:10px;
-        background:#F1F8E9;
-        border-radius:10px;
-        padding:10px;
-        border:1px solid #A5D6A7;
-      ">
-
-        <div style="
-          font-size:10px;
-          font-weight:800;
-          color:#2E7D32;
-          margin-bottom:5px;
-        ">
-          🌟 Nilai yang Terkandung
-        </div>
-
-        <div class="mini-grid">
-
-          <div class="mini-card">
-            <div class="micon">🙏</div>
-            <div class="mlabel">Rasa Syukur</div>
-          </div>
-
-          <div class="mini-card">
-            <div class="micon">🌱</div>
-            <div class="mlabel">Menjaga Alam</div>
-          </div>
-
-          <div class="mini-card">
-            <div class="micon">🤝</div>
-            <div class="mlabel">Gotong Royong</div>
-          </div>
-
-          <div class="mini-card">
-            <div class="micon">🏺</div>
-            <div class="mlabel">Pelestarian Budaya</div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- SIRAMAN WARANGGONO -->
-    <div class="card" style="
-      border-left:5px solid #8E24AA;
-    ">
-
-      <div class="card-title" style="
-        color:#6A1B9A;
-        font-size:13px;
-      ">
-        💧 2. Siraman Waranggono
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Siraman Waranggono adalah tradisi penyucian bagi
-        penari Tayub sebelum tampil di depan umum.
-
-        <br><br>
-
-        Prosesi dilakukan di
-        <b>Pemandian Bektiharjo</b>
-        menggunakan air suci yang dipercaya membawa keberkahan.
-
-        <br><br>
-
-        Para calon penari mengenakan pakaian putih
-        sebagai simbol kesucian hati dan niat yang baik.
-        Mereka disiram air sambil dipanjatkan doa keselamatan.
-
-      </div>
-
-      <!-- VIDEO -->
-      <div class="yt-lbl" style="
-        color:#8E24AA;
-        margin-top:10px;
-      ">
-        🎥 Video Siraman Waranggono
-      </div>
-
-      <div class="yt-wrap" style="
-        border-color:#CE93D8;
-      ">
-        <iframe
-          src="https://www.youtube.com/embed/EpPbhZF95gs"
-          frameborder="0"
-          allowfullscreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-        </iframe>
-      </div>
-
-      <div style="
-        margin-top:8px;
-        background:#F3E5F5;
-        border-radius:10px;
-        padding:10px;
-      ">
-
-        <div class="list-item" style="color:#6A1B9A">
-          Mengajarkan kesucian hati dan tanggung jawab.
-        </div>
-
-        <div class="list-item" style="color:#6A1B9A">
-          Menghormati seni tradisional sebagai warisan budaya.
-        </div>
-
-        <div class="list-item" style="color:#6A1B9A">
-          Menjaga pelestarian budaya Tayub.
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- TABUH LESUNG -->
-    <div class="card" style="
-      border-left:5px solid #1565C0;
-    ">
-
-      <div class="card-title" style="
-        color:#1565C0;
-        font-size:13px;
-      ">
-        🥁 3. Tabuh Lesung
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Tabuh Lesung adalah kesenian tradisional
-        menggunakan <b>lesung</b> dan <b>alu</b>
-        yang dahulu dipakai untuk menumbuk padi.
-
-        <br><br>
-
-        Ketika dipukul bersama-sama,
-        lesung menghasilkan bunyi khas dan berirama.
-        Tradisi ini sering dimainkan saat panen,
-        syukuran, atau festival budaya.
-
-        <br><br>
-
-        Tabuh Lesung juga mengajarkan pentingnya
-        kerja sama karena setiap pemain harus
-        menjaga irama agar tetap harmonis.
-
-      </div>
-
-      <!-- AUDIO MOCK -->
-      <div style="
-        margin-top:10px;
-        background:linear-gradient(135deg,#E3F2FD,#F5F5F5);
-        border-radius:12px;
-        padding:10px;
-        border:1px solid #90CAF9;
-      ">
-
-        <div style="
-          display:flex;
-          align-items:center;
-          gap:10px;
-        ">
-
-          <button style="
-            width:42px;
-            height:42px;
-            border:none;
-            border-radius:50%;
-            background:#1565C0;
-            color:#fff;
-            font-size:18px;
-            cursor:pointer;
-          ">
-            🔊
-          </button>
-
-          <div>
-            <div style="
-              font-size:11px;
-              font-weight:800;
-              color:#1565C0;
-            ">
-              Dengarkan Irama Tabuh Lesung
-            </div>
-
-            <div style="
-              font-size:10px;
-              color:#666;
-            ">
-              Suara tabuhan khas masyarakat desa 🎶
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- GALERI -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#FFF8E1,#FFFFFF);
-      border:1.5px solid #FFCC80;
-    ">
-
-      <div class="card-title" style="
-        color:#E65100;
-      ">
-        🖼️ Galeri Foto & Info
-      </div>
-
-      <!-- FOTO 1 -->
-      <div style="
-        background:#fff;
-        border-radius:10px;
-        overflow:hidden;
-        margin-bottom:10px;
-        box-shadow:0 2px 8px rgba(0,0,0,.08);
-      ">
-
-        <div style="
-          height:120px;
-          background:linear-gradient(135deg,#81C784,#43A047);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:50px;
-        ">
-          🌾
-        </div>
-
-        <div style="padding:8px 10px">
-
-          <div style="
-            font-size:10px;
-            font-weight:800;
-            color:#2E7D32;
-            margin-bottom:5px;
-          ">
-            [Gambar: Prosesi Ritual Keleman]
-          </div>
-
-          <div class="card-text" style="font-size:10px">
-            Warga berkumpul di dekat mata air
-            untuk berdoa bersama.
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- FOTO 2 -->
-      <div style="
-        background:#fff;
-        border-radius:10px;
-        overflow:hidden;
-        box-shadow:0 2px 8px rgba(0,0,0,.08);
-      ">
-
-        <div style="
-          height:120px;
-          background:linear-gradient(135deg,#64B5F6,#1976D2);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:50px;
-        ">
-          🥁
-        </div>
-
-        <div style="padding:8px 10px">
-
-          <div style="
-            font-size:10px;
-            font-weight:800;
-            color:#1565C0;
-            margin-bottom:5px;
-          ">
-            [Gambar: Kegiatan Tabuh Lesung]
-          </div>
-
-          <div class="card-text" style="font-size:10px">
-            🔊 Dengarkan irama tabuhan lesung yang gagah dan harmonis!
-          </div>
-
-        </div>
-
-      </div>
-
+    <div class="card" style="background: #FFF3E0; border: 2px solid #FFCC80; border-radius: 16px; padding: 15px; margin-bottom: 15px;">
+      <div class="card-title" style="color: #BF360C; font-family: 'Fredoka One', cursive; font-size: 16px; margin-bottom: 8px;">👥 Aktivitas Kelompok</div>
+      <div style="font-size: 14px; color: #5D4037;">Diskusikan bersama temanmu:</div>
+      <ul style="margin: 10px 0; padding-left: 20px; font-size: 14px; color: #5D4037;">
+        <li>Mengapa budaya daerah harus dilestarikan?</li>
+        <li>Apa akibatnya jika budaya daerah hilang?</li>
+      </ul>
     </div>
 
   </div>
 
-  <!-- FOOTER -->
-  <div class="pg-footer">
-    Halaman 5 dari 16
+  <div class="pg-footer" style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); color: #6D4C41; font-weight: 700; text-align: center; padding: 10px; font-size: 12px;">
+    📖 Halaman 5 dari 16
   </div>
-
 </div>`;
-          // ---- MATERI 1 ----
+          // ---- BAB 3 ----
           case 6:
             return `
-<div class="inner-page" style="background:linear-gradient(160deg,#F3E5F5 0%,#E1BEE7 45%,#CE93D8 100%)">
+<div class="inner-page" style="background: linear-gradient(rgba(255,255,255,.18), rgba(255,255,255,.18)), linear-gradient(160deg,#F3E5F5 0%,#E1BEE7 45%,#CE93D8 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
 
-  <!-- TOPBAR -->
-  <div class="inner-topbar" style="background:linear-gradient(135deg,#7B1FA2,#4A148C)">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">🏺 BAB 3: Kerajinan & Kearifan Hidup</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#7B1FA2,#4A148C); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #9C27B0; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">💼 BAB 3: Mata Pencaharian</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #9C27B0; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
 
-  <!-- BODY -->
-  <div class="inner-body">
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 
-    <!-- HEADER -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#F8EAFB,#FFFFFF);
-      border:2px dashed #AB47BC;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    ">
-
-      <div style="
-        position:absolute;
-        top:-14px;
-        right:-14px;
-        font-size:72px;
-        opacity:.08;
-      ">🎨</div>
-
-      <div style="font-size:42px;margin-bottom:4px">🏺</div>
-
-      <div class="card-title" style="
-        font-size:18px;
-        color:#6A1B9A;
-        font-family:'Fredoka One',cursive;
-      ">
-        BAB 3
+    <div class="card" style="border-left: 6px solid #2E7D32; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #2E7D32; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">A. Petani</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px; margin-bottom: 10px;">
+        Sebagian besar masyarakat Semanding bekerja sebagai petani. Mereka menanam:
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li>Padi, Jagung, Kacang, dan Sayuran</li>
+        </ul>
+        Petani memanfaatkan tanah yang subur untuk memenuhi kebutuhan hidup.
       </div>
-
-      <div style="
-        font-family:'Fredoka One',cursive;
-        font-size:15px;
-        color:#7B1FA2;
-      ">
-        Kerajinan dan Kearifan Hidup
+      <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+        <img src="img/bab3/1.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 1"/>
+        <img src="img/bab3/2.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 2"/>
+        <img src="img/bab3/3.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 3"/>
+        <img src="img/bab3/4.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 4"/>
+        <img src="img/bab3/5.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 5"/>
+        <img src="img/bab3/6.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 6"/>
+        <img src="img/bab3/7.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 7"/>
+        <img src="img/bab3/8.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Petani 8"/>
       </div>
-
-      <div class="card-text" style="
-        margin-top:5px;
-        color:#666;
-      ">
-        Mengenal kecerdasan dan keterampilan masyarakat Semanding ✨
-      </div>
-
     </div>
 
-    <!-- TUJUAN -->
-    <div class="card" style="
-      border-left:5px solid #8E24AA;
-    ">
-
-      <div class="card-title" style="color:#7B1FA2">
-        🎯 Tujuan Pembelajaran
+    <div class="card" style="border-left: 6px solid #D84315; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #D84315; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">B. Pedagang dan Pengrajin</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px; margin-bottom: 10px;">
+        Selain bertani, masyarakat juga berdagang dan membuat kerajinan seperti:
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li>Anyaman bambu</li>
+          <li>Kerajinan kayu</li>
+          <li>Makanan tradisional</li>
+        </ul>
       </div>
-
-      <div class="list-item" style="color:#6A1B9A">
-        Siswa dapat mengetahui kerajinan tangan khas Semanding.
-      </div>
-
-      <div class="list-item" style="color:#6A1B9A">
-        Siswa dapat memahami cara nenek moyang memanfaatkan alam sekitar.
-      </div>
-
+      
     </div>
 
-    <!-- PENGANTAR -->
-    <div class="highlight" style="
-      background:#F3E5F5;
-      border-left-color:#AB47BC;
-      color:#4A148C;
-    ">
-
-      🧠 <strong>Kecerdasan dan Keterampilan Warga Semanding</strong><br>
-      Masyarakat Semanding memiliki berbagai keterampilan yang diwariskan secara turun-temurun dan menjadi bagian penting dari budaya daerah.
-
-    </div>
-
-    <!-- GERABAH -->
-    <div class="card" style="
-      border-left:5px solid #FB8C00;
-    ">
-
-      <div class="card-title" style="
-        color:#E65100;
-        font-size:13px;
-      ">
-        🏺 1. Kerajinan Gerabah / Tembikar
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Di Desa Karang terdapat pengrajin gerabah seperti
-        <b>Mbah Somi</b> yang masih mempertahankan tradisi membuat
-        peralatan dari tanah liat secara manual.
-
-        <br><br>
-
-        Gerabah dibuat dari tanah liat yang dibentuk,
-        dikeringkan, lalu dibakar hingga keras.
-        Hasilnya berupa kendi, kuali, pot, dan vas bunga.
-
-      </div>
-
-      <!-- TAHAPAN -->
-      <div style="
-        margin-top:10px;
-        background:#FFF3E0;
-        border-radius:10px;
-        padding:10px;
-        border:1px solid #FFCC80;
-      ">
-
-        <div style="
-          font-size:11px;
-          font-weight:800;
-          color:#E65100;
-          margin-bottom:6px;
-        ">
-          🔥 Tahapan Membuat Gerabah
-        </div>
-
-        ${["Mengambil tanah liat berkualitas", "Mengolah tanah hingga lentur", "Membentuk menggunakan tangan atau roda putar", "Mengeringkan di bawah matahari", "Membakar hingga keras"]
-          .map(
-            (t, i) => `
-            <div class="list-item" style="color:#6D4C41">
-              <b>${i + 1}.</b> ${t}
-            </div>
-          `,
-          )
-          .join("")}
-
-      </div>
-
-      <!-- NILAI -->
-      <div class="komp-chips" style="margin-top:8px">
-        <span class="chip" style="background:#FFF3E0;color:#E65100">💪 Kerja Keras</span>
-        <span class="chip" style="background:#FFF8E1;color:#F57F17">🎯 Ketekunan</span>
-        <span class="chip" style="background:#F3E5F5;color:#7B1FA2">🎨 Kreativitas</span>
-        <span class="chip" style="background:#E8F5E9;color:#2E7D32">🏺 Budaya Lokal</span>
-      </div>
-
-    </div>
-
-    <!-- SENI PATUNG -->
-    <div class="card" style="
-      border-left:5px solid #1565C0;
-    ">
-
-      <div class="card-title" style="
-        color:#1565C0;
-        font-size:13px;
-      ">
-        🗿 2. Seni Patung
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Di Desa Bejagung terdapat seniman patung terkenal
-        bernama <b>Abah Janjang</b>.
-        Beliau membuat karya seni dari kayu dan batu
-        untuk menghiasi taman dan bangunan penting.
-
-        <br><br>
-
-        Seni patung membutuhkan imajinasi,
-        keterampilan tangan, dan kesabaran tinggi.
-
-      </div>
-
-      <div class="mini-grid" style="margin-top:10px">
-
-        <div class="mini-card">
-          <div class="micon">📐</div>
-          <div class="mlabel">Desain</div>
-          <div class="mdesc">Membuat rancangan patung</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">🪵</div>
-          <div class="mlabel">Bahan</div>
-          <div class="mdesc">Kayu atau batu pilihan</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">🔨</div>
-          <div class="mlabel">Memahat</div>
-          <div class="mdesc">Membentuk sedikit demi sedikit</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">✨</div>
-          <div class="mlabel">Finishing</div>
-          <div class="mdesc">Menghaluskan dan mewarnai</div>
-        </div>
-
-      </div>
-
-      <div style="
-        margin-top:10px;
-        background:#E3F2FD;
-        border-radius:10px;
-        padding:10px;
-      ">
-
-        <div class="list-item" style="color:#1565C0">
-          Ketelitian dan kesabaran sangat penting.
-        </div>
-
-        <div class="list-item" style="color:#1565C0">
-          Patung memiliki nilai keindahan dan budaya.
-        </div>
-
-        <div class="list-item" style="color:#1565C0">
-          Seni patung menjadi warisan budaya daerah.
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- PAES -->
-    <div class="card" style="
-      border-left:5px solid #C2185B;
-    ">
-
-      <div class="card-title" style="
-        color:#C2185B;
-        font-size:13px;
-      ">
-        👰 3. Paes Semandingan
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.9;
-        text-align:justify;
-      ">
-
-        Paes Semandingan merupakan rias pengantin khas daerah
-        Semanding yang terkenal sederhana tetapi tetap anggun.
-
-        <br><br>
-
-        Riasan ini dipadukan dengan pakaian adat Jawa
-        dan aksesoris tradisional yang melambangkan
-        kesucian serta harapan rumah tangga harmonis.
-
-      </div>
-
-      <div class="mini-grid" style="margin-top:10px">
-
-        <div class="mini-card">
-          <div class="micon">🌸</div>
-          <div class="mlabel">Anggun</div>
-          <div class="mdesc">Tampilan lembut dan elegan</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">👘</div>
-          <div class="mlabel">Busana Jawa</div>
-          <div class="mdesc">Dipadukan pakaian adat</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">💎</div>
-          <div class="mlabel">Aksesoris</div>
-          <div class="mdesc">Hiasan tradisional khas</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">❤️</div>
-          <div class="mlabel">Makna</div>
-          <div class="mdesc">Harapan hidup harmonis</div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- KESIMPULAN -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#FFF8E1,#FFFFFF);
-      border:1.5px solid #FFD54F;
-    ">
-
-      <div class="card-title" style="
-        color:#F57F17;
-      ">
-        📚 Kesimpulan
-      </div>
-
-      <div class="card-text" style="
-        line-height:1.8;
-        text-align:justify;
-      ">
-
-        Masyarakat Semanding memiliki banyak keterampilan seperti
-        membuat gerabah, seni patung, dan Paes Semandingan.
-
-        <br><br>
-
-        Semua keterampilan tersebut mengandung nilai
-        kerja keras, kreativitas, ketelitian,
-        kesabaran, dan pelestarian budaya lokal
-        yang perlu dijaga oleh generasi muda.
-
-      </div>
-
-    </div>
-
-    <!-- GALERI -->
-    <div class="card" style="
-      background:linear-gradient(135deg,#FCE4EC,#FFFFFF);
-      border:1.5px solid #F48FB1;
-    ">
-
-      <div class="card-title" style="
-        color:#C2185B;
-      ">
-        🖼️ Galeri Foto & Info
-      </div>
-
-      <!-- FOTO GERABAH -->
-      <div style="
-        background:#fff;
-        border-radius:10px;
-        overflow:hidden;
-        margin-bottom:10px;
-        box-shadow:0 2px 8px rgba(0,0,0,.08);
-      ">
-
-        <div style="
-          height:120px;
-          background:linear-gradient(135deg,#D7CCC8,#A1887F);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:52px;
-        ">
-          🏺
-        </div>
-
-        <div style="padding:8px 10px">
-
-          <div style="
-            font-size:10px;
-            font-weight:800;
-            color:#6D4C41;
-            margin-bottom:5px;
-          ">
-            [Gambar: Sedang Membuat Gerabah]
-          </div>
-
-          <div class="card-text" style="font-size:10px">
-            Tanah liat dibentuk menggunakan roda putar,
-            lalu dijemur dan dibakar hingga keras.
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- FOTO PAES -->
-      <div style="
-        background:#fff;
-        border-radius:10px;
-        overflow:hidden;
-        box-shadow:0 2px 8px rgba(0,0,0,.08);
-      ">
-
-        <div style="
-          height:120px;
-          background:linear-gradient(135deg,#F8BBD0,#F48FB1);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:52px;
-        ">
-          👰
-        </div>
-
-        <div style="padding:8px 10px">
-
-          <div style="
-            font-size:10px;
-            font-weight:800;
-            color:#C2185B;
-            margin-bottom:5px;
-          ">
-            [Gambar: Contoh Paes Semandingan]
-          </div>
-
-          <div class="card-text" style="font-size:10px">
-            Wajah diberi bedak tipis dan hiasan elegan
-            yang menampilkan kesan anggun dan sopan.
-          </div>
-
-        </div>
-
-      </div>
-
+    <div class="card" style="background: #FFF3E0; border: 2px solid #FFCC80; border-radius: 16px; padding: 15px;">
+      <div class="card-title" style="color: #BF360C; font-family: 'Fredoka One', cursive; font-size: 16px; margin-bottom: 8px;">📝 Aktivitas Interaktif</div>
+      <div style="font-size: 14px; color: #5D4037;">Tuliskan pekerjaan orang tuamu dan manfaatnya bagi masyarakat!</div>
+      <textarea style="width: 100%; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; padding: 8px; font-family: inherit;" rows="3" placeholder="Tulis jawabanmu di sini..."></textarea>
     </div>
 
   </div>
 
-  <!-- FOOTER -->
-  <div class="pg-footer">
-    Halaman 6 dari 16
+  <div class="pg-footer" style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); color: #4A148C; font-weight: 700; text-align: center; padding: 10px; font-size: 12px;">
+    📖 Halaman 6 dari 16
   </div>
-
 </div>`;
-          // ---- MATERI 3 ----
+          // ---- BAB 4 ----
           case 7:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0,#FFE0B2)">
-  <div class="inner-topbar" style="background:#D84315">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">🎭 BAB 4: Seni & Budaya</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0 0%,#FFE0B2 45%,#FFCC80 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#D84315,#BF360C); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">🌿 BAB 4: Budaya & Lingkungan</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
 
-  <div class="inner-body">
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 
-    <div class="card" style="border-left:5px solid #FF7043;background:#FFF8F5">
-      <div class="card-title" style="color:#BF360C;font-size:14px">
-        🎯 Tujuan Pembelajaran
-      </div>
-
-      <div class="list-item" style="color:#5D4037">
-        Siswa dapat mengenal kesenian khas Semanding.
-      </div>
-
-      <div class="list-item" style="color:#5D4037">
-        Siswa dapat menghargai karya seni daerah sendiri.
-      </div>
-    </div>
-
-    <div class="highlight" style="border-color:#FF7043;background:#FFF3E0;color:#BF360C">
-      ✨ <strong>Kesenian yang Membanggakan di Semanding</strong><br>
-      Kecamatan Semanding memiliki berbagai kesenian tradisional yang menjadi kebanggaan masyarakat dan diwariskan turun-temurun.
-    </div>
-
-    <!-- TAYUB -->
-    <div class="card" style="border-left:5px solid #EC407A">
-      <div class="card-title" style="color:#C2185B">
-        💃 1. Seni Tayub
-      </div>
-
-      <div class="card-text">
-        Seni Tayub adalah tarian tradisional yang diiringi gamelan Jawa dan biasa ditampilkan saat hajatan, pernikahan, syukuran, dan acara adat.
-      </div>
-
-      <div class="mini-grid" style="margin-top:8px">
-        <div class="mini-card">
-          <div class="micon">🎵</div>
-          <div class="mlabel">Gamelan</div>
-          <div class="mdesc">Diiringi musik Jawa tradisional</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">👘</div>
-          <div class="mlabel">Busana Adat</div>
-          <div class="mdesc">Menggunakan pakaian tradisional</div>
-        </div>
-      </div>
-
-      <div style="font-size:11px;font-weight:800;color:#C2185B;margin:8px 0 4px">
-        🌟 Nilai dalam Seni Tayub
-      </div>
-
-      ${["Penghormatan terhadap seni budaya", "Kebersamaan dan kekeluargaan", "Kesopanan dan etika", "Pelestarian tradisi daerah"].map((t) => `<div class="list-item" style="color:#AD1457">${t}</div>`).join("")}
-
-      <div class="yt-lbl" style="color:#C2185B;margin-top:8px">
-        🎥 Tayub Tradisional
-      </div>
-
-      <div class="yt-wrap" style="border-color:#F48FB1">
-        <iframe src="https://www.youtube.com/embed/EpPbhZF95gs"
-        allowfullscreen></iframe>
+    <div class="card" style="border-left: 6px solid #C2185B; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #C2185B; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">A. Cara Melestarikan Budaya</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px; margin-bottom: 10px;">
+        Kita dapat menjaga warisan leluhur dengan cara:
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li>Mengikuti kegiatan budaya daerah</li>
+          <li>Belajar tarian tradisional</li>
+          <li>Menjaga sopan santun</li>
+          <li>Menggunakan bahasa daerah dengan baik</li>
+        </ul>
       </div>
     </div>
 
-    <!-- SANDUR -->
-    <div class="card" style="border-left:5px solid #7E57C2">
-      <div class="card-title" style="color:#5E35B1">
-        🎪 2. Seni Sandur
+    <div class="card" style="border-left: 6px solid #2E7D32; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #2E7D32; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">B. Menjaga Lingkungan</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px; margin-bottom: 10px;">
+        Lingkungan harus dijaga agar tetap bersih dan sehat dengan cara:
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li>Membuang sampah pada tempatnya</li>
+          <li>Menanam pohon</li>
+          <li>Membersihkan selokan</li>
+          <li>Hemat air</li>
+        </ul>
       </div>
-
-      <div class="card-text">
-        Seni Sandur merupakan pertunjukan rakyat yang memadukan cerita, lawakan, tari, musik, dan dialog lucu yang menghibur masyarakat.
-      </div>
-
-      <div class="mini-grid" style="margin-top:8px">
-        <div class="mini-card">
-          <div class="micon">😂</div>
-          <div class="mlabel">Humor</div>
-          <div class="mdesc">Penuh lawakan dan hiburan</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">📖</div>
-          <div class="mlabel">Pesan Moral</div>
-          <div class="mdesc">Mengajarkan nilai kehidupan</div>
-        </div>
-      </div>
-
-      <div style="font-size:11px;font-weight:800;color:#5E35B1;margin:8px 0 4px">
-        🎭 Ciri-Ciri Seni Sandur
-      </div>
-
-      ${["Menggabungkan tari, musik, cerita, dan lawakan", "Menggunakan bahasa Jawa", "Bersifat menghibur dan penuh humor", "Mengandung pesan moral"].map((t) => `<div class="list-item" style="color:#5E35B1">${t}</div>`).join("")}
-
-      <div class="highlight" style="margin-top:8px;border-color:#B39DDB;background:#F3E5F5;color:#4A148C">
-        🎭 Tokoh dalam Sandur: Tangsil, Pelat, Pethak, dan Cawik membuat pertunjukan menjadi seru dan lucu.
-      </div>
-    </div>
-
-    <!-- KENTRUNG -->
-    <div class="card" style="border-left:5px solid #26A69A">
-      <div class="card-title" style="color:#00695C">
-        🥁 3. Musik Kentrung
-      </div>
-
-      <div class="card-text">
-        Musik Kentrung adalah musik tradisional sederhana dari bambu yang digunakan untuk hiburan dan menyampaikan cerita rakyat.
-      </div>
-
-      <div class="mini-grid" style="margin-top:8px">
-        <div class="mini-card">
-          <div class="micon">🎋</div>
-          <div class="mlabel">Bambu</div>
-          <div class="mdesc">Menggunakan alat sederhana</div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">🎶</div>
-          <div class="mlabel">Irama Khas</div>
-          <div class="mdesc">Memiliki bunyi unik dan merakyat</div>
-        </div>
-      </div>
-
-      <div style="font-size:11px;font-weight:800;color:#00695C;margin:8px 0 4px">
-        🌱 Nilai Musik Kentrung
-      </div>
-
-      ${["Kreativitas masyarakat", "Kesederhanaan", "Pelestarian budaya lokal", "Pendidikan moral melalui cerita rakyat"].map((t) => `<div class="list-item" style="color:#00695C">${t}</div>`).join("")}
-    </div>
-
-    <!-- KESIMPULAN -->
-    <div class="highlight" style="border-color:#FFA000;background:#FFF8E1;color:#E65100">
-      📚 <strong>Kesimpulan</strong><br>
-      Tayub, Sandur, dan Musik Kentrung adalah kekayaan budaya Semanding yang harus dijaga dan diwariskan kepada generasi muda agar tetap lestari.
-    </div>
-
-    <!-- GALERI -->
-    <div class="card" style="border-left:5px solid #FB8C00">
-      <div class="card-title" style="color:#E65100">
-        🖼️ Galeri Foto & Info
-      </div>
-
-      <div class="mini-grid">
-
-        <div class="mini-card">
-          <div class="micon">💃</div>
-          <div class="mlabel">Penari Tayub</div>
-          <div class="mdesc">
-            Gerakan lembut dan anggun dengan iringan gamelan.
-          </div>
-        </div>
-
-        <div class="mini-card">
-          <div class="micon">🎪</div>
-          <div class="mlabel">Seni Sandur</div>
-          <div class="mdesc">
-            Pertunjukan rakyat penuh humor dan pesan moral.
-          </div>
-        </div>
-
-      </div>
-
-      <div class="highlight" style="margin-top:8px;border-color:#FFB74D;background:#FFF3E0;color:#E65100">
-        🔊 Dengarkan irama gamelan dan musik tradisional khas Semanding!
+      <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+        <img src="img/bab4/1.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 1"/>
+        <img src="img/bab4/2.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 2"/>
+        <img src="img/bab4/3.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
+        <img src="img/bab4/4.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
+        <img src="img/bab4/5.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
+        <img src="img/bab4/6.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
+        <img src="img/bab4/7.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
+        <img src="img/bab4/8.jpg" onclick="this.style.transform = this.style.transform == 'scale(2)' ? 'scale(1)' : 'scale(2)'; this.style.zIndex = this.style.zIndex == '10' ? '1' : '10';" style="width:100%; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.2s; position:relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" alt="Lingkungan 3"/>
       </div>
     </div>
 
   </div>
 
-  <div class="pg-footer">Halaman 8 dari 16</div>
+  <div class="pg-footer" style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); color: #5D4037; font-weight: 700; text-align: center; padding: 10px; font-size: 12px;">
+    📖 Halaman 7 dari 16
+  </div>
 </div>`;
-          // ---- QUIZ 1-2 ----
           case 8:
-            return buildQuizPage(0, 2, 10);
-          // ---- QUIZ 3-4 ----
-          case 9:
-            return buildQuizPage(2, 4, 11);
+            return buildQuizPage(0, 3, 9);
 
           // ---- LKPD ----
-          case 10:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#E8F5E9,#C8E6C9)">
-  <div class="inner-topbar" style="background:#2E7D32">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📝 LKPD — Tugas Kelompok</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+          case 9:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0 0%,#FFE0B2 45%,#FFCC80 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#D84315,#BF360C); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">📝 EVALUASI & LKPD</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
-  <div class="inner-body">
-    <div class="lkpd-task">
-      <div class="lkpd-num">Tugas 1</div>
-      <div class="lkpd-title">Pengamatan Lingkungan</div>
-      <div class="lkpd-desc">Amatilah lingkungan sekitarmu! Tuliskan 2 contoh kearifan lokal yang kamu temukan!</div>
-      <div style="font-size:9px;color:#2E7D32;font-weight:700">Contoh 1:</div>
-      <textarea class="lkpd-input" placeholder="Tuliskan contoh pertama kearifan lokal..."></textarea>
-      <div style="font-size:9px;color:#2E7D32;font-weight:700;margin-top:4px">Contoh 2:</div>
-      <textarea class="lkpd-input" placeholder="Tuliskan contoh kedua kearifan lokal..."></textarea>
+
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+
+    <div class="card" style="border-left: 6px solid #C2185B; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #C2185B; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">A. Evaluasi</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px;">
+        Ayo Kerjakan soal berikut:
+        <ol style="margin: 5px 0; padding-left: 20px;">
+          <li>Jelaskan pengertian kearifan lokal!</li>
+          <li>Mengapa budaya daerah harus dilestarikan?</li>
+          <li>Sebutkan contoh budaya daerah Semanding!</li>
+          <li>Bagaimana cara menjaga lingkungan sekitar?</li>
+        </ol>
+      </div>
     </div>
-    <div class="lkpd-task">
-      <div class="lkpd-num">Tugas 2</div>
-      <div class="lkpd-title">Wawancara Sederhana</div>
-      <div class="lkpd-desc">Tanyakan kepada orang tua tentang satu tradisi unik di keluargamu!</div>
-      <textarea class="lkpd-input" placeholder="Tuliskan tradisi unik dari wawancara..." style="height:44px"></textarea>
+
+    <div class="card" style="border-left: 6px solid #2E7D32; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #2E7D32; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">B. LKPD: Tugas Kelompok</div>
+      
+      <div style="margin-bottom: 15px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">1. Pengamatan Lingkungan:</div>
+        <textarea placeholder="Tuliskan 2 contoh kearifan lokal di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">2. Wawancara Tradisi:</div>
+        <textarea placeholder="Tuliskan hasil wawancara di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
+      </div>
+
+      <div style="margin-bottom: 5px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">3. Diskusi Kelompok:</div>
+        <textarea placeholder="Tuliskan kesimpulan diskusi di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
+      </div>
     </div>
-    <div class="lkpd-task">
-      <div class="lkpd-num">Tugas 3</div>
-      <div class="lkpd-title">Diskusi Kelompok</div>
-      <div class="lkpd-desc">Mengapa kearifan lokal perlu dilestarikan? Diskusikan bersama kelompokmu!</div>
-      <textarea class="lkpd-input" placeholder="Tuliskan hasil diskusi kelompok..." style="height:44px"></textarea>
-    </div>
+
   </div>
-  <div class="pg-footer">Halaman 12 dari 16</div>
+
+  <div class="pg-footer" style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); color: #5D4037; font-weight: 700; text-align: center; padding: 10px; font-size: 12px;">
+    📖 Halaman 9 dari 16
+  </div>
 </div>`;
+          case 9:
+            return `
+<div class="inner-page" style="background:linear-gradient(160deg,#FFF3E0 0%,#FFE0B2 45%,#FFCC80 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
 
-          // ---- RANGKUMAN ----
-          case 11:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#FFF8E1,#FFE082)">
-  <div class="inner-topbar" style="background:#F57F17">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📚 Penutup & Refleksi</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
+  <div class="inner-topbar" style="background:linear-gradient(135deg,#D84315,#BF360C); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+    <button class="topbar-back" onclick="changePage(-1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">◀ Kembali</button>
+    <div class="topbar-title" style="color: white; font-family: 'Fredoka One', cursive; font-size: 15px; text-align: center; flex: 1; margin: 0 10px;">📝 EVALUASI & LKPD</div>
+    <button class="topbar-next" onclick="changePage(1)" style="background: #FF5722; color: white; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">Lanjut ▶</button>
   </div>
 
-  <div class="inner-body">
+  <div class="inner-body" style="padding: 15px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 
-    <div class="card" style="border-left:4px solid #F57F17">
-      <div class="card-title" style="color:#F57F17">
-        🌟 Apa yang Sudah Dipelajari?
-      </div>
-      <div class="card-text">
-        Kita telah belajar tentang sejarah, tradisi, kesenian, dan kerajinan khas Kecamatan Semanding yang menjadi warisan budaya masyarakat Tuban.
+    <div class="card" style="border-left: 6px solid #C2185B; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #C2185B; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">A. Evaluasi</div>
+      <div class="card-text" style="line-height: 1.6; color: #4E342E; font-size: 14px;">
+        Ayo Kerjakan soal berikut:
+        <ol style="margin: 5px 0; padding-left: 20px;">
+          <li>Jelaskan pengertian kearifan lokal!</li>
+          <li>Mengapa budaya daerah harus dilestarikan?</li>
+          <li>Sebutkan contoh budaya daerah Semanding!</li>
+          <li>Bagaimana cara menjaga lingkungan sekitar?</li>
+        </ol>
       </div>
     </div>
 
-    <div class="card" style="border-left:4px solid #2E7D32">
-      <div class="card-title" style="color:#2E7D32">
-        🏺 Budaya yang Harus Dilestarikan
-      </div>
-      <div class="card-text">
-        Ritual Keleman, Siraman Waranggono, Tabuh Lesung, Seni Tayub, Sandur, hingga kerajinan gerabah merupakan kekayaan budaya yang harus dijaga oleh generasi muda.
-      </div>
-    </div>
-
-    <div class="card" style="border-left:4px solid #1565C0">
-      <div class="card-title" style="color:#1565C0">
-        🤝 Nilai-Nilai Penting
-      </div>
-      <div class="card-text">
-        Budaya Semanding mengajarkan nilai gotong royong, rasa syukur, kerja keras, kreativitas, kebersamaan, dan penghormatan terhadap tradisi leluhur.
-      </div>
-    </div>
-
-    <div class="card" style="border-left:4px solid #7B1FA2">
-      <div class="card-title" style="color:#7B1FA2">
-        💡 Pesan untuk Siswa
-      </div>
-      <div class="card-text">
-        Sebagai generasi penerus bangsa, kita harus bangga terhadap budaya daerah sendiri dan ikut melestarikannya agar tidak hilang oleh perkembangan zaman.
-      </div>
-    </div>
-
-    <div style="background:#FFF9C4;border-radius:10px;padding:10px;border:2px dashed #F57F17;margin-top:8px">
-      <div style="font-size:11px;font-weight:800;color:#E65100;margin-bottom:5px">
-        ✍️ Refleksi Diri
+    <div class="card" style="border-left: 6px solid #2E7D32; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,.05);">
+      <div class="card-title" style="color: #2E7D32; font-family: 'Fredoka One', cursive; font-size: 18px; margin-bottom: 8px;">B. LKPD: Tugas Kelompok</div>
+      
+      <div style="margin-bottom: 15px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">1. Pengamatan Lingkungan:</div>
+        <textarea placeholder="Tuliskan 2 contoh kearifan lokal di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
       </div>
 
-      <textarea
-        style="width:100%;background:#fff;border:1.5px solid #FFCA28;border-radius:8px;
-        font-family:'Nunito',sans-serif;font-size:10px;padding:6px;
-        resize:none;height:50px;color:#333"
-        placeholder="Tuliskan hal menarik yang kamu pelajari tentang budaya Semanding hari ini..."></textarea>
-    </div>
+      <div style="margin-bottom: 15px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">2. Wawancara Tradisi:</div>
+        <textarea placeholder="Tuliskan hasil wawancara di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
+      </div>
 
-    <div style="text-align:center;font-size:11px;font-style:italic;color:#666;
-      margin-top:10px;padding:8px;background:#fff;border-radius:8px">
-      "Budaya daerah adalah identitas bangsa yang harus dijaga bersama." 🌺
+      <div style="margin-bottom: 5px;">
+        <div style="font-size: 13px; font-weight: bold; color: #1B5E20; margin-bottom: 5px;">3. Diskusi Kelompok:</div>
+        <textarea placeholder="Tuliskan kesimpulan diskusi di sini..." style="width:100%; border-radius:8px; border:1px solid #ccc; padding:8px; font-size:13px;"></textarea>
+      </div>
     </div>
 
   </div>
 
-  <div class="pg-footer">Halaman 12 dari 16</div>
+  <div class="pg-footer" style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); color: #5D4037; font-weight: 700; text-align: center; padding: 10px; font-size: 12px;">
+    📖 Halaman 9 dari 16
+  </div>
 </div>`;
-
-          // ---- GLOSARIUM ----
-          case 12:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#E0F7FA,#B2EBF2)">
-  <div class="inner-topbar" style="background:#006064">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📖 Glosarium</div>
-    <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
-  </div>
-  <div class="inner-body">
-    ${[
-      ["Kearifan Lokal", "Nilai, norma, dan pengetahuan budaya yang berkembang di masyarakat setempat dan diwariskan turun-temurun"],
-      ["Tradisi", "Kebiasaan yang diwariskan dari nenek moyang kepada generasi berikutnya"],
-      ["Gotong Royong", "Kegiatan kerja sama warga masyarakat secara bersama-sama tanpa pamrih"],
-      ["Upacara Adat", "Kegiatan ritual yang dilakukan sesuai tata cara adat yang berlaku di daerahnya"],
-      ["Batik", "Kain bermotif khas yang dibuat dengan teknik pewarnaan khusus; warisan UNESCO"],
-      ["Identitas Budaya", "Ciri khas yang membedakan suatu kelompok masyarakat dari kelompok lainnya"],
-      ["Pelestarian", "Upaya menjaga dan memelihara budaya agar tidak punah"],
-      ["Gamelan", "Seperangkat alat musik tradisional Jawa/Bali yang dimainkan bersama"],
-      ["Musyawarah", "Pengambilan keputusan bersama melalui diskusi untuk mencapai mufakat"],
-    ]
-      .map(([t, d]) => `<div class="glos-row"><div class="glos-term">${t}</div><div class="glos-def">${d}</div></div>`)
-      .join("")}
-  </div>
-  <div class="pg-footer">Halaman 15 dari 16</div>
-</div>`;
-
-          // ---- PUSTAKA ----
-          case 13:
-            return `<div class="inner-page" style="background:linear-gradient(160deg,#FCE4EC,#F8BBD0)">
-  <div class="inner-topbar" style="background:#C2185B">
-    <button class="topbar-back" onclick="changePage(-1)">◀ Kembali</button>
-    <div class="topbar-title">📚 Daftar Pustaka</div>
-    <button class="topbar-next" disabled style="opacity:.3;cursor:not-allowed">Selesai ✓</button>
-  </div>
-  <div class="inner-body">
-    <span class="pustaka-badge" style="background:#FCE4EC;color:#C2185B;border:1px solid #F48FB1">Buku Teks</span>
-    <div class="pustaka-item"><strong style="color:#C2185B">Kemendikbud.</strong> (2018). <em>Buku Tematik Terpadu Kelas IV: Indahnya Kebersamaan.</em> Jakarta: Pusat Kurikulum dan Perbukuan.</div>
-    <div class="pustaka-item"><strong style="color:#C2185B">Suparlan, P.</strong> (2004). <em>Hubungan Antar Suku Bangsa.</em> Jakarta: KIK Press.</div>
-    <span class="pustaka-badge" style="background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9">Jurnal</span>
-    <div class="pustaka-item"><strong style="color:#C2185B">Sibarani, R.</strong> (2012). Kearifan Lokal: Hakikat, Peran, dan Metode. <em>Jurnal Masyarakat dan Budaya,</em> 14(2), 1–20.</div>
-    <div class="pustaka-item"><strong style="color:#C2185B">Wagiran.</strong> (2012). Pengembangan Karakter Berbasis Kearifan Lokal. <em>Jurnal Pendidikan Karakter,</em> 2(3), 329–339.</div>
-    <span class="pustaka-badge" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7">Internet</span>
-    <div class="pustaka-item"><strong style="color:#C2185B">Kemdikbud.</strong> (2023). Portal Budaya Indonesia. <span style="color:#1565C0">kebudayaan.kemdikbud.go.id</span></div>
-    <div class="finish-box">
-      <div class="ficon">🎉</div>
-      <div class="fmsg">Selamat! E-Book Selesai!</div>
-      <div class="fsub">Terus cintai dan lestarikan budaya daerahmu! 🌺</div>
-      <button class="btn-restart" onclick="goToPage(1)">🔄 Mulai dari Awal</button>
-    </div>
-  </div>
-  <div class="pg-footer">Halaman 16 dari 16</div>
-</div>`;
-
           default:
             return `<div style="padding:20px;font-size:14px;color:#333">Halaman ${num}</div>`;
         }
@@ -3079,7 +2000,8 @@
       <button class="topbar-next" onclick="changePage(1)">Lanjut ▶</button>
     </div>
     <div class="inner-body">`;
-        for (let qi = from; qi < to; qi++) {
+
+        for (let qi = from; qi < to && qi < quizData.length; qi++) {
           const q = quizData[qi];
           h += `<div style="margin-bottom:12px">
       <div style="font-size:9px;font-weight:800;color:#E65100;background:#FFF3E0;border:1px solid #FF9800;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:5px">Soal ${qi + 1}</div>
@@ -3088,7 +2010,8 @@
       <div class="fb-box" id="qf_${qi}" style="display:none"></div>
     </div>`;
         }
-        h += `</div><div class="pg-footer">Halaman ${pgNum} dari 16</div></div>`;
+
+        h += `</div><div class="pg-footer">Halaman ${pgNum} dari 12</div></div>`;
         return h;
       }
       function buildEvalPage() {
@@ -3269,7 +2192,127 @@
         bs.style.transform = zoomed ? "scale(1.25)" : "scale(1)";
         bs.style.transition = "transform .3s";
       }
+      // ============================================================
+      // TOUCH SWIPE - FLIPBOOK SMOOTH
+      // ============================================================
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchCurrentX = 0;
+      let isDragging = false;
+      let dragOffset = 0;
 
+      const mainPage = document.getElementById("mainPage");
+
+      mainPage.addEventListener(
+        "touchstart",
+        (e) => {
+          if (isAnimating) return;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchCurrentX = touchStartX;
+          isDragging = false;
+          dragOffset = 0;
+        },
+        { passive: true },
+      );
+
+      mainPage.addEventListener(
+        "touchmove",
+        (e) => {
+          if (isAnimating) return;
+
+          const dx = e.touches[0].clientX - touchStartX;
+          const dy = e.touches[0].clientY - touchStartY;
+
+          // Abaikan jika scroll vertikal lebih dominan
+          if (!isDragging && Math.abs(dy) > Math.abs(dx)) return;
+
+          isDragging = true;
+          touchCurrentX = e.touches[0].clientX;
+          dragOffset = touchCurrentX - touchStartX;
+
+          // Batasi drag agar tidak terlalu jauh
+          const maxDrag = 80;
+          const clampedOffset = Math.max(-maxDrag, Math.min(maxDrag, dragOffset));
+
+          // Efek visual saat drag: geser + sedikit miring
+          const rotate = clampedOffset * 0.03;
+          const scale = 1 - Math.abs(clampedOffset) * 0.0008;
+          mainPage.style.transition = "none";
+          mainPage.style.transform = `translateX(${clampedOffset * 0.4}px) rotate(${rotate}deg) scale(${scale})`;
+
+          e.preventDefault();
+        },
+        { passive: false },
+      );
+
+      mainPage.addEventListener("touchend", () => {
+        if (!isDragging || isAnimating) {
+          mainPage.style.transition = "transform 0.3s ease";
+          mainPage.style.transform = "";
+          isDragging = false;
+          return;
+        }
+
+        isDragging = false;
+        const threshold = 50;
+
+        if (dragOffset < -threshold && current < TOTAL - 1) {
+          // Swipe kiri → halaman berikutnya
+          doSwipeFlip(1);
+        } else if (dragOffset > threshold && current > 0) {
+          // Swipe kanan → halaman sebelumnya
+          doSwipeFlip(-1);
+        } else {
+          // Tidak cukup jauh → balik ke posisi semula
+          mainPage.style.transition = "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+          mainPage.style.transform = "";
+          setTimeout(() => {
+            mainPage.style.transition = "";
+          }, 350);
+        }
+      });
+
+      function doSwipeFlip(dir) {
+        isAnimating = true;
+        flipSnd();
+
+        const exitX = dir < 0 ? "60px" : "-60px";
+        const exitRot = dir < 0 ? "4deg" : "-4deg";
+
+        // Fase 1: exit animation
+        mainPage.style.transition = "transform 0.2s cubic-bezier(0.4, 0, 1, 1), opacity 0.2s ease";
+        mainPage.style.transform = `translateX(${exitX}) rotate(${exitRot}) scale(0.94)`;
+        mainPage.style.opacity = "0";
+
+        setTimeout(() => {
+          // Ganti konten halaman
+          current += dir;
+          renderPage(current);
+
+          // Posisi awal dari arah berlawanan (masuk dari sisi lain)
+          const enterX = dir < 0 ? "-60px" : "60px";
+          const enterRot = dir < 0 ? "-4deg" : "4deg";
+          mainPage.style.transition = "none";
+          mainPage.style.transform = `translateX(${enterX}) rotate(${enterRot}) scale(0.94)`;
+          mainPage.style.opacity = "0";
+
+          // Paksa reflow agar transisi berikutnya terpicu
+          mainPage.offsetHeight;
+
+          // Fase 2: enter animation
+          mainPage.style.transition = "transform 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.25s ease";
+          mainPage.style.transform = "";
+          mainPage.style.opacity = "1";
+
+          setTimeout(() => {
+            mainPage.style.transition = "";
+            mainPage.style.transform = "";
+            mainPage.style.opacity = "";
+            isAnimating = false;
+          }, 320);
+        }, 200);
+      }
       // INIT
       document.addEventListener("DOMContentLoaded", () => {
         renderPage(0);
