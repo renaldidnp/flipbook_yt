@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Menggali Kearifan Lokal Semanding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- TOOLBAR top right -->
+    <div class="toolbar">
+      <button class="tb-btn" title="Zoom" onclick="toggleZoom()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.35-4.35M11 8v6M8 11h6" />
+        </svg>
+      </button>
+      <div class="tb-divider"></div>
+      <button class="tb-btn" title="Fullscreen" onclick="toggleFull()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+        </svg>
+      </button>
+      <div class="tb-divider"></div>
+      <button class="tb-btn" id="soundBtn" title="Suara" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Result popup -->
+    <div class="result-pop" id="resultPop">
+      <div class="result-box">
+        <div class="r-icon" id="rIcon">🎉</div>
+        <div class="r-title" id="rTitle">Hasilmu!</div>
+        <div class="r-score" id="rScore">80</div>
+        <div class="r-msg" id="rMsg"></div>
+        <button class="btn-close-pop" onclick="closePop()">Tutup ✓</button>
+      </div>
+    </div>
+
+    <!-- BOOK SCENE -->
+    <div class="book-scene" id="bookScene">
+      <!-- Stacked cards behind -->
+      <div class="stack-card c2"></div>
+      <div class="stack-card c1"></div>
+      <!-- Main visible page -->
+      <div class="main-page" id="mainPage">
+        <div class="page-inner" id="pageInner"></div>
+      </div>
+      <!-- Arrow buttons -->
+      <button class="arrow-btn arrow-left" id="btnPrev" onclick="changePage(-1)" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <button class="arrow-btn arrow-right" id="btnNext" onclick="changePage(1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- SLIDER BAR -->
+    <div class="slider-bar">
+      <input type="range" id="pageSlider" min="0" max="9" value="0" oninput="sliderChange(this.value)" />
+      <div class="slider-page-num" id="sliderLabel">1 / 10</div>
+    </div>
+
+    <!-- ⚠️ Pages harus di-load SEBELUM main.js -->
+    <script src="js/pages/page1.js"></script>
+    <script src="js/pages/page2.js"></script>
+    <script src="js/pages/page3.js"></script>
+    <script src="js/pages/page4.js"></script>
+    <script src="js/pages/page5.js"></script>
+    <script src="js/pages/page6.js"></script>
+    <script src="js/pages/page7.js"></script>
+    <script src="js/pages/page8.js"></script>
+    <script src="js/pages/page9.js"></script>
+    <script src="js/pages/page10.js"></script>
+
+    <!-- main.js selalu paling akhir -->
+    <script src="js/main.js"></script>
+  </body>
+</html>
