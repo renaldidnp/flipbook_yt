@@ -63,8 +63,8 @@ function page3() {
       ">
         <span style="font-size: 13px; font-weight: bold; color: #BF360C; display: block; margin-bottom: 8px;">Apakah kamu siap bertualang? Ketuk tombol di bawah!</span>
         <div style="display: flex; justify-content: center; gap: 10px;">
-          <button onclick="alert('Yey! Semangat belajar ya! 💪🔥')" style="background: #FF9800; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Siap! 🔥</button>
-          <button onclick="alert('Keren! Yuk, langsung klik tombol Lanjut di atas! ✨')" style="background: #FFB300; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Sangat Siap! ⭐</button>
+          <button onclick="successSnd(); changePage(1)" style="background: #FF9800; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Siap! 🔥</button>
+          <button onclick="clickSnd(900); changePage(1)" style="background: #FFB300; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Sangat Siap! ⭐</button>
         </div>
       </div>
     </div>

@@ -69,16 +69,21 @@ function playTone(f, dur, type = "sine", vol = 0.07, delay = 0) {
   musicNodes.push(o);
 }
 
-const GN = [261.6, 293.6, 311.1, 392, 415.3, 523.2, 587.3];
+const GN = [261.6, 293.7, 329.6, 392.0, 440.0, 523.2];
+
+const melody = [0, 1, 2, 3, 2, 1, 0, 2, 3, 4, 3, 2, 1, 0];
+let melodyIndex = 0;
 
 function playChord() {
   if (!musicOn) return;
-  const r = GN[Math.floor(Math.random() * 5)];
-  playTone(r * 0.5, 3, "sine", 0.06);
-  playTone(r, 2.5, "triangle", 0.07, 0.12);
-  playTone(r * 1.5, 2, "sine", 0.04, 0.22);
-  playTone(GN[5 + Math.floor(Math.random() * 2)], 1.2, "sine", 0.03, Math.random() * 0.5);
+  const note = GN[melody[melodyIndex % melody.length]];
+  playTone(note, 0.9, "sine", 0.05);
+  melodyIndex++;
 }
+
+musicInterval = setInterval(() => {
+  if (musicOn) playChord();
+}, 900);
 
 function startMusic() {
   initAudio();
