@@ -77,7 +77,7 @@ function page5() {
         <br><br>
         Masyarakat Semanding hidup rukun dan saling bekerja sama. Banyak penduduk bekerja sebagai 👨‍🌾 <b>petani</b>, 🛍️ <b>pedagang</b>, dan 🎨 <b>pengrajin</b>.
       </div>
-      ${imgGrid("bab1", 8, 4)}
+      ${imgGrid("bab2", 8, 4)}
       <small style="color: #1B5E20; font-size: 10px; display: block; text-align: center; margin-top: 7px; font-weight: bold;">*Ketuk gambar untuk memperbesar</small>
     </div>
 
