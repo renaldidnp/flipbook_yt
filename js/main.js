@@ -1,7 +1,7 @@
 // ============================================================
 // KONFIGURASI
 // ============================================================
-const TOTAL = 10; // Sesuaikan jumlah halaman
+const TOTAL = 11; // Sesuaikan jumlah halaman
 let current = 0;
 let isAnimating = false;
 
@@ -29,6 +29,8 @@ function pg(num) {
     case 9:
       return page9();
     case 10:
+      return page10();
+    case 11:
       return page10();
     default:
       return `<div style="padding:20px;font-size:14px;color:#333">Halaman ${num}</div>`;
