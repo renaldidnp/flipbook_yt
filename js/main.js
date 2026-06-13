@@ -42,68 +42,29 @@ function pg(num) {
 // ============================================================
 let audioCtx = null,
   musicOn = false,
-  musicInterval = null,
-  musicNodes = [];
+  bgMusic = null;
 
 function initAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
 
-function playTone(f, dur, type = "sine", vol = 0.07, delay = 0) {
-  if (!audioCtx || !musicOn) return;
-  const o = audioCtx.createOscillator(),
-    g = audioCtx.createGain();
-  const fl = audioCtx.createBiquadFilter();
-  fl.type = "lowpass";
-  fl.frequency.value = 1200;
-  o.connect(fl);
-  fl.connect(g);
-  g.connect(audioCtx.destination);
-  o.type = type;
-  o.frequency.value = f;
-  g.gain.setValueAtTime(0, audioCtx.currentTime + delay);
-  g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + delay + 0.06);
-  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + dur);
-  o.start(audioCtx.currentTime + delay);
-  o.stop(audioCtx.currentTime + delay + dur + 0.1);
-  musicNodes.push(o);
-}
-
-const GN = [261.6, 293.7, 329.6, 392.0, 440.0, 523.2];
-
-const melody = [0, 1, 2, 3, 2, 1, 0, 2, 3, 4, 3, 2, 1, 0];
-let melodyIndex = 0;
-
-function playChord() {
-  if (!musicOn) return;
-  const note = GN[melody[melodyIndex % melody.length]];
-  playTone(note, 0.9, "sine", 0.05);
-  melodyIndex++;
-}
-
-musicInterval = setInterval(() => {
-  if (musicOn) playChord();
-}, 900);
-
 function startMusic() {
-  initAudio();
-  if (audioCtx.state === "suspended") audioCtx.resume();
+  if (!bgMusic) bgMusic = document.getElementById("bgMusic");
+  if (!bgMusic) {
+    console.log("bgMusic element tidak ditemukan!");
+    return;
+  }
   musicOn = true;
-  playChord();
-  musicInterval = setInterval(() => {
-    if (musicOn) playChord();
-  }, 2600);
+  bgMusic.volume = 0.4;
+  bgMusic
+    .play()
+    .then(() => console.log("Musik mulai diputar"))
+    .catch((e) => console.log("Autoplay blocked:", e));
 }
 
 function stopMusic() {
   musicOn = false;
-  if (musicInterval) clearInterval(musicInterval);
-  musicNodes.forEach((n) => {
-    try {
-      n.stop();
-    } catch (e) {}
-  });
-  musicNodes = [];
+  if (bgMusic) bgMusic.pause();
 }
 
 function toggleMusic() {
@@ -478,5 +439,11 @@ function doSwipeFlip(dir) {
 // ============================================================
 document.addEventListener("DOMContentLoaded", () => {
   renderPage(0);
-  startMusic();
+  document.body.addEventListener(
+    "click",
+    () => {
+      if (!musicOn) startMusic();
+    },
+    { once: true },
+  );
 });

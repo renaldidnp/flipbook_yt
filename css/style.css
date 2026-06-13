@@ -1019,8 +1019,8 @@ body {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   :root {
-    --page-w: 90vw;
-    --page-h: 78vw;
+    --page-w: min(440px, 92vw);
+    --page-h: min(580px, 80vh);
   }
   .arrow-left {
     left: -44px;
